@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>06. Deep Dive into Python Booleans (True/False), Truthy & Falsy Values</h1>
+
+    <h2>1. What is a Boolean?</h2>
+    <p>Booleans represent one of two values: True or False. When you compare two values, Python evaluates the expression and returns a Boolean answer.</p>
+    <pre>print(10 > 9)  <span class="comment"># Output: True</span>
+print(10 == 9) <span class="comment"># Output: False</span></pre>
+
+    <h2>2. The bool() Function & Truthy Values</h2>
+    <p>The bool() function allows you to evaluate any value. Most values are "Truthy" (they have content).</p>
+    <pre>print(bool("Hello")) <span class="comment"># True</span>
+print(bool(15))      <span class="comment"># True</span></pre>
+
+    <h2>3. Falsy Values (The Empty & Zero Rule)</h2>
+    <p>If it is empty, zero, or absent, it is FALSE!</p>
+    <pre>print(bool(False)) # False
+print(bool(None))  # False
+print(bool(0))     # False
+print(bool(""))    # False
+print(bool(()))    # False
+print(bool([]))    # False
+print(bool({}))    # False</pre>
+
+    <div class="important">
+        <strong>⚠️ ADVANCED OBJECT TRICK (__len__):</strong> If an object is created from a class that has a <code>__len__</code> function that returns 0 or False, that object also evaluates to False!
+    </div>
+
+    <h2>4. Functions Returning Booleans</h2>
+    <p>You can create custom functions that return a Boolean value using the 'return' keyword.</p>
+    <pre>def my_function():
+    return True
+
+if my_function():
+    print("YES!")</pre>
+
+    <h2>5. Built-in Boolean Functions: isinstance()</h2>
+    <p>The <code>isinstance()</code> function checks if an object belongs to a specific data type.</p>
+    <pre>x = 200
+print(isinstance(x, int)) <span class="comment"># Output: True</span></pre>
+</div>
+{% endblock %}

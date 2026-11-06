@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+    </style>
+<div class="container">
+    <h1>02. Python Core Reference Unit - Dictionary, Tuple, & Set Methods</h1>
+    <p>An advanced technical reference explaining structural data mutation, lookup limits, and mathematical set architectures within Python's built-in collections.</p>
+
+    <h2>1. Dictionary Key-Value Management</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Hash Table Mechanics:</strong> Python dictionaries leverage internal hash tables to guarantee $O(1)$ amortized time complexity for insertion, deletion, and key lookups.</li>
+        <li><strong>Defensive Lookup:</strong> Accessing missing keys using bracket syntax (<code>dict[key]</code>) raises a <code>KeyError</code>, whereas <code>.get()</code> provides a graceful fallback value without disrupting execution threads.</li>
+        <li><strong>Dynamic View Objects:</strong> Methods like <code>.keys()</code>, <code>.values()</code>, and <code>.items()</code> yield dynamic, read-only view structures that immediately mirror changes made to the underlying dictionary data.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 1: Dictionary Operations ---"</span>)
+
+user_profile = {
+    <span class="string">"username"</span>: <span class="string">"kubra_dev"</span>,
+    <span class="string">"role"</span>: <span class="string">"Engineer"</span>,
+    <span class="string">"status"</span>: <span class="string">"Active"</span>
+}
+
+<span class="comment"># 1. Safe Access via get() - prevents KeyError if key does not exist</span>
+role_value = user_profile.get(<span class="string">"role"</span>, <span class="string">"Guest"</span>)
+location_value = user_profile.get(<span class="string">"location"</span>, <span class="string">"Not Specified"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Get] Role: {role_value} | Location: {location_value}"</span>)
+
+<span class="comment"># 2. Extracting Structural Views (Keys, Values, and Items)</span>
+<span class="keyword">print</span>(<span class="string">f"[Keys] View Object: {list(user_profile.keys())}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Values] View Object: {list(user_profile.values())}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Items] Key-Value Pairs: {list(user_profile.items())}"</span>)
+
+<span class="comment"># 3. Mutation and Update Operations</span>
+user_profile.update({<span class="string">"status"</span>: <span class="string">"In-Break"</span>, <span class="string">"experience"</span>: <span class="string">"Python Master"</span>})
+<span class="keyword">print</span>(<span class="string">f"[Update] Mutated Profile: {user_profile}"</span>)
+
+<span class="comment"># 4. Pop & Popitem: Explicit removal mechanics</span>
+removed_status = user_profile.pop(<span class="string">"status"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Pop] Removed Value: {removed_status} | Current Dict: {user_profile}"</span>)
+
+<span class="comment"># Removes and returns the last inserted key-value pair as a tuple</span>
+last_inserted = user_profile.popitem()
+<span class="keyword">print</span>(<span class="string">f"[Popitem] Removed Last Entry: {last_inserted}\n"</span>)</pre>
+
+    <h2>2. Tuple Immutability Verification</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Fixed Allocations:</strong> Tuples are strictly immutable, fixed-size linear sequences. Because their structure cannot change after instantiation, they require less memory than lists and are optimized for read-only tracking.</li>
+        <li><strong>Methods Restriction:</strong> Due to their write-protected design, tuples expose only two data lookup methods: <code>.count()</code> and <code>.index()</code>.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 2: Tuple Operations ---"</span>)
+
+<span class="comment"># Tuples are immutable data streams - only two standard lookup methods exist</span>
+immutable_coordinates = (<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">20</span>, <span class="number">40</span>, <span class="number">20</span>)
+
+<span class="comment"># 1. Count: Tallies occurrences of a target structural element</span>
+twenty_count = immutable_coordinates.count(<span class="number">20</span>)
+<span class="keyword">print</span>(<span class="string">f"[Count] Occurrences of value 20: {twenty_count}"</span>)
+
+<span class="comment"># 2. Index: Searches for a value and returns its first index position</span>
+position_of_thirty = immutable_coordinates.index(<span class="number">30</span>)
+<span class="keyword">print</span>(<span class="string">f"[Index] First position index of value 30: {position_of_thirty}\n"</span>)</pre>
+
+    <h2>3. Set Mathematical Operations</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Unordered Uniqueness:</strong> Sets are unordered collections of distinct, hashable items. They enforce uniqueness by filtering out duplicate values automatically upon insertion.</li>
+        <li><strong>Algebraic Operations:</strong> Highly optimized operations handle mathematical relations directly in engine memory:
+            <ul>
+                <li><strong>Intersection:</strong> Yields elements shared across both domains ($A \cap B$).</li>
+                <li><strong>Union:</strong> Blends sets together while omitting overlapping duplicates ($A \cup B$).</li>
+                <li><strong>Difference:</strong> Extracts items exclusive to the caller container ($A \setminus B$).</li>
+            </ul>
+        </li>
+        <li><strong>Safe Mutations:</strong> While <code>.remove()</code> triggers a <code>KeyError</code> if an element is missing, <code>.discard()</code> provides an elegant, safe removal interface that bypasses exceptions.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 3: Set Operations ---"</span>)
+
+<span class="comment"># Sets hold unique, unordered elements</span>
+backend_stack = {<span class="string">"Python"</span>, <span class="string">"MongoDB"</span>, <span class="string">"MySQL"</span>, <span class="string">"FastAPI"</span>}
+frontend_stack = {<span class="string">"HTML"</span>, <span class="string">"CSS"</span>, <span class="string">"JavaScript"</span>, <span class="string">"Python"</span>}
+
+<span class="comment"># 1. Intersection: Elements present in BOTH sets</span>
+common_skills = backend_stack.intersection(frontend_stack)
+<span class="keyword">print</span>(<span class="string">f"[Intersection] Common Core Elements: {common_skills}"</span>)
+
+<span class="comment"># 2. Union: Combined elements from BOTH sets (duplicates automatically removed)</span>
+all_skills = backend_stack.union(frontend_stack)
+<span class="keyword">print</span>(<span class="string">f"[Union] Complete Aggregated Stack: {all_skills}"</span>)
+
+<span class="comment"># 3. Difference: Elements in backend_stack that are NOT in frontend_stack</span>
+exclusive_backend = backend_stack.difference(frontend_stack)
+<span class="keyword">print</span>(<span class="string">f"[Difference] Exclusive Backend Core: {exclusive_backend}"</span>)
+
+<span class="comment"># 4. Element Manipulation (Add / Discard)</span>
+backend_stack.add(<span class="string">"Django"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Add] Mutated Set State: {backend_stack}"</span>)
+
+<span class="comment"># discard() is safer than remove() because it does not throw an error if item is missing</span>
+backend_stack.discard(<span class="string">"Flask"</span>) 
+<span class="keyword">print</span>(<span class="string">"[Discard] Non-destructive removal operation verified."</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] Dictionary, Tuple, and Set reference engines evaluated cleanly."</span>)</pre>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>15. Unified Guide to Range Sequences and Mutable Array Structures</h1>
+
+    <h2>1. The Immutable Range Sequence Object</h2>
+    <p>The <code>range()</code> constructor returns an immutable sequence object of type 'range'. It is calculated lazily, making it highly memory-efficient for loops.<br>
+    Formula: <code>range(start, stop, step)</code></p>
+    
+    <pre><span class="comment"># Single Argument: Evaluates as the exclusive 'stop' parameter. Default 'start' is 0.</span>
+zero_to_nine = <span class="keyword">range</span>(<span class="number">10</span>)
+<span class="keyword">print</span>(<span class="string">f"Type: {</span><span class="keyword">type</span>(zero_to_nine)<span class="string">} | Sequence: {</span>zero_to_nine<span class="string">}"</span>)
+
+<span class="comment"># Two Arguments: Evaluates as (start, exclusive_stop)</span>
+three_to_nine = <span class="keyword">range</span>(<span class="number">3</span>, <span class="number">10</span>)
+
+<span class="comment"># Three Arguments: Evaluates as (start, exclusive_stop, step_increment)</span>
+odd_three_to_nine = <span class="keyword">range</span>(<span class="number">3</span>, <span class="number">10</span>, <span class="number">2</span>)
+
+<span class="comment"># --- Converting Range Sequences to Materialized Lists ---</span>
+<span class="keyword">print</span>(<span class="keyword">list</span>(<span class="keyword">range</span>(<span class="number">5</span>)))          <span class="comment"># Outputs: [0, 1, 2, 3, 4]</span>
+<span class="keyword">print</span>(<span class="keyword">list</span>(<span class="keyword">range</span>(<span class="number">1</span>, <span class="number">6</span>)))       <span class="comment"># Outputs: [1, 2, 3, 4, 5]</span>
+<span class="keyword">print</span>(<span class="keyword">list</span>(<span class="keyword">range</span>(<span class="number">5</span>, <span class="number">20</span>, <span class="number">3</span>)))   <span class="comment"># Outputs: [5, 8, 11, 14, 17]</span>
+
+<span class="comment"># --- Range Operations: Slicing & Membership ---</span>
+numeric_sequence = <span class="keyword">range</span>(<span class="number">0</span>, <span class="number">10</span>, <span class="number">2</span>) <span class="comment"># Generates values: 0, 2, 4, 6, 8</span>
+
+<span class="keyword">print</span>(<span class="string">f"Value at index 2: {</span>numeric_sequence[<span class="number">2</span>]<span class="string">}"</span>)  <span class="comment"># Returns concrete value: 4</span>
+<span class="keyword">print</span>(<span class="string">f"Sliced sub-range: {</span>numeric_sequence[:<span class="number">3</span>]<span class="string">}"</span>) <span class="comment"># Returns a new range object: range(0, 6, 2)</span>
+
+<span class="comment"># O(1) Constant-Time Membership Testing via 'in'</span>
+<span class="keyword">print</span>(<span class="number">6</span> <span class="keyword">in</span> numeric_sequence) <span class="comment"># Returns True</span>
+<span class="keyword">print</span>(<span class="number">7</span> <span class="keyword">in</span> numeric_sequence) <span class="comment"># Returns False</span>
+<span class="keyword">print</span>(<span class="string">f"Total elements: {</span><span class="keyword">len</span>(numeric_sequence)<span class="string">}"</span>) <span class="comment"># Outputs: 5</span></pre>
+
+    <h2>2. Lists Deployed as Mutable Arrays</h2>
+    <p>Python does not possess a native primitive 'array' type. Instead, built-in lists are scaled to perform as mutable tracking arrays for single data types.</p>
+    
+    <pre>cars = [<span class="string">"Ford"</span>, <span class="string">"Volvo"</span>, <span class="string">"BMW"</span>]
+
+<span class="comment"># Accessing and mutating elements by explicit index position</span>
+<span class="keyword">print</span>(<span class="string">f"Initial Index 0: {</span>cars[<span class="number">0</span>]<span class="string">}"</span>)
+cars[<span class="number">0</span>] = <span class="string">"Toyota"</span>
+<span class="keyword">print</span>(<span class="string">f"Updated Index 0: {</span>cars[<span class="number">0</span>]<span class="string">}"</span>)
+
+<span class="comment"># Appending new data packets to the tail end of the sequence</span>
+cars.append(<span class="string">"Honda"</span>)
+<span class="keyword">print</span>(<span class="string">f"After Append: {</span>cars<span class="string">}"</span>)
+
+<span class="comment"># Popping items out of memory by explicit index tracking</span>
+removed_car = cars.pop(<span class="number">1</span>) <span class="comment"># Extracted index 1 ("Volvo") out of the array</span>
+<span class="keyword">print</span>(<span class="string">f"Popped Element: {</span>removed_car<span class="string">} | Current Array: {</span>cars<span class="string">}"</span>)
+
+<span class="comment"># Explicit value removal (Deletes ONLY the first matching instance encountered)</span>
+cars.remove(<span class="string">"BMW"</span>)
+<span class="keyword">print</span>(<span class="string">f"After Explicit Value Removal: {</span>cars<span class="string">}"</span>)
+
+<span class="comment"># --- Iterating Over Array Elements ---</span>
+<span class="keyword">for</span> car <span class="keyword">in</span> cars:
+    <span class="keyword">print</span>(<span class="string">f"Processing Car: {</span>car<span class="string">}"</span>)</pre>
+</div>
+{% endblock %}

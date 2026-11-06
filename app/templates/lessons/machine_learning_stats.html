@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>02. Machine Learning Foundation: Data Types, Core Statistics, Percentiles, and Data Distributions</h1>
+
+    <pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">from</span> scipy <span class="keyword">import</span> stats
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</pre>
+
+    <h2>1. Comprehensive Data Types Theory</h2>
+    <p>In Machine Learning, recognizing the underlying data type determines the algorithm.</p>
+    <ul>
+        <li><strong>Numerical:</strong> Numbers. Subdivided into:
+            <ul>
+                <li><strong>Discrete:</strong> Countable integers limited to whole numbers (e.g., number of cars).</li>
+                <li><strong>Continuous:</strong> Measured numbers that can take any decimal value (e.g., price, weight).</li>
+            </ul>
+        </li>
+        <li><strong>Categorical:</strong> Values containing un-comparable distinct labels (e.g., colors, Yes/No).</li>
+        <li><strong>Ordinal:</strong> Categorical data that carries a meaningful order or rank (e.g., school grades A &gt; B).</li>
+    </ul>
+
+    <h2>2. The Core Three Metrics (Mean, Median, Mode)</h2>
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Computing Central Tendency Metrics ---"</span>)
+<span class="comment"># Simulated dataset: Speed registers of 13 unique vehicles</span>
+speed_dataset = [<span class="number">99</span>, <span class="number">86</span>, <span class="number">87</span>, <span class="number">88</span>, <span class="number">111</span>, <span class="number">86</span>, <span class="number">103</span>, <span class="number">87</span>, <span class="number">94</span>, <span class="number">78</span>, <span class="number">77</span>, <span class="number">85</span>, <span class="number">86</span>]
+
+<span class="comment"># Arithmetic Mean: Sum of all records divided by total number of records</span>
+ml_mean = np.mean(speed_dataset)
+<span class="keyword">print</span>(<span class="string">f"Calculated Mean Speed: {ml_mean:.2f}"</span>)
+
+<span class="comment"># Median: The exact middle value after sorting the array data structure</span>
+ml_median = np.median(speed_dataset)
+<span class="keyword">print</span>(<span class="string">f"Calculated Median Speed: {ml_median}"</span>)
+
+<span class="comment"># Mode: The most frequent/common value appearing inside the dataset</span>
+<span class="comment"># stats.mode returns an object containing the mode array and count array</span>
+ml_mode = stats.mode(speed_dataset, keepdims=<span class="keyword">True</span>)
+<span class="keyword">print</span>(<span class="string">f"Calculated Mode Speed: {ml_mode.mode[0]} (Appears {ml_mode.count[0]} times)"</span>)</pre>
+
+    <h2>3. Dispersion Measurements (Standard Deviation & Variance)</h2>
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 2. Computing Variance and Standard Deviation (Dispersion) ---"</span>)
+<span class="comment"># Dataset A: Low spread (numbers close together)</span>
+low_spread_cars = [<span class="number">86</span>, <span class="number">87</span>, <span class="number">88</span>, <span class="number">86</span>, <span class="number">87</span>, <span class="number">85</span>, <span class="number">86</span>]
+<span class="comment"># Dataset B: High spread (numbers widely distributed)</span>
+high_spread_cars = [<span class="number">32</span>, <span class="number">111</span>, <span class="number">138</span>, <span class="number">28</span>, <span class="number">59</span>, <span class="number">77</span>, <span class="number">97</span>]
+
+<span class="comment"># Variance (sigma^2): Average of the squared differences from the Mean</span>
+variance_b = np.var(high_spread_cars)
+
+<span class="comment"># Standard Deviation (sigma): Square root of Variance. Describes how spread out numbers are.</span>
+std_dev_a = np.std(low_spread_cars)
+std_dev_b = np.std(high_spread_cars)
+
+<span class="keyword">print</span>(<span class="string">f"Dataset A Standard Deviation (Low Spread): {std_dev_a:.2f}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Dataset B Standard Deviation (High Spread): {std_dev_b:.2f}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Dataset B Mathematically Proven Variance: {variance_b:.2f}"</span>)</pre>
+
+    <h2>4. Percentiles & Synthetic Data Distributions</h2>
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 3. Extracting Percentiles & Creating Synthetic Distributions ---"</span>)
+neighborhood_ages = [<span class="number">5</span>, <span class="number">31</span>, <span class="number">43</span>, <span class="number">48</span>, <span class="number">50</span>, <span class="number">41</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">15</span>, <span class="number">39</span>, <span class="number">80</span>, <span class="number">82</span>, <span class="number">32</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">6</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">27</span>, <span class="number">61</span>, <span class="number">31</span>]
+
+<span class="comment"># 75th Percentile: Value under which 75% of the data points fall</span>
+p75 = np.percentile(neighborhood_ages, <span class="number">75</span>)
+p90 = np.percentile(neighborhood_ages, <span class="number">90</span>)
+<span class="keyword">print</span>(<span class="string">f"75% of people are younger than: {p75} years old."</span>)
+<span class="keyword">print</span>(<span class="string">f"90% of people are younger than: {p90} years old."</span>)
+
+<span class="comment"># --- Generating Big Data Visual Distributions using Matplotlib ---</span>
+<span class="keyword">print</span>(<span class="string">"[PROCESSING] Generating Distribution Canvas Graphics..."</span>)
+
+<span class="comment"># Uniform Distribution: Every value between 0.0 and 5.0 has an equal chance of selection</span>
+uniform_big_data = np.random.uniform(<span class="number">0.0</span>, <span class="number">5.0</span>, <span class="number">100000</span>)
+
+plt.figure(figsize=(<span class="number">6</span>, <span class="number">4</span>))
+plt.hist(uniform_big_data, <span class="number">100</span>, color=<span class="string">"#34495e"</span>, edgecolor=<span class="string">"white"</span>)
+plt.title(<span class="string">"Uniform Big Data Distribution Histogram"</span>)
+plt.savefig(<span class="string">"05_uniform_distribution.png"</span>, dpi=<span class="number">300</span>)
+plt.close()
+
+<span class="comment"># Normal (Gaussian) Distribution: Values cluster around a center mean value (Bell Curve)</span>
+<span class="comment"># Params: normal(mean, standard_deviation, sample_size)</span>
+normal_big_data = np.random.normal(<span class="number">5.0</span>, <span class="number">1.0</span>, <span class="number">100000</span>)
+
+plt.figure(figsize=(<span class="number">6</span>, <span class="number">4</span>))
+plt.hist(normal_big_data, <span class="number">100</span>, color=<span class="string">"#e74c3c"</span>, edgecolor=<span class="string">"white"</span>)
+plt.title(<span class="string">"Normal (Gaussian) Distribution Bell Curve"</span>)
+plt.savefig(<span class="string">"06_normal_distribution.png"</span>, dpi=<span class="number">300</span>)
+plt.close()
+
+<span class="keyword">print</span>(<span class="string">"[SUCCESS] Distribution images successfully saved to disk."</span>)</pre>
+</div>
+{% endblock %}

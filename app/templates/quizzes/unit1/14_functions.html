@@ -1,0 +1,651 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --bg-main: #0f111a;
+        --bg-container: #161925;
+        --bg-card: #0b0c13;
+        --border-color: #1f2335;
+        --text-main: #e2e8f0;
+        --text-muted: #565f89;
+        --accent-blue: #4da6ff;
+        --accent-lime: #b5c937;
+        --accent-green: #9ece6a;
+        --accent-red: #f7768e;
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        background-color: var(--bg-main) !important;
+        color: var(--text-main) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        margin: 0 !important;
+        padding: 40px 20px !important;
+        line-height: 1.6;
+        display: block !important;
+        min-height: auto !important;
+    }
+
+    .quiz-wrapper {
+        max-width: 760px;
+        margin: 0 auto !important;
+        background-color: var(--bg-container);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Progress Tracker */
+    .progress-wrapper {
+        margin-bottom: 30px;
+    }
+    .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .progress-meta .meta-unit { color: var(--accent-blue); }
+    .progress-meta .meta-counter { color: var(--text-muted); }
+    .progress-meta .meta-counter span { color: var(--text-main); }
+    
+    .progress-bar-container {
+        background-color: var(--bg-card);
+        height: 6px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+    .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-lime));
+        border-radius: 10px;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quiz-title {
+        font-size: 24px;
+        color: var(--text-main);
+        margin: 0 0 25px 0;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .quiz-viewport {
+        position: relative;
+        min-height: auto !important;
+    }
+
+    .question-view {
+        display: none;
+        animation: fadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .question-view.active {
+        display: block !important;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-statement {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 25px 0;
+        color: var(--text-main);
+        white-space: pre-wrap;
+    }
+
+    .question-statement code {
+        display: block;
+        background-color: var(--bg-card);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-blue);
+        margin-top: 15px;
+        font-size: 15px;
+        border: 1px solid var(--border-color);
+    }
+    
+    .inline-code {
+        display: inline-block;
+        background-color: var(--bg-card);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-blue);
+        font-size: 15px;
+    }
+
+    /* Option Stack Engine */
+    .options-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .option-node {
+        display: flex;
+        align-items: center;
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 16px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        position: relative;
+    }
+    .option-node:hover {
+        border-color: var(--accent-blue);
+        background-color: #121520;
+    }
+    .option-node input[type="radio"] {
+        display: none;
+    }
+
+    .custom-indicator {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--text-muted);
+        border-radius: 50%;
+        margin-right: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: var(--transition-smooth);
+    }
+    .option-node:hover .custom-indicator {
+        border-color: var(--accent-blue);
+    }
+    .custom-indicator::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+        border-radius: 50%;
+        transition: var(--transition-smooth);
+    }
+
+    .option-node.selected-state {
+        border-color: var(--accent-blue);
+        background-color: rgba(77, 166, 255, 0.04);
+    }
+    .option-node.selected-state .custom-indicator {
+        border-color: var(--accent-blue);
+    }
+    .option-node.selected-state .custom-indicator::after {
+        background-color: var(--accent-blue);
+    }
+
+    .option-node.eval-correct {
+        border-color: var(--accent-green) !important;
+        background-color: rgba(158, 206, 106, 0.08) !important;
+        color: var(--accent-green) !important;
+    }
+    .option-node.eval-correct .custom-indicator {
+        border-color: var(--accent-green) !important;
+    }
+    .option-node.eval-correct .custom-indicator::after {
+        background-color: var(--accent-green) !important;
+    }
+
+    .option-node.eval-incorrect {
+        border-color: var(--accent-red) !important;
+        background-color: rgba(247, 118, 142, 0.08) !important;
+        color: var(--accent-red) !important;
+    }
+    .option-node.eval-incorrect .custom-indicator {
+        border-color: var(--accent-red) !important;
+    }
+    .option-node.eval-incorrect .custom-indicator::after {
+        background-color: var(--accent-red) !important;
+    }
+    .option-node.locked-state {
+        pointer-events: none;
+    }
+
+    /* Explanation Card */
+    .explanation-card {
+        background-color: #0e1626;
+        border: 1px dashed var(--accent-red);
+        border-left: 4px solid var(--accent-red);
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: none;
+        animation: fadeIn 0.4s ease forwards;
+    }
+    .explanation-card h4 {
+        margin: 0 0 6px 0;
+        color: var(--accent-red);
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .explanation-card p {
+        margin: 0;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+
+    .action-control-panel {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 25px;
+    }
+    .btn-action {
+        background-color: var(--accent-lime);
+        color: var(--bg-main);
+        border: none;
+        padding: 14px 36px;
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .btn-action:hover:not(:disabled) {
+        background-color: #9db02f;
+        transform: translateY(-1px);
+    }
+    .btn-action:disabled {
+        background-color: var(--border-color);
+        color: var(--text-muted);
+        cursor: not-allowed;
+    }
+
+    /* Final Scoreboard */
+    .results-matrix-view {
+        display: none;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        text-align: center !important;
+        padding: 30px 0 !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        height: auto !important;
+        animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .score-radial-emitter {
+        width: 140px !important;
+        height: 140px !important;
+        border-radius: 50% !important;
+        background-color: var(--bg-card) !important;
+        border: 4px solid var(--accent-lime) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 10px auto 25px auto !important;
+        box-shadow: 0 0 30px rgba(181, 201, 55, 0.2);
+        transition: var(--transition-smooth);
+    }
+    
+    .results-matrix-view.perfect .score-radial-emitter { border-color: var(--accent-green) !important; box-shadow: 0 0 35px rgba(158, 206, 106, 0.3) !important; }
+    .results-matrix-view.good .score-radial-emitter { border-color: var(--accent-lime) !important; box-shadow: 0 0 35px rgba(181, 201, 55, 0.25) !important; }
+    .results-matrix-view.fail .score-radial-emitter { border-color: var(--accent-red) !important; box-shadow: 0 0 35px rgba(247, 118, 142, 0.25) !important; }
+
+    .score-radial-emitter .score-num {
+        font-size: 42px !important;
+        font-weight: 800 !important;
+        line-height: 1 !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .perfect .score-num { color: var(--accent-green) !important; }
+    .good .score-num { color: var(--accent-lime) !important; }
+    .fail .score-num { color: var(--accent-red) !important; }
+
+    .score-radial-emitter .score-label {
+        font-size: 11px !important;
+        color: var(--text-muted) !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .feedback-headline {
+        font-size: 26px !important;
+        font-weight: 700 !important;
+        margin: 0 0 12px 0 !important;
+        letter-spacing: -0.5px;
+    }
+    
+    .feedback-subtext {
+        color: #a9b1d6 !important;
+        max-width: 520px !important;
+        margin: 0 auto 30px auto !important;
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+    }
+    
+    .btn-restart {
+        background-color: transparent !important;
+        border: 2px solid var(--accent-blue) !important;
+        color: var(--accent-blue) !important;
+        padding: 14px 36px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: var(--transition-smooth) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        display: inline-block !important;
+    }
+    
+    .btn-restart:hover {
+        background-color: var(--accent-blue) !important;
+        color: var(--bg-main) !important;
+        box-shadow: 0 0 20px rgba(77, 166, 255, 0.3) !important;
+    }
+</style>
+<div class="quiz-wrapper">
+    <div class="progress-wrapper" id="progressSubsystem">
+        <div class="progress-meta">
+            <span class="meta-unit">14. Functions Quiz</span>
+            <span class="meta-counter">Question <span id="currentIdxLabel">1</span> of <span id="totalCountLabel">11</span></span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+    </div>
+
+    <div class="quiz-viewport" id="quizViewport">
+        <form id="spaQuizEngine">
+            
+            <div class="question-view active" data-q-idx="0" data-answer="To organize reusable blocks of code.">
+                <h2 class="quiz-title">01. Function Purpose</h2>
+                <p class="question-statement">What is the main purpose of a function in Python?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q1" value="To create variables."><span class="custom-indicator"></span>To create variables.</label>
+                    <label class="option-node"><input type="radio" name="q1" value="To organize reusable blocks of code."><span class="custom-indicator"></span>To organize reusable blocks of code.</label>
+                    <label class="option-node"><input type="radio" name="q1" value="To store multiple values."><span class="custom-indicator"></span>To store multiple values.</label>
+                    <label class="option-node"><input type="radio" name="q1" value="To replace loops."><span class="custom-indicator"></span>To replace loops.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Functions promote code reuse and modularity by grouping logic together.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="1" data-answer="A parameter is defined in the function signature, while an argument is the value passed when calling the function.">
+                <h2 class="quiz-title">02. Param vs Argument</h2>
+                <p class="question-statement">What is the difference between a parameter and an argument?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q2" value="There is no difference."><span class="custom-indicator"></span>There is no difference.</label>
+                    <label class="option-node"><input type="radio" name="q2" value="A parameter is the value passed to a function, while an argument is the variable in the function definition."><span class="custom-indicator"></span>Reversed definitions.</label>
+                    <label class="option-node"><input type="radio" name="q2" value="A parameter is defined in the function signature, while an argument is the value passed when calling the function."><span class="custom-indicator"></span>Correct definitions.</label>
+                    <label class="option-node"><input type="radio" name="q2" value="Parameters only exist in lambda functions."><span class="custom-indicator"></span>Parameters only exist in lambdas.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Parameters are placeholders (definition), Arguments are the real data (call).</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="2" data-answer="Hello Kubra">
+                <h2 class="quiz-title">03. Return Values</h2>
+                <p class="question-statement">What will be printed?
+<code>def greet(name):
+    return f"Hello {name}"
+print(greet("Kubra"))</code></p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q3" value="Hello"><span class="custom-indicator"></span>Hello</label>
+                    <label class="option-node"><input type="radio" name="q3" value="Hello Kubra"><span class="custom-indicator"></span>Hello Kubra</label>
+                    <label class="option-node"><input type="radio" name="q3" value="name"><span class="custom-indicator"></span>name</label>
+                    <label class="option-node"><input type="radio" name="q3" value="Error"><span class="custom-indicator"></span>Error</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>The function returns the formatted string based on the input argument.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="3" data-answer="Tuple">
+                <h2 class="quiz-title">04. *args</h2>
+                <p class="question-statement">What data type does *args collect its values into?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q4" value="List"><span class="custom-indicator"></span>List</label>
+                    <label class="option-node"><input type="radio" name="q4" value="Dictionary"><span class="custom-indicator"></span>Dictionary</label>
+                    <label class="option-node"><input type="radio" name="q4" value="Tuple"><span class="custom-indicator"></span>Tuple</label>
+                    <label class="option-node"><input type="radio" name="q4" value="Set"><span class="custom-indicator"></span>Set</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>*args is used to pack arbitrary positional arguments into a tuple.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="4" data-answer="Dictionary">
+                <h2 class="quiz-title">05. **kwargs</h2>
+                <p class="question-statement">What data type does **kwargs collect its values into?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q5" value="List"><span class="custom-indicator"></span>List</label>
+                    <label class="option-node"><input type="radio" name="q5" value="Dictionary"><span class="custom-indicator"></span>Dictionary</label>
+                    <label class="option-node"><input type="radio" name="q5" value="Tuple"><span class="custom-indicator"></span>Tuple</label>
+                    <label class="option-node"><input type="radio" name="q5" value="Set"><span class="custom-indicator"></span>Set</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>**kwargs collects arbitrary keyword arguments into a dictionary.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="5" data-answer="12">
+                <h2 class="quiz-title">06. Argument Unpacking</h2>
+                <p class="question-statement">What will be printed?
+<code>def multiply(a, b): return a * b
+values = [3, 4]
+print(multiply(*values))</code></p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q6" value="Error"><span class="custom-indicator"></span>Error</label>
+                    <label class="option-node"><input type="radio" name="q6" value="[3, 4]"><span class="custom-indicator"></span>[3, 4]</label>
+                    <label class="option-node"><input type="radio" name="q6" value="7"><span class="custom-indicator"></span>7</label>
+                    <label class="option-node"><input type="radio" name="q6" value="12"><span class="custom-indicator"></span>12</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>The * operator unpacks the list elements as individual function arguments.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="6" data-answer="Every recursive function must have a base case.">
+                <h2 class="quiz-title">07. Recursion</h2>
+                <p class="question-statement">Which statement about recursion is TRUE?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q7" value="A recursive function cannot call itself."><span class="custom-indicator"></span>A recursive function cannot call itself.</label>
+                    <label class="option-node"><input type="radio" name="q7" value="Every recursive function must have a base case."><span class="custom-indicator"></span>Every recursive function must have a base case.</label>
+                    <label class="option-node"><input type="radio" name="q7" value="Recursion only works with lists."><span class="custom-indicator"></span>Recursion only works with lists.</label>
+                    <label class="option-node"><input type="radio" name="q7" value="Recursive functions cannot return values."><span class="custom-indicator"></span>Recursive functions cannot return values.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Without a base case, recursion leads to infinite calls and a StackOverflow.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="7" data-answer="To create anonymous single-expression functions.">
+                <h2 class="quiz-title">08. Lambda Functions</h2>
+                <p class="question-statement">What is the purpose of a lambda function?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q8" value="To define multi-line functions."><span class="custom-indicator"></span>To define multi-line functions.</label>
+                    <label class="option-node"><input type="radio" name="q8" value="To create anonymous single-expression functions."><span class="custom-indicator"></span>To create anonymous single-expression functions.</label>
+                    <label class="option-node"><input type="radio" name="q8" value="To replace classes."><span class="custom-indicator"></span>To replace classes.</label>
+                    <label class="option-node"><input type="radio" name="q8" value="To declare global variables."><span class="custom-indicator"></span>To declare global variables.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Lambdas are small, anonymous functions defined in a single line.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="8" data-answer="They allow a function's behavior to be extended without modifying its original code.">
+                <h2 class="quiz-title">09. Decorators</h2>
+                <p class="question-statement">Which statement about decorators is TRUE?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q9" value="They permanently change Python's syntax."><span class="custom-indicator"></span>They change Python syntax.</label>
+                    <label class="option-node"><input type="radio" name="q9" value="They allow a function's behavior to be extended without modifying its original code."><span class="custom-indicator"></span>They extend behavior cleanly.</label>
+                    <label class="option-node"><input type="radio" name="q9" value="They are only used with classes."><span class="custom-indicator"></span>They only work with classes.</label>
+                    <label class="option-node"><input type="radio" name="q9" value="They replace the return statement."><span class="custom-indicator"></span>They replace return.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Decorators act as wrappers around functions to augment their functionality.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="9" data-answer="nonlocal">
+                <h2 class="quiz-title">10. Scope (Nonlocal)</h2>
+                <p class="question-statement">Which keyword allows a nested function to modify a variable defined in its enclosing function?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q10" value="global"><span class="custom-indicator"></span>global</label>
+                    <label class="option-node"><input type="radio" name="q10" value="outer"><span class="custom-indicator"></span>outer</label>
+                    <label class="option-node"><input type="radio" name="q10" value="nonlocal"><span class="custom-indicator"></span>nonlocal</label>
+                    <label class="option-node"><input type="radio" name="q10" value="local"><span class="custom-indicator"></span>local</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>nonlocal allows access to the parent function's scope, not the global scope.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="10" data-answer="global">
+                <h2 class="quiz-title">11. Bonus: Global</h2>
+                <p class="question-statement">Which keyword allows a function to modify a variable defined at the module (global) level?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q11" value="public"><span class="custom-indicator"></span>public</label>
+                    <label class="option-node"><input type="radio" name="q11" value="global"><span class="custom-indicator"></span>global</label>
+                    <label class="option-node"><input type="radio" name="q11" value="static"><span class="custom-indicator"></span>static</label>
+                    <label class="option-node"><input type="radio" name="q11" value="nonlocal"><span class="custom-indicator"></span>nonlocal</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>The 'global' keyword explicitly links the variable inside the function to the module-level scope.</p>
+                </div>
+            </div>
+
+            <div class="action-control-panel">
+                <button type="button" class="btn-action" id="controlActionBtn" onclick="processEngineStep()" disabled>Submit Answer</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="results-matrix-view" id="resultsMatrixView">
+        <div class="score-radial-emitter">
+            <span class="score-num" id="finalMetricScore">0/0</span>
+            <span class="score-label">Correct</span>
+        </div>
+        <h3 class="feedback-headline" id="feedbackHeadline">Evaluation Processing...</h3>
+        <p class="feedback-subtext" id="feedbackSubtext">Infrastructure metrics computed.</p>
+        <button type="button" class="btn-restart" onclick="resetQuizEngine()">Restart Verification Pipeline</button>
+    </div>
+</div>
+
+<script>
+    let activeQuestionIndex = 0;
+    let computedCorrectAnswers = 0;
+    let hasEvaluatedCurrentStep = false;
+    const questionViews = document.querySelectorAll('.question-view');
+    const totalQuestionsCount = questionViews.length;
+    const controlActionBtn = document.getElementById('controlActionBtn');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const currentIdxLabel = document.getElementById('currentIdxLabel');
+    const totalCountLabel = document.getElementById('totalCountLabel');
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        totalCountLabel.innerText = totalQuestionsCount;
+        syncProgressBar();
+        initOptionListeners();
+    });
+
+    function initOptionListeners() {
+        questionViews.forEach(view => {
+            const nodes = view.querySelectorAll('.option-node');
+            nodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    if (hasEvaluatedCurrentStep) return;
+                    nodes.forEach(n => n.classList.remove('selected-state'));
+                    this.classList.add('selected-state');
+                    const targetInput = this.querySelector('input[type="radio"]');
+                    if (targetInput) targetInput.checked = true;
+                    controlActionBtn.disabled = false;
+                });
+            });
+        });
+    }
+
+    function syncProgressBar() {
+        const computedPercent = (activeQuestionIndex / totalQuestionsCount) * 100;
+        progressBarFill.style.width = `${computedPercent}%`;
+        currentIdxLabel.innerText = Math.min(activeQuestionIndex + 1, totalQuestionsCount);
+    }
+
+    function processEngineStep() {
+        const activeFrame = questionViews[activeQuestionIndex];
+        const rightAnswerStr = activeFrame.getAttribute('data-answer');
+        const selectedRadioInput = activeFrame.querySelector('input[type="radio"]:checked');
+        
+        if (!hasEvaluatedCurrentStep) {
+            const allOptionNodes = activeFrame.querySelectorAll('.option-node');
+            const isUserCorrect = selectedRadioInput.value === rightAnswerStr;
+            allOptionNodes.forEach(node => {
+                node.classList.remove('selected-state');
+                node.classList.add('locked-state');
+                const optionValue = node.querySelector('input').value;
+                if (optionValue === rightAnswerStr) node.classList.add('eval-correct');
+            });
+            if (isUserCorrect) computedCorrectAnswers++;
+            else {
+                selectedRadioInput.parentElement.classList.add('eval-incorrect');
+                const explanation = activeFrame.querySelector('.explanation-card');
+                if (explanation) explanation.style.display = 'block';
+            }
+            controlActionBtn.innerText = (activeQuestionIndex === totalQuestionsCount - 1) ? "Finish Evaluation" : "Next Question";
+            hasEvaluatedCurrentStep = true;
+        } else {
+            activeFrame.classList.remove('active');
+            activeQuestionIndex++;
+            if (activeQuestionIndex < totalQuestionsCount) {
+                const nextFrame = questionViews[activeScale];
+                nextFrame.classList.add('active');
+                controlActionBtn.innerText = "Submit Answer";
+                controlActionBtn.disabled = true;
+                hasEvaluatedCurrentStep = false;
+                syncProgressBar();
+            } else {
+                progressBarFill.style.width = "100%";
+                document.getElementById('progressSubsystem').style.display = 'none';
+                document.getElementById('spaQuizEngine').style.display = 'none';
+                renderFinalMetricsScreen();
+            }
+        }
+    }
+
+    function renderFinalMetricsScreen() {
+        const scoreboard = document.getElementById('resultsMatrixView');
+        scoreboard.style.setProperty('display', 'flex', 'important');
+        document.getElementById('finalMetricScore').innerText = `${computedCorrectAnswers}/${totalQuestionsCount}`;
+    }
+
+    function resetQuizEngine() {
+        location.reload();
+    }
+</script>
+{% endblock %}

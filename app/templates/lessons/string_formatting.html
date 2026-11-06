@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>20. Comprehensive Guide to Modern F-Strings and Legacy String Formatting</h1>
+
+    <h2>1. Modern F-Strings (Python 3.6+)</h2>
+    <p>Prefixing strings with 'f' or 'F' opens direct evaluation expressions inside curly braces <code>{}</code>.</p>
+
+    <pre>price = <span class="number">59</span>
+tax_rate = <span class="number">0.25</span>
+fruit = <span class="string">"apples"</span>
+
+<span class="comment"># A) Raw Variables & Mathematical Computations Directly Inside Placeholders</span>
+basic_invoice = <span class="string">f"The standard unit price is {</span>price<span class="string">} dollars."</span>
+calculated_invoice = <span class="string">f"Total with taxes applied: {</span>price + (price * tax_rate)<span class="string">} dollars."</span>
+<span class="keyword">print</span>(<span class="string">"--- F-String Calculations ---"</span>)
+<span class="keyword">print</span>(basic_invoice)
+<span class="keyword">print</span>(calculated_invoice)
+
+<span class="comment"># B) Executing Inline Conditionals (Ternary Operators)
+# Syntax: {true_value if condition else false_value}</span>
+pricing_evaluation = <span class="string">f"Target product stock is {</span><span class="string">'Expensive'</span> <span class="keyword">if</span> price &gt; <span class="number">50</span> <span class="keyword">else</span> <span class="string">'Cheap'</span><span class="string">}."</span>
+<span class="keyword">print</span>(pricing_evaluation)
+
+<span class="comment"># C) Function & Method Invocations</span>
+<span class="keyword">print</span>(<span class="string">f"Formatted Product Title: {</span>fruit.upper()<span class="string">}"</span>)
+
+<span class="keyword">def</span> feet_to_meters_converter(feet_value):
+    <span class="keyword">return</span> feet_value * <span class="number">0.3048</span>
+
+flight_alt_log = <span class="string">f"The plane status tracking altitude: {</span>feet_to_meters_converter(<span class="number">30000</span>)<span class="string">:.2f} meters."</span>
+<span class="keyword">print</span>(flight_alt_log)</pre>
+
+    <h2>2. Formatting Specifiers & Modifiers</h2>
+    <p>Modifiers are added after a colon symbol (<code>:</code>) inside placeholders to control text rendering.</p>
+
+    <pre>large_currency = <span class="number">5900000.768</span>
+
+<span class="comment"># :.2f -> Renders a float fixed-point number rounded strictly to 2 decimal places</span>
+<span class="keyword">print</span>(<span class="string">f"Fixed decimal representation: {</span>large_currency<span class="string">:.2f}"</span>)
+
+<span class="comment"># :, -> Adds a standard comma symbol as a thousands separation marker</span>
+<span class="keyword">print</span>(<span class="string">f"Thousands comma format: {</span>large_currency<span class="string">:,}"</span>)
+
+<span class="comment"># Combined Modifier: Commas for thousands and rounded to 2 decimal places</span>
+<span class="keyword">print</span>(<span class="string">f"Fully sanitized ledger value: {</span>large_currency<span class="string">:,.2f}"</span>)
+
+<span class="comment"># --- Common Structural Modifiers ---
+# :b  -> Binary formatting translation representation
+# :x  -> Lowercase Hexadecimal representation conversion
+# :%  -> Automatic percentage conversion scaling (multiplies by 100 and appends %)</span>
+integer_value = <span class="number">42</span>
+percentage_ratio = <span class="number">0.756</span>
+<span class="keyword">print</span>(<span class="string">f"Decimal {</span>integer_value<span class="string">} in Binary layout: {</span>integer_value<span class="string">:b}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Decimal {</span>integer_value<span class="string">} in Hex layout: {</span>integer_value<span class="string">:x}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Ratio turned to percentage string: {</span>percentage_ratio<span class="string">:.1%}"</span>)</pre>
+
+    <h2>3. The Legacy .format() Syntax Protocols</h2>
+    <p>Used primarily prior to Python 3.6, the <code>.format()</code> engine uses distinct positional modes.</p>
+
+    <pre>quantity, item_id, cost = <span class="number">3</span>, <span class="number">567</span>, <span class="number">49.95</span>
+
+<span class="comment"># A) Blank Positional Mapping (Passed sequentially left to right)</span>
+order_template_alpha = <span class="string">"Order Intent: Buy {} units of item #{} for {} dollars."</span>
+<span class="keyword">print</span>(order_template_alpha.format(quantity, item_id, cost))
+
+<span class="comment"># B) Explicit Index Mapping (Allows out-of-order calls and duplicate re-use)
+# Index 0 -> age | Index 1 -> name</span>
+age, name = <span class="number">36</span>, <span class="string">"John"</span>
+reused_index_string = <span class="string">"Identity Record: His name is {1}. {1} is {0} years old."</span>
+<span class="keyword">print</span>(reused_index_string.format(age, name))
+
+<span class="comment"># C) Named Keyword Parameter Mapping (Highly descriptive key-value tracking)</span>
+custom_car_profile = <span class="string">"Inventory Match: Brand is {brand_name}, Model variant: {model_code}."</span>
+<span class="keyword">print</span>(custom_car_profile.format(brand_name=<span class="string">"Ford"</span>, model_code=<span class="string">"Mustang"</span>))</pre>
+</div>
+{% endblock %}

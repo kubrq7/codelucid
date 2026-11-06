@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+<div class="container">
+    <h1>11. Master Guide to Python Dictionaries (Key-Value, Views, and Nesting)</h1>
+    
+
+    <h2>1. Core Architecture & The Order Evolution</h2>
+    <p>Dictionaries are ordered, mutable, and prevent duplicate keys.</p>
+    <pre>app_status = {
+    "host_ip": "10.0.4.15",
+    "ssl_enabled": True,
+    "max_connections": 5000
+}
+<span class="comment"># Duplicate Key Override: Second definition overwrites the first!</span></pre>
+
+    <h2>2. Reading Elements & Dynamic Dict Views</h2>
+    <p>Use <code>.get()</code> for safe lookups that return <code>None</code> instead of crashing.</p>
+    <pre>captured_keys = server_metrics.keys()
+captured_vals = server_metrics.values()
+captured_pairs = server_metrics.items()</pre>
+
+    <h2>3. Mutating & Updating Data Vals</h2>
+    <pre>db_cluster = {"cluster_name": "alpha_db", "shards": 4}
+db_cluster["shards"] = 8 
+db_cluster.update({"shards": 16, "location": "izmir"})</pre>
+
+    <h2>4. Removing Dictionary Elements Safely</h2>
+    <pre>api_payload.pop("latency")    <span class="comment"># Extract and drop</span>
+api_payload.popitem()         <span class="comment"># Drop last inserted</span>
+del api_payload["payload"]    <span class="comment"># Direct deletion</span></pre>
+
+    <h2>5. Iteration Loops Over Key-Values</h2>
+    <p>The most efficient approach is using <code>.items()</code> for tuple unpacking.</p>
+    <pre>for user_id, secure_token in identity_tokens.items():
+    print(f"User Identification: {user_id} maps to Key: {secure_token}")</pre>
+
+    <h2>6. Memory Refresh Copies</h2>
+    <div class="important">
+        <strong>⚠️ POINTER TRAP:</strong> <code>copy_config = source_config</code> creates a reference link. Use <code>source_config.copy()</code> for an isolated copy.
+    </div>
+
+    <h2>7. High-Level Nested Dictionaries</h2>
+    <p>Access nested values sequentially: <code>network_infrastructure["backup_node"]["device_name"]</code></p>
+
+    <h2>🚀 Bonus: The Powerful .setdefault()</h2>
+    <p>Looks up a key. If it doesn't exist, it inserts it with a default value automatically!</p>
+    <pre>cache_status.setdefault("misses", 0)</pre>
+</div>
+{% endblock %}

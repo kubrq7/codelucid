@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    h3 {
+        color: #ff9e64;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>01. Comprehensive Master Guide to File I/O Streams, Context Managers, and Read/Write Permissions</h1>
+
+    <h2>PART 1: The Accessibility Modes & Stream Typing</h2>
+    <p>Python's built-in <code>open()</code> function establishes a bridge to the storage layer using the following syntax: <code>open(file_name, mode)</code>.</p>
+    
+    <h3>The Channels Matrix</h3>
+    <ul>
+        <li><code>"r"</code> <strong>(Read):</strong> Default mode. Opens a file strictly for reading. Raises a <code>FileNotFoundError</code> if the target file is missing.</li>
+        <li><code>"w"</code> <strong>(Write):</strong> Opens a file for writing. Truncates (wipes out) existing data entirely. Creates the file if it doesn't exist.</li>
+        <li><code>"a"</code> <strong>(Append):</strong> Opens a file for writing. Preserves existing data, appending any new input directly to the end. Creates the file if it doesn't exist.</li>
+        <li><code>"x"</code> <strong>(Create):</strong> Exclusive creation mode. Builds a fresh file. Raises a <code>FileExistsError</code> if the target path is already taken.</li>
+    </ul>
+
+    <h3>The Stream Encodings</h3>
+    <ul>
+        <li><code>"t"</code> <strong>(Text):</strong> Default layout. Decodes binary configurations into standard text string characters (<code>'str'</code>).</li>
+        <li><code>"b"</code> <strong>(Binary):</strong> Raw, uninterpreted byte streams. Vital for compiled assets like images, videos, or PDFs (e.g., PNG, MP4).</li>
+    </ul>
+
+    <pre>filename = <span class="string">"demofile.txt"</span>
+
+<span class="comment"># --- Setup Routine ---
+# Pre-seeding the target file with a clean multilined string pattern for testing.</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> setup_file:
+    setup_file.write(<span class="string">"Hello! Welcome to demofile.txt\n"</span>)
+    setup_file.write(<span class="string">"This file is for testing purposes.\n"</span>)
+    setup_file.write(<span class="string">"Good Luck!"</span>)</pre>
+
+    <h2>PART 2: Extraction Operations (Reading Methods)</h2>
+    <p>Using the modern <code>with</code> statement (Context Manager) is the industry production standard. It automatically triggers the file closing mechanism, preventing system memory leaks even if runtime exceptions happen.</p>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Complete and Limited Character Reading ---"</span>)
+
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> file_stream:
+    <span class="comment"># read(n) extracts exactly 'n' characters from the current stream position.</span>
+    first_five_chars = file_stream.read(<span class="number">5</span>)
+    <span class="keyword">print</span>(<span class="string">f"Extraction [First 5 Tokens]: '{</span>first_five_chars<span class="string">}'"</span>)
+    
+    <span class="comment"># An unconstrained read() sucks out all remaining leftover data in the buffer.</span>
+    remaining_payload = file_stream.read()
+    <span class="keyword">print</span>(<span class="string">f"Remaining Stream Data:\n{</span>remaining_payload<span class="string">}\n"</span>)</pre>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 2. Line-by-Line Incremental Processing ---"</span>)
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> file_stream:
+    <span class="comment"># readline() extracts data until it strikes a newline (\n) boundary marker.</span>
+    line_one = file_stream.readline().strip()
+    line_two = file_stream.readline().strip()
+    <span class="keyword">print</span>(<span class="string">f"Line 1 Pipeline Result: {</span>line_one<span class="string">}"</span>)
+    <span class="keyword">print</span>(<span class="string">f"Line 2 Pipeline Result: {</span>line_two<span class="string">}\n"</span>)</pre>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 3. Iterative Generator Streaming ---"</span>)
+<span class="comment"># Performance Tip: Iterating over the file object directly processes data row by row, 
+# preventing RAM overloads when dealing with massive multi-gigabyte production logs.</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> file_stream:
+    row_index = <span class="number">1</span>
+    <span class="keyword">for</span> data_row <span class="keyword">in</span> file_stream:
+        <span class="keyword">print</span>(<span class="string">f"Iterative Frame [{</span>row_index<span class="string">}]: {</span>data_row.strip()<span class="string">}"</span>)
+        row_index += <span class="number">1</span></pre>
+
+    <h2>PART 3: Injection Operations (Writing, Appending & Creation)</h2>
+    
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 4. Appending Persistent Data Tracks ---"</span>)
+<span class="comment"># Mode "a" jumps directly to the EOF (End-of-File) marker, preserving old entries.</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"a"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> file_stream:
+    file_stream.write(<span class="string">"\nNow the file has more content!"</span>)
+
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> verification:
+    <span class="keyword">print</span>(verification.read())</pre>
+
+    <div class="important">
+        <strong>CRITICAL WARNING:</strong> Mode <code>"w"</code> immediately clears the entire target file to 0 bytes upon opening! Any unbacked data will be permanently overwritten.
+    </div>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 5. Destructive Overwrite Execution ---"</span>)
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> file_stream:
+    file_stream.write(<span class="string">"Woops! I have deleted the content!"</span>)
+
+<span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> verification:
+    <span class="keyword">print</span>(verification.read())</pre>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 6. Guarded Exclusive File Creation ---"</span>)
+secure_target = <span class="string">"myfile.txt"</span>
+
+<span class="comment"># Dynamic safety check to handle old test files cleanly before testing exclusive creation</span>
+<span class="keyword">if</span> os.path.exists(secure_target):
+    os.remove(secure_target)
+
+<span class="keyword">try</span>:
+    <span class="comment"># Mode "x" will build the file, but crashes with a FileExistsError if the file name is taken.</span>
+    <span class="keyword">with</span> <span class="keyword">open</span>(secure_target, <span class="string">"x"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> fresh_stream:
+        fresh_stream.write(<span class="string">"Standalone signature initialized successfully."</span>)
+        <span class="keyword">print</span>(<span class="string">f"[STATUS] Fresh asset '{</span>secure_target<span class="string">}' built securely."</span>)
+<span class="keyword">except</span> <span class="keyword">FileExistsError</span>:
+    <span class="keyword">print</span>(<span class="string">f"[GUARD RESCUE] Blocked. File '{</span>secure_target<span class="string relay">}' already exists on this machine path."</span>)</pre>
+
+    <h2>PART 4: Resource Teardown Methods (Manual Streams)</h2>
+    <div class="important">
+        <strong>Anti-Pattern Warning:</strong> If you skip using a <code>with</code> block context, you must explicitly close resources manually. Failure or execution exceptions occurring prior to a manual <code>close()</code> method will keep resource lock states active on your host operating system.
+    </div>
+
+    <pre>manual_bridge = <span class="keyword">open</span>(<span class="string">"manual_log.txt"</span>, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>)
+<span class="keyword">try</span>:
+    manual_bridge.write(<span class="string">"Telemetry manual record."</span>)
+<span class="keyword">finally</span>:
+    <span class="comment"># The try-finally layout ensures the resource teardown executes even if a system failure happens.</span>
+    manual_bridge.close()</pre>
+</div>
+{% endblock %}

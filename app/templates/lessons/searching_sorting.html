@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>04. Python DSA Unit - Chapter 4: Advanced & Non-Comparison Sorting</h1>
+    <p>An advanced technical deep-dive into complex logarithmic comparison-based sorts and linear non-comparison distribution sorting mechanics.</p>
+
+    <h2>1. Quicksort (Divide-and-Conquer with In-Place Partitioning)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> Establishes an arbitrary 'pivot' reference point, grouping all lesser values into a left sub-array and greater elements into a right sub-array before recursively applying the same system to both subsets.</li>
+        <li><strong>Critical Interview Insight:</strong> Selecting the terminal element via standard Lomuto partitioning presents major design flaws. If the dataset arrives already sorted, performance drops to a severe worst-case footprint of $O(n^2)$ due to extremely uneven, highly asymmetrical partition breakdowns.</li>
+        <li><strong>Complexity:</strong> Average $O(n \log n)$, Worst $O(n^2)$. Space Complexity: $O(\log n)$ recursive call stack overhead.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Advanced Sorting: In-Place Quicksort (Lomuto Partition Scheme) ---"</span>)
+
+<span class="keyword">def</span> <span class="text">partition</span>(array, low, high):
+    <span class="comment"># Standard Lomuto scheme picks the rightmost element as pivot</span>
+    pivot = array[high]
+    i = low - <span class="number">1</span>  <span class="comment"># Index of smaller element</span>
+
+    <span class="keyword">for</span> j <span class="keyword">in</span> range(low, high):
+        <span class="comment"># If current element is smaller than or equal to pivot</span>
+        <span class="keyword">if</span> array[j] &lt;= pivot:
+            i += <span class="number">1</span>
+            <span class="comment"># In-place pointer swap avoiding high-level memory allocations</span>
+            array[i], array[j] = array[j], array[i]
+
+    <span class="comment"># Swap the pivot element with the greater element specified at i + 1</span>
+    array[i + <span class="number">1</span>], array[high] = array[high], array[i + <span class="number">1</span>]
+    <span class="keyword">return</span> i + <span class="number">1</span>  <span class="comment"># Return the partitioning index</span>
+
+<span class="keyword">def</span> <span class="text">quicksort</span>(array, low=<span class="number">0</span>, high=<span class="keyword">None</span>):
+    <span class="keyword">if</span> high <span class="keyword">is</span> <span class="keyword">None</span>:
+        high = len(array) - <span class="number">1</span>
+
+    <span class="comment"># Base case: If low index exceeds high, the sub-array is completely sorted</span>
+    <span class="keyword">if</span> low &lt; high:
+        pivot_index = partition(array, low, high)
+        
+        <span class="comment"># Recursively sort elements before partition and after partition</span>
+        quicksort(array, low, pivot_index - <span class="number">1</span>)
+        quicksort(array, pivot_index + <span class="number">1</span>, high)
+
+<span class="comment"># Execution Demo</span>
+quicksort_target = [<span class="number">64</span>, <span class="number">34</span>, <span class="number">25</span>, <span class="number">5</span>, <span class="number">22</span>, <span class="number">11</span>, <span class="number">90</span>, <span class="number">12</span>]
+quicksort(quicksort_target)
+<span class="keyword">print</span>(<span class="string">f"[Quicksort Output] Sorted Array: {quicksort_target}"</span>)</pre>
+
+    <h2>2. Merge Sort (Recursive and Stable Divide-and-Conquer)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> Recursively cuts arrays into individual elements before joining them back together in a structured sorted framework.</li>
+        <li><strong>Advantage:</strong> Guarantees solid, predictable $O(n \log n)$ complexity boundaries across all scenarios (Best, Average, Worst).</li>
+        <li><strong>Disadvantage:</strong> Merge Sort is fundamentally not an in-place engine. It relies heavily on temporary transient slices during recombination phases, resulting in an $O(n)$ auxiliary space profile.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 2. Stable Merge Sort (Recursive Framework) ---"</span>)
+
+<span class="keyword">def</span> <span class="text">merge_sort</span>(arr):
+    <span class="comment"># Base case: single element arrays are implicitly sorted</span>
+    <span class="keyword">if</span> len(arr) &lt;= <span class="number">1</span>:
+        <span class="keyword">return</span> arr
+
+    mid = len(arr) // <span class="number">2</span>
+    left_half = arr[:mid]   <span class="comment"># O(n) slicing allocation</span>
+    right_half = arr[mid:]  <span class="comment"># O(n) slicing allocation</span>
+
+    <span class="comment"># Recursive division of problem space</span>
+    sorted_left = merge_sort(left_half)
+    sorted_right = merge_sort(right_half)
+
+    <span class="keyword">return</span> merge_subarrays(sorted_left, sorted_right)
+
+<span class="keyword">def</span> <span class="text">merge_subarrays</span>(left, right):
+    result = []
+    i = j = <span class="number">0</span>
+
+    <span class="comment"># Linear comparison step - ensures stability</span>
+    <span class="keyword">while</span> i &lt; len(left) <span class="keyword">and</span> j &lt; len(right):
+        <span class="comment">if</span> left[i] &lt;= right[j]:  <span class="comment"># '&lt;=' maintains stability of equivalent keys</span>
+            result.append(left[i])
+            i += <span class="number">1</span>
+        <span class="keyword">else</span>:
+            result.append(right[j])
+            j += <span class="number">1</span>
+
+    <span class="comment"># Append any leftover structural nodes from either side</span>
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+<span class="comment"># Execution Demo</span>
+merge_target = [<span class="number">3</span>, <span class="number">7</span>, <span class="number">6</span>, -<span class="number">10</span>, <span class="number">15</span>, <span class="number">23.5</span>, <span class="number">55</span>, -<span class="number">13</span>]
+<span class="keyword">print</span>(<span class="string">f"[Recursive Merge Sort] Sorted Array: {merge_sort(merge_target)}"</span>)</pre>
+
+    <h2>3. Counting Sort (Non-Comparison Linear Time Algorithm)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> Avoids comparison checks completely by tracking element occurrences inside a map of consecutive indices.</li>
+        <li><strong>Strict Bottlenecks:</strong>
+            <ul>
+                <li>Mandates non-negative integer values to cleanly handle index addressing maps.</li>
+                <li>Bounded Range Threshold: If the variation span of values ($k$) wildly outgrows the overall item volume ($n$), memory footprints explode, neutralizing the performance benefits.</li>
+            </ul>
+        </li>
+        <li><strong>Complexity:</strong> Time Complexity of $O(n + k)$ where $n$ is data volume and $k$ represents the unique element span. Space Complexity: $O(k)$.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 3. Non-Comparison Counting Sort (Linear Time O(n + k)) ---"</span>)
+
+<span class="keyword">def</span> <span class="text">optimized_counting_sort</span>(arr):
+    <span class="keyword">if</span> <span class="keyword">not</span> arr:
+        <span class="keyword">return</span> arr
+        
+    max_val = max(arr)
+    <span class="comment"># Instantiate counting bucket array populated with zeros</span>
+    count_bucket = [<span class="number">0</span>] * (max_val + <span class="number">1</span>)
+
+    <span class="comment"># Populate frequencies without modifying or destroying the source data structure size</span>
+    <span class="keyword">for</span> num <span class="keyword">in</span> arr:
+        count_bucket[num] += <span class="number">1</span>
+
+    <span class="comment"># Reconstruct the array sequentially by iterating through frequencies</span>
+    write_index = <span class="number">0</span>
+    <span class="keyword">for</span> value, frequency <span class="keyword">in</span> enumerate(count_bucket):
+        <span class="keyword">while</span> frequency &gt; <span class="number">0</span>:
+            arr[write_index] = value
+            write_index += <span class="number">1</span>
+            frequency -= <span class="number">1</span>
+
+    <span class="keyword">return</span> arr
+
+counting_target = [<span class="number">4</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]
+<span class="keyword">print</span>(<span class="string">f"[Counting Sort Output] Sorted Array: {optimized_counting_sort(counting_target)}"</span>)</pre>
+
+    <h2>4. Radix Sort (Digit-by-Digit Structural Sorting)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> Processes raw numbers digit-by-digit, moving from the Least Significant Digit ($\text{LSD}$) to the Most Significant Digit ($\text{MSD}$) while sorting intermediate places into sub-buckets.</li>
+        <li><strong>The Stability Imperative:</strong> Radix sort completely depends on a stable underlying sort engine. If identical digits change their relative order during any intermediate run, the structural sequence falls apart.</li>
+        <li><strong>Complexity:</strong> Time Complexity of $O(n \cdot d)$ where $d$ indicates the length of digits in the largest record. Space Complexity: $O(n + \text{base})$.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 4. Stable Radix Sort (LSD Approach via Numerical Buckets) ---"</span>)
+
+<span class="keyword">def</span> <span class="text">stable_radix_sort</span>(arr):
+    <span class="keyword">if</span> <span class="keyword">not</span> arr:
+        <span class="keyword">return</span> arr
+
+    max_val = max(arr)
+    exponent = <span class="number">1</span>  <span class="comment"># Signifies current digit place value (1s, 10s, 100s, etc.)</span>
+
+    <span class="comment"># Iterate until processing exceeds the digit size of the maximum element</span>
+    <span class="keyword">while</span> max_val // exponent &gt; <span class="number">0</span>:
+        <span class="comment"># Create 10 traditional buckets (0-9 decimal system)</span>
+        buckets = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">10</span>)]
+
+        <span class="comment"># Distribute items based on the active digit value</span>
+        <span class="keyword">for</span> num <span class="keyword">in</span> arr:
+            digit_bucket_index = (num // exponent) % <span class="number">10</span>
+            buckets[digit_bucket_index].append(num)
+
+        <span class="comment"># Flatten buckets back into the master array (preserves stable FIFO order)</span>
+        write_idx = <span class="number">0</span>
+        <span class="keyword">for</span> bucket <span class="keyword">in</span> buckets:
+            <span class="keyword">for</span> num <span class="keyword">in</span> bucket:
+                arr[write_idx] = num
+                write_idx += <span class="number">1</span>
+
+        exponent *= <span class="number">10</span>  <span class="comment"># Advance to the next significant decimal column</span>
+    <span class="keyword">return</span> arr
+
+radix_target = [<span class="number">170</span>, <span class="number">45</span>, <span class="number">75</span>, <span class="number">90</span>, <span class="number">802</span>, <span class="number">24</span>, <span class="number">2</span>, <span class="number">66</span>]
+<span class="keyword">print</span>(<span class="string">f"[Radix Sort Output] Sorted Array: {stable_radix_sort(radix_target)}"</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] Advanced Data Sorting algorithms executed with 100% architectural integrity."</span>)</pre>
+</div>
+{% endblock %}

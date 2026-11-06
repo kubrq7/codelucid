@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>01. Python DSA Unit - Chapter 1: Linear Data Structures</h1>
+    <p>A comprehensive master guide to Dynamic Arrays, Stacks, Queues, and Linked Lists with fully production-ready implementations.</p>
+
+    <pre><span class="keyword">from</span> collections <span class="keyword">import</span> deque</pre>
+
+    <h2>1. Dynamic Arrays & Search Optimization</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Dynamic Array:</strong> Python lists are implemented as dynamic arrays. When the list fills up, Python automatically allocates a larger contiguous memory block and copies the elements over.</li>
+        <li><strong>Linear Search:</strong> Scanning elements one by one sequentially down the line. Time Complexity is $O(n)$.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Dynamic Arrays & Linear Search Optimization ---"</span>)
+
+<span class="comment"># Using built-in Python list methods</span>
+numbers_array = [<span class="number">9</span>, <span class="number">12</span>, <span class="number">7</span>, <span class="number">4</span>, <span class="number">11</span>]
+numbers_array.append(<span class="number">8</span>)   <span class="comment"># Amortized Time Complexity: O(1)</span>
+numbers_array.sort()      <span class="comment"># Uses Timsort Algorithm: O(n log n)</span>
+<span class="keyword">print</span>(<span class="string">f"[Built-in Method] Sorted List: {numbers_array}"</span>)
+
+<span class="comment"># Custom Algorithm: Finding the minimum value (Time Complexity: O(n))</span>
+<span class="keyword">def</span> <span class="text">find_minimum_value</span>(target_list):
+    <span class="keyword">if</span> <span class="keyword">not</span> target_list:
+        <span class="keyword">raise</span> <span class="text">ValueError</span>(<span class="string">"Error: Cannot find the minimum value of an empty list!"</span>)
+    
+    current_min = target_list[<span class="number">0</span>]
+    <span class="keyword">for</span> num <span class="keyword">in</span> target_list:
+        <span class="keyword">if</span> num &lt; current_min:
+            current_min = num
+    <span class="keyword">return</span> current_min
+
+my_array = [<span class="number">7</span>, <span class="number">12</span>, <span class="number">9</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">8</span>]
+<span class="keyword">print</span>(<span class="string">f"[Custom Algorithm] Lowest value found: {find_minimum_value(my_array)}"</span>)</pre>
+
+    <h2>2. Stacks (LIFO Principle)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> LIFO (Last In First Out). Insertion and deletion operations occur explicitly only at the designated 'Top' element interface.</li>
+        <li><strong>Complexity:</strong> Push, Pop, and Peek operations all natively guarantee $O(1)$ time complexity structures.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 2. Class-Based Stack Architecture ---"</span>)
+
+<span class="keyword">class</span> <span class="text">Stack</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self):
+        self.storage = []  <span class="comment"># Using a standard internal list for stack storage</span>
+
+    <span class="keyword">def</span> <span class="text">push</span>(self, element):
+        <span class="comment">"""Adds a new element to the top of the stack."""</span>
+        self.storage.append(element)
+
+    <span class="keyword">def</span> <span class="text">pop</span>(self):
+        <span class="comment">"""Removes and returns the top element of the stack."""</span>
+        <span class="keyword">if</span> self.is_empty():
+            <span class="keyword">return</span> <span class="string">"Error: Stack Underflow! The stack is empty."</span>
+        <span class="keyword">return</span> self.storage.pop()
+
+    <span class="keyword">def</span> <span class="text">peek</span>(self):
+        <span class="comment">"""Returns the top element without removing it."""</span>
+        <span class="keyword">if</span> self.is_empty():
+            <span class="keyword">return</span> <span class="string">"Error: The stack is empty. No element to peek."</span>
+        <span class="keyword">return</span> self.storage[-<span class="number">1</span>]
+
+    <span class="keyword">def</span> <span class="text">is_empty</span>(self):
+        <span class="comment">"""Checks if the stack contains no elements."""</span>
+        <span class="keyword">return</span> len(self.storage) == <span class="number">0</span>
+
+    <span class="keyword">def</span> <span class="text">get_size</span>(self):
+        <span class="comment">"""Returns the current number of elements inside the stack."""</span>
+        <span class="keyword">return</span> len(self.storage)
+
+<span class="comment"># Implementation Test</span>
+text_editor_history = Stack()
+text_editor_history.push(<span class="string">"State 1: Initial text typed."</span>)
+text_editor_history.push(<span class="string">"State 2: Function definition added."</span>)
+text_editor_history.push(<span class="string">"State 3: Syntactical bug fixed."</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Current Stack Size: {text_editor_history.get_size()}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Top Element (Peek): {text_editor_history.peek()}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Undo Triggered (Pop): {text_editor_history.pop()}"</span>)
+<span class="keyword">print</span>(<span class="string">f"New Top Element After Pop: {text_editor_history.peek()}"</span>)</pre>
+
+    <h2>3. Queues (FIFO Principle)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> FIFO (First In First Out). Element insertion takes place at the 'Rear', whereas element deletion is performed at the 'Front'.</li>
+        <li><strong>Optimal Solution:</strong> Utilizing a raw Python list means front extraction shifts all items, resulting in a costly $O(n)$ footprint. Integrating <code>collections.deque</code> cleanly ensures perfect $O(1)$ time complexity for front removal (popleft).</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 3. Optimized Queue Architecture via collections.deque ---"</span>)
+
+<span class="keyword">class</span> <span class="text">Queue</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self):
+        self.storage = deque()  <span class="comment"># Double-ended queue integration for O(1) performance</span>
+
+    <span class="keyword">def</span> <span class="text">enqueue</span>(self, element):
+        <span class="comment">"""Appends a new element to the rear of the queue."""</span>
+        self.storage.append(element)
+
+    <span class="keyword">def</span> <span class="text">dequeue</span>(self):
+        <span class="comment">"""Removes and returns the front element of the queue in O(1) time."""</span>
+        <span class="keyword">if</span> self.is_empty():
+            <span class="keyword">return</span> <span class="string">"Error: Queue Underflow! The queue is empty."</span>
+        <span class="keyword">return</span> self.storage.popleft()
+
+    <span class="keyword">def</span> <span class="text">is_empty</span>(self):
+        <span class="keyword">return</span> len(self.storage) == <span class="number">0</span>
+
+    <span class="keyword">def</span> <span class="text">get_size</span>(self):
+        <span class="keyword">return</span> len(self.storage)
+
+<span class="comment"># Implementation Test</span>
+network_printer = Queue()
+network_printer.enqueue(<span class="string">"Financial_Report.pdf"</span>)
+network_printer.enqueue(<span class="string">"Architecture_Diagram.png"</span>)
+network_printer.enqueue(<span class="string">"Employment_Contract.docx"</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Documents waiting in printer queue: {network_printer.get_size()}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Printing and removing from queue: {network_printer.dequeue()}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Remaining documents in queue: {network_printer.get_size()}"</span>)</pre>
+
+    <h2>4. Linked Lists & Memory Management</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> A non-contiguous linear structure where elements (Nodes) are explicitly linked using memory pointers.</li>
+        <li><strong>Advantages:</strong> Dynamic storage allocation. Inserting or deleting pointer links achieves high $O(1)$ algorithmic efficiency.</li>
+        <li><strong>Disadvantages:</strong> No random access (indexing capabilities). Sequential element traversal requires an $O(n)$ lookup path.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 4. Singly Linked List Implementation and Pointer Modification ---"</span>)
+
+<span class="keyword">class</span> <span class="text">LinkedListNode</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self, data):
+        self.data = data
+        self.next = <span class="keyword">None</span>
+
+<span class="keyword">class</span> <span class="text">SinglyLinkedList</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self):
+        self.head = <span class="keyword">None</span>
+
+    <span class="keyword">def</span> <span class="text">traverse_and_print</span>(self):
+        <span class="comment">"""Traverses the list sequentially and displays the node values."""</span>
+        current_node = self.head
+        <span class="keyword">while</span> current_node:
+            <span class="keyword">print</span>(current_node.data, end=<span class="string">" -> "</span>)
+            current_node = current_node.next
+        <span class="keyword">print</span>(<span class="string">"Null"</span>)
+
+    <span class="keyword">def</span> <span class="text">insert_at_position</span>(self, data, position):
+        <span class="comment">"""Inserts a new node at a specific position safely."""</span>
+        new_node = LinkedListNode(data)
+        
+        <span class="keyword">if</span> position == <span class="number">1</span>:
+            new_node.next = self.head
+            self.head = new_node
+            <span class="keyword">return</span>
+
+        current_node = self.head
+        <span class="keyword">for</span> _ <span class="keyword">in</span> range(position - <span class="number">2</span>):
+            <span class="keyword">if</span> current_node <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> current_node.next <span class="keyword">is</span> <span class="keyword">None</span>:
+                <span class="keyword">break</span>
+            current_node = current_node.next
+
+        <span class="keyword">if</span> current_node <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:
+            new_node.next = current_node.next
+            current_node.next = new_node
+
+    <span class="keyword">def</span> <span class="text">delete_node_by_value</span>(self, target_value):
+        <span class="comment">"""Disconnects a node containing the target value from the memory chain."""</span>
+        current_node = self.head
+
+        <span class="keyword">if</span> current_node <span class="keyword">and</span> current_node.data == target_value:
+            self.head = current_node.next
+            <span class="keyword">return</span>
+
+        <span class="keyword">while</span> current_node <span class="keyword">and</span> current_node.next <span class="keyword">and</span> current_node.next.data != target_value:
+            current_node = current_node.next
+
+        <span class="keyword">if</span> current_node <span class="keyword">and</span> current_node.next <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:
+            current_node.next = current_node.next.next
+
+<span class="comment"># Implementation Test</span>
+linked_list = SinglyLinkedList()
+linked_list.head = LinkedListNode(<span class="number">7</span>)
+second_node = LinkedListNode(<span class="number">11</span>)
+third_node = LinkedListNode(<span class="number">3</span>)
+
+linked_list.head.next = second_node
+second_node.next = third_node
+
+<span class="keyword">print</span>(<span class="string">"Original Linked List Chain:"</span>)
+linked_list.traverse_and_print()
+
+<span class="keyword">print</span>(<span class="string">"\nInserting value 97 at Position 2..."</span>)
+linked_list.insert_at_position(<span class="number">97</span>, <span class="number">2</span>)
+linked_list.traverse_and_print()
+
+<span class="keyword">print</span>(<span class="string">"\nDeleting value 11 from the Linked List..."</span>)
+linked_list.delete_node_by_value(<span class="number">11</span>)
+linked_list.traverse_and_print()
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] Linear Data Structures script executed perfectly with zero errors."</span>)</pre>
+</div>
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>01. Comprehensive Master Guide to Data Visualization with Matplotlib</h1>
+    <p>Covering Line, Bar, Scatter Plots, and Customizations.</p>
+
+    <div class="important">
+        <strong>⚠️ NOTE FOR STUDENTS:</strong> Before running this script, you must install matplotlib via pip:<br>
+        <code>pip install matplotlib</code>
+    </div>
+
+    <pre><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</pre>
+
+    <h2>1. The Foundational Line Plot (Basic Customization)</h2>
+    <p>Line plots are ideal for tracking changes over periods of time.</p>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Generating Custom Line Plot Infrastructure ---"</span>)
+
+<span class="comment"># Mock data: Months and simulated software project deployment counts</span>
+months = [<span class="string">"Jan"</span>, <span class="string">"Feb"</span>, <span class="string">"Mar"</span>, <span class="string">"Apr"</span>, <span class="string">"May"</span>, <span class="string">"Jun"</span>]
+deployments = [<span class="number">5</span>, <span class="number">12</span>, <span class="number">18</span>, <span class="number">15</span>, <span class="number">28</span>, <span class="number">35</span>]
+
+<span class="comment"># Creating a canvas figure with specific dimension sizes (Width, Height in inches)</span>
+plt.figure(figsize=(<span class="number">8</span>, <span class="number">5</span>))
+
+<span class="comment"># Plotting with explicit styles: color, line style, marker points, and line width</span>
+plt.plot(months, deployments, color=<span class="string">"#2c3e50"</span>, linestyle=<span class="string">"--"</span>, marker=<span class="string">"o"</span>, linewidth=<span class="number">2</span>, label=<span class="string">"Production Releases"</span>)
+
+<span class="comment"># Adding structural metadata labels</span>
+plt.title(<span class="string">"System Deployment Velocity (First Half of 2026)"</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">"bold"</span>, pad=<span class="number">15</span>)
+plt.xlabel(<span class="string">"Timeline (Months)"</span>, fontsize=<span class="number">12</span>)
+plt.ylabel(<span class="string">"Total Deployments"</span>, fontsize=<span class="number">12</span>)
+
+<span class="comment"># Customizing the background grid lines for precise readability</span>
+plt.grid(<span class="keyword">True</span>, linestyle=<span class="string">":"</span>, alpha=<span class="number">0.6</span>, color=<span class="string">"gray"</span>)
+
+<span class="comment"># Displaying the plot legend box based on the 'label' parameter inside plt.plot</span>
+plt.legend(loc=<span class="string">"upper left"</span>)
+
+<span class="comment"># Tight layout automatically adjusts subplot parameters to give specified padding</span>
+plt.tight_layout()
+
+<span class="comment"># In an interactive IDE, plt.show() renders the window canvas. 
+# For this script ecosystem, we save it directly to prevent execution blocks.</span>
+plt.savefig(<span class="string">"01_line_plot.png"</span>, dpi=<span class="number">300</span>)
+plt.close() <span class="comment"># Always close the plot to clear memory buffers!</span>
+<span class="keyword">print</span>(<span class="string">"[SUCCESS] '01_line_plot.png' successfully generated on disk.\n"</span>)</pre>
+
+
+    <h2>2. Categorical Comparisons (Bar Charts)</h2>
+    <p>Bar charts are perfect for comparing distinct categories against numerical values.</p>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 2. Generating Categorical Bar Chart Foundations ---"</span>)
+
+languages = [<span class="string">"Python"</span>, <span class="string">"JavaScript"</span>, <span class="string">"C++"</span>, <span class="string">"Java"</span>, <span class="string">"Go"</span>]
+popularity_score = [<span class="number">95</span>, <span class="number">88</span>, <span class="number">62</span>, <span class="number">70</span>, <span class="number">55</span>]
+
+plt.figure(figsize=(<span class="number">8</span>, <span class="number">5</span>))
+
+<span class="comment"># Generating vertical bars with custom Hex hexadecimal color mapping themes</span>
+bar_colors = [<span class="string">"#3498db"</span>, <span class="string">"#f1c40f"</span>, <span class="string">"#e74c3c"</span>, <span class="string">"#f39c12"</span>, <span class="string">"#1abc9c"</span>]
+plt.bar(languages, popularity_score, color=bar_colors, edgecolor=<span class="string">"black"</span>, alpha=<span class="number">0.85</span>)
+
+plt.title(<span class="string">"Backend Ecosystem Dominance Index"</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">"bold"</span>, pad=<span class="number">15</span>)
+plt.xlabel(<span class="string">"Programming Languages"</span>, fontsize=<span class="number">12</span>)
+plt.ylabel(<span class="string">"Popularity Percentage (%)"</span>, fontsize=<span class="number">12</span>)
+plt.ylim(<span class="number">0</span>, <span class="number">100</span>) <span class="comment"># Setting explicit vertical limits for scaling calibration</span>
+
+plt.tight_layout()
+plt.savefig(<span class="string">"02_bar_chart.png"</span>, dpi=<span class="number">300</span>)
+plt.close()
+<span class="keyword">print</span>(<span class="string">"[SUCCESS] '02_bar_chart.png' successfully generated on disk.\n"</span>)</pre>
+
+
+    <h2>3. Relationship Analysis (Scatter Plots)</h2>
+    <p>Scatter plots are used to observe and show relationships between two numeric variables.</p>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 3. Generating Scatter Plot Relationship Frameworks ---"</span>)
+
+<span class="comment"># Mock Data: Studying hours vs Exam performance scores of students</span>
+studying_hours = [<span class="number">2</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">17</span>, <span class="number">20</span>]
+exam_scores = [<span class="number">45</span>, <span class="number">52</span>, <span class="number">60</span>, <span class="number">68</span>, <span class="number">72</span>, <span class="number">80</span>, <span class="number">85</span>, <span class="number">88</span>, <span class="number">92</span>, <span class="number">98</span>]
+
+plt.figure(figsize=(<span class="number">8</span>, <span class="number">5</span>))
+
+<span class="comment"># s = marker size, c = color code, marker = structural design element</span>
+plt.scatter(studying_hours, exam_scores, s=<span class="number">100</span>, c=<span class="string">"#8e44ad"</span>, marker=<span class="string">"D"</span>, edgecolor=<span class="string">"black"</span>, alpha=<span class="number">0.9</span>, label=<span class="string">"Student Records"</span>)
+
+plt.title(<span class="string">"Correlation: Study Endurance vs Academic Scores"</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">"bold"</span>, pad=<span class="number">15</span>)
+plt.xlabel(<span class="string">"Total Study Time (Hours)"</span>, fontsize=<span class="number">12</span>)
+plt.ylabel(<span class="string">"Final Examination Score"</span>, fontsize=<span class="number">12</span>)
+plt.grid(<span class="keyword">True</span>, linestyle=<span class="string">"-."</span>, alpha=<span class="number">0.4</span>)
+plt.legend()
+
+plt.tight_layout()
+plt.savefig(<span class="string">"03_scatter_plot.png"</span>, dpi=<span class="number">300</span>)
+plt.close()
+<span class="keyword">print</span>(<span class="string">"[SUCCESS] '03_scatter_plot.png' successfully generated on disk.\n"</span>)</pre>
+
+
+    <h2>4. The Multi-Panel Masterpiece (Subplots)</h2>
+    <p>Subplots allow you to display multiple separate graphs side-by-side in one figure window canvas.</p>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 4. Assembling Combined Subplot Matrices ---"</span>)
+
+<span class="comment"># Initializing a structural subplot layout matrix grid (1 row, 2 columns)</span>
+fig, axes = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">14</span>, <span class="number">6</span>))
+
+<span class="comment"># --- Left Axis Plot (Index 0): Linear Trend Analytics ---</span>
+axes[<span class="number">0</span>].plot([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>], color=<span class="string">"#c0392b"</span>, marker=<span class="string">"^"</span>, linewidth=<span class="number">3</span>)
+axes[<span class="number">0</span>].set_title(<span class="string">"Linear Revenue Expansion"</span>, fontsize=<span class="number">12</span>, fontweight=<span class="string">"bold"</span>)
+axes[<span class="number">0</span>].set_xlabel(<span class="string">"Quarterly Intervals"</span>)
+axes[<span class="number">0</span>].set_ylabel(<span class="string">"Capital Yield ($)"</span>)
+axes[<span class="number">0</span>].grid(<span class="keyword">True</span>)
+
+<span class="comment"># --- Right Axis Plot (Index 1): Exponential Growth Curve ---</span>
+axes[<span class="number">1</span>].plot([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], [<span class="number">10</span>, <span class="number">40</span>, <span class="number">90</span>, <span class="number">160</span>], color=<span class="string">"#27ae60"</span>, marker=<span class="string">"s"</span>, linewidth=<span class="number">3</span>)
+axes[<span class="number">1</span>].set_title(<span class="string">"Exponential Growth Curve"</span>, fontsize=<span class="number">12</span>, fontweight=<span class="string">"bold"</span>)
+axes[<span class="number">1</span>].set_xlabel(<span class="string">"Quarterly Intervals"</span>)
+axes[<span class="number">1</span>].set_ylabel(<span class="string">"User Scaling Metrics"</span>)
+axes[<span class="number">1</span>].grid(<span class="keyword">True</span>)
+
+<span class="comment"># Setting a unified main layout header title across the entire subplot structure canvas</span>
+fig.suptitle(<span class="string">"Executive Quarterly Performance Telemetry Matrix"</span>, fontsize=<span class="number">16</span>, fontweight=<span class="string">"bold"</span>)
+
+plt.tight_layout()
+fig.savefig(<span class="string">"04_subplots_matrix.png"</span>, dpi=<span class="number">300</span>)
+plt.close()
+<span class="keyword">print</span>(<span class="string">"[SUCCESS] '04_subplots_matrix.png' successfully generated on disk."</span>)</pre>
+</div>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>02. Python Backend Unit - MySQL Operations</h1>
+    <p>A rigorous academic and implementation roadmap exploring relational database engineering via Python using the official <code>mysql-connector-python</code> driver engine.</p>
+
+    <pre><span class="keyword">import</span> mysql.connector</pre>
+
+    <h2>1. Connection Setup & Database Creation</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Server Initialization:</strong> Establishes a persistent TCP/IP network handshake with the host engine over the default service port.</li>
+        <li><strong>State Persistence:</strong> Instantiates isolated query workspace cursors tasked with executing consecutive data definition operations.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 1: Connection & Database Setup ---"</span>)
+
+<span class="comment"># Establishing structural connection to local MySQL server host</span>
+db_connection = mysql.connector.connect(
+    host=<span class="string">"localhost"</span>,
+    user=<span class="string">"root"</span>,
+    password=<span class="string">"your_secure_password"</span>
+)
+
+db_cursor = db_connection.cursor()
+
+<span class="comment"># Creating a fresh isolated database instance</span>
+db_cursor.execute(<span class="string">"CREATE DATABASE IF NOT EXISTS commerce_system"</span>)
+db_cursor.execute(<span class="string">"USE commerce_system"</span>)
+<span class="keyword">print</span>(<span class="string">"[INFO] MySQL connection established and database initialized.\n"</span>)</pre>
+
+    <h2>2. Table Creation (Structural Framework)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Relational Schema Design:</strong> Establishes normalized tabular spaces bounding data domains to maintain operational integrity.</li>
+        <li><strong>Integrity Constraints:</strong> Maps explicit <code>PRIMARY KEY</code> targets alongside referencing <code>FOREIGN KEY</code> indicators to construct rigorous parent-child cardinality relations.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 2: Table Creation Phase ---"</span>)
+
+<span class="comment"># Creating 'categories' table to establish relationship mapping later</span>
+db_cursor.execute(<span class="string">"""
+    CREATE TABLE IF NOT EXISTS categories (
+        category_id INT AUTO_INCREMENT PRIMARY KEY,
+        category_name VARCHAR(255) NOT NULL
+    )
+"""</span>)
+
+<span class="comment"># Creating 'products' table with a relational Foreign Key setup</span>
+db_cursor.execute(<span class="string">"""
+    CREATE TABLE IF NOT EXISTS products (
+        product_id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        stock INT DEFAULT 0,
+        category_id INT,
+        FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    )
+"""</span>)
+<span class="keyword">print</span>(<span class="string">"[INFO] Relational schema layout built successfully.\n"</span>)</pre>
+
+    <h2>3. Data Insertion Mechanics (Create)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Parameterized Directives:</strong> Utilizes explicit token strings (<code>%s</code>) to escape data payloads, immunizing the core execution engine from destructive SQL injection attacks.</li>
+        <li><strong>Transaction Control:</strong> Explicitly implements <code>.commit()</code> invocations to flush cached buffer alterations into physical system disk clusters, satisfying ACID reliability requirements.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 3: Data Insertion Operations ---"</span>)
+
+<span class="comment"># 1. Populating the categories table first</span>
+category_query = <span class="string">"INSERT INTO categories (category_name) VALUES (%s)"</span>
+categories_data = [(<span class="string">"Electronics"</span>,), (<span class="string">"Furniture"</span>,)]
+db_cursor.executemany(category_query, categories_data)
+db_connection.commit()  <span class="comment"># Committing the transactions permanently</span>
+
+<span class="comment"># 2. Populating the products table (Insert One & Insert Many)</span>
+product_query = <span class="string">"INSERT INTO products (name, price, stock, category_id) VALUES (%s, %s, %s, %s)"</span>
+
+<span class="comment"># Single insertion demonstration</span>
+db_cursor.execute(product_query, ("Wireless Mouse", <span class="number">850.00</span>, <span class="number">120</span>, <span class="number">1</span>))
+
+<span class="comment"># Bulk insertion optimization</span>
+bulk_products_data = [
+    (<span class="string">"Mechanical Keyboard"</span>, <span class="number">2400.00</span>, <span class="number">45</span>, <span class="number">1</span>),
+    (<span class="string">"Gaming Monitor"</span>, <span class="number">6200.00</span>, <span class="number">15</span>, <span class="number">1</span>),
+    (<span class="string">"Ergonomic Chair"</span>, <span class="number">4500.00</span>, <span class="number">8</span>, <span class="number">2</span>),
+    (<span class="string">"Office Desk"</span>, <span class="number">3800.00</span>, <span class="number">12</span>, <span class="number">2</span>)
+]
+db_cursor.executemany(product_query, bulk_products_data)
+db_connection.commit()
+<span class="keyword">print</span>(<span class="string">f"[Insert] Row count affected: {db_cursor.rowcount} entries saved.\n"</span>)</pre>
+
+    <h2>4. Query Evaluation & Restrictions (Read)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Query Execution Pipeline:</strong> Projects tabular matrices across complex data channels by chaining conditional filtering, ordering vectors, and limit windows directly within the database optimizer.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 4: Querying, Filtering, and Sorting Data ---"</span>)
+
+<span class="comment"># Utilizing SELECT, WHERE, ORDER BY, and LIMIT in a cohesive query pipeline</span>
+advanced_query = <span class="string">"""
+    SELECT name, price, stock 
+    FROM products 
+    WHERE price &gt; %s 
+    ORDER BY price DESC 
+    LIMIT %s
+"""</span>
+db_cursor.execute(advanced_query, (<span class="number">2000.00</span>, <span class="number">2</span>))
+query_results = db_cursor.fetchall()
+
+<span class="keyword">print</span>(<span class="string">"[Query Results] Filtered Evaluation Profile (Price &gt; 2000, Limit 2):"</span>)
+<span class="keyword">for</span> row <span class="keyword">in</span> query_results:
+    <span class="keyword">print</span>(<span class="string">f" - Product: {row[0]} | Price: {row[1]} TRY | Available Stock: {row[2]}"</span>)
+<span class="keyword">print</span>(<span class="string">""</span>)</pre>
+
+    <h2>5. Data Modification & Deletion (Update & Delete)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Mutation Safety:</strong> Performs state alterations on precise targets using rigid <code>WHERE</code> filtering boundaries to guarantee that changes do not affect unintended rows.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 5: Modification and Deletion Tasks ---"</span>)
+
+<span class="comment"># Executing an explicit UPDATE query to alter active records</span>
+update_query = <span class="string">"UPDATE products SET price = %s WHERE name = %s"</span>
+db_cursor.execute(update_query, (<span class="number">950.00</span>, <span class="string">"Wireless Mouse"</span>))
+db_connection.commit()
+<span class="keyword">print</span>(<span class="string">"[Update] 'Wireless Mouse' pricing matrices adjusted."</span>)
+
+<span class="comment"># Executing a row-level DELETE query safely with parameters</span>
+delete_query = <span class="string">"DELETE FROM products WHERE stock = %s"</span>
+db_cursor.execute(delete_query, (<span class="number">0</span>,))  <span class="comment"># Deletes products that are out of stock</span>
+db_connection.commit()
+<span class="keyword">print</span>(<span class="string">"[Delete] Out-of-stock data purge query executed.\n"</span>)</pre>
+
+    <h2>6. Advanced SQL Join Operation (Relational Linking)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Inner Join Mechanics:</strong> Combines distinct tabular entities into a unified virtual projection by resolving matching keys across table dimensions.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 6: Relational Joining Layer (INNER JOIN) ---"</span>)
+
+<span class="comment"># Connecting tables using explicit relational intersection keys</span>
+join_query = <span class="string">"""
+    SELECT p.name, p.price, c.category_name 
+    FROM products p
+    INNER JOIN categories c ON p.category_id = c.category_id
+"""</span>
+db_cursor.execute(join_query)
+join_results = db_cursor.fetchall()
+
+<span class="keyword">print</span>(<span class="string">"[Join Results] Unified Product-Category Data View:"</span>)
+<span class="keyword">for</span> record <span class="keyword">in</span> join_results:
+    <span class="keyword">print</span>(<span class="string">f" - Item Name: {record[0]} | Price: {record[1]} TRY | Sub-Category: {record[2]}"</span>)
+<span class="keyword">print</span>(<span class="string">""</span>)</pre>
+
+    <h2>7. Cleanup & Structural Deconstruction</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Resource Deallocation:</strong> Safely closes cursors and connection pipelines to prevent memory leaks or exhausting database connection pools.</li>
+        <li><strong>Referential Drop Sequences:</strong> Drops dependent child tables before parent tables to cleanly dismantle entities without violating foreign key constraints.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 7: Destructive Cleanup Phase ---"</span>)
+
+<span class="comment"># Dropping tables sequentially to preserve foreign key constraints</span>
+db_cursor.execute(<span class="string">"DROP TABLE IF EXISTS products"</span>)
+db_cursor.execute(<span class="string">"DROP TABLE IF EXISTS categories"</span>)
+<span class="keyword">print</span>(<span class="string">"[Drop] Tables truncated and structural space cleaned up."</span>)
+
+<span class="comment"># Close connection resources cleanly</span>
+db_cursor.close()
+db_connection.close()
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] All MySQL operational modules finished with 100% data fidelity."</span>)</pre>
+</div>
+{% endblock %}

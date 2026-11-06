@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+    </style>
+<div class="container">
+    <h1>01. Python Core Cookbook - Essential Solutions & Algorithms</h1>
+    <p>A high-performance technical guide analyzing fundamental algorithmic interview recipes, sequence mutations, and time-complexity optimization strategies.</p>
+
+    <h2>1. Remove Duplicates from a List (Preserving Order vs. Performance)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Hash-Set Deduplication:</strong> Instantiating a <code>set()</code> collection drops duplicates in $O(n)$ time by processing indices through internal hashing matrices. However, it strips away sequence index alignment, yielding an unordered array.</li>
+        <li><strong>Dictionary-Key Deduplication:</strong> Python 3.7+ guarantees that standard dictionaries strictly maintain insertion order. Harnessing <code>dict.fromkeys()</code> isolates unique collection elements in $O(n)$ time while ensuring order preservation.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Removing Duplicates Mechanics ---"</span>)
+
+raw_list = [<span class="number">5</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">7</span>]
+<span class="keyword">print</span>(<span class="string">f"Original List: {raw_list}"</span>)
+
+<span class="comment"># Approach A: The Set conversion method. </span>
+<span class="comment"># Time Complexity: O(N) -> Fast due to hash-set lookups, but does NOT preserve order.</span>
+unique_via_set = list(set(raw_list))
+<span class="keyword">print</span>(<span class="string">f"[Optimal for Speed] Unique List (Set): {unique_via_set}"</span>)
+
+<span class="comment"># Approach B: Dictionary keys method.</span>
+<span class="comment"># Time Complexity: O(N) -> Fast, and it PRESERVES the original insertion order.</span>
+unique_via_dict = list(dict.fromkeys(raw_list))
+<span class="keyword">print</span>(<span class="string">f"[Optimal for Order] Unique List (Dict): {unique_via_dict}\n"</span>)</pre>
+
+    <h2>2. Reverse a Sequence (String and List Inversion)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Extended Slicing:</strong> Slicing expressions configured with a step parameter of -1 (<code>[::-1]</code>) leverage highly optimized C-level memory access structures to copy and reverse elements cleanly.</li>
+        <li><strong>Lazy Iteration:</strong> The built-in <code>reversed()</code> function performs index lookup queries without allocating an identical duplicate sequence inside memory, returning a lazy iterator that operates in $O(1)$ space.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 2. Sequence Reversal Mechanics ---"</span>)
+
+sample_string = <span class="string">"Engineers Change The World"</span>
+sample_array = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>]
+<span class="keyword">print</span>(<span class="string">f"Original String: '{sample_string}'"</span>)
+<span class="keyword">print</span>(<span class="string">f"Original Array: {sample_array}"</span>)
+
+<span class="comment"># Approach A: Extended Slicing [start:stop:step]</span>
+reversed_string_slice = sample_string[::-1]
+reversed_array_slice = sample_array[::-1]
+<span class="keyword">print</span>(<span class="string">f"[Slicing Method] Reversed String: '{reversed_string_slice}'"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Slicing Method] Reversed Array: {reversed_array_slice}"</span>)
+
+<span class="comment"># Approach B: Built-in reversed() iterator</span>
+reversed_string_builtin = <span class="string">""</span>.join(reversed(sample_string))
+reversed_array_builtin = list(reversed(sample_array))
+<span class="keyword">print</span>(<span class="string">f"[Built-in Method] Reversed String: '{reversed_string_builtin}'"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Built-in Method] Reversed Array: {reversed_array_builtin}\n"</span>)</pre>
+
+    <h2>3. Sum Two Numbers (Clean Parameterized Function)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Type Enforcement Hints:</strong> Type hint assertions document input constraints and return types for production architectures. While ignored at runtime by Python itself, static analyzers use them to catch bugs early.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 3. Numerical Aggregation Framework ---"</span>)
+
+<span class="keyword">def</span> <span class="topic">calculate_arithmetic_sum</span>(num_1: <span class="keyword">float</span>, num_2: <span class="keyword">float</span>) -> <span class="keyword">float</span>:
+    <span class="comment">"""
+    Computes the pure mathematical sum of two float or integer inputs.
+    Utilizes clean type hinting for enterprise code standard compliance.
+    """</span>
+    <span class="keyword">return</span> num_1 + num_2
+
+<span class="comment"># Testing the aggregation logic with sample metrics</span>
+computed_total = calculate_arithmetic_sum(<span class="number">184.50</span>, <span class="number">215.50</span>)
+<span class="keyword">print</span>(<span class="string">f"Calculated Sum Result: {computed_total}"</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] All three core 'How-To' recipes compiled and verified safely."</span>)</pre>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    h3 {
+        color: #ff9e64;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+<div class="container">
+    <h1>01. Comprehensive Master Guide to Python Modules, Namespaces, Aliasing, and Standard Library Integration</h1>
+
+    <div class="important">
+        <strong>THE CONCEPT OF MODULES:</strong> A module is simply a file containing Python definitions, functions, and statements. Modules allow you to logically organize your Python code architecture. Grouping related code into a module makes the code much easier to reuse and scale.
+    </div>
+
+    <h2>PART 1: The Different Import Methodologies</h2>
+    
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Standard Module Import & Namespace Protection ---"</span>)
+<span class="comment"># Importing an entire module keeps its global namespace separate. 
+# You must use the dot (.) operator to access its functions.</span>
+<span class="keyword">import</span> platform
+
+system_layer = platform.system()
+<span class="keyword">print</span>(<span class="string">f"Host Operating System Detected: {</span>system_layer<span class="string">}\n"</span>)
+
+
+<span class="keyword">print</span>(<span class="string">"--- 2. Module Aliasing (Renaming for Clean Code) ---"</span>)
+<span class="comment"># Using the 'as' keyword creates an alias. Highly utilized in data science.
+# Example: import numpy as np, import pandas as pd</span>
+<span class="keyword">import</span> platform <span class="keyword">as</span> plt_engine
+
+processor_architecture = plt_engine.machine()
+<span class="keyword">print</span>(<span class="string">f"Processor Architecture: {</span>processor_architecture<span class="string">}\n"</span>)
+
+
+<span class="keyword">print</span>(<span class="string">"--- 3. Specific Member Extraction (Selective Imports) ---"</span>)
+<span class="comment"># The 'from ... import ...' syntax pulls specific elements directly into the local namespace.
+# Warning: This bypasses the need for the dot (.) operator, but risks naming collisions.</span>
+<span class="keyword">from</span> platform <span class="keyword">import</span> python_version, processor
+
+<span class="keyword">print</span>(<span class="string">f"Python Core Version: {</span>python_version()<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Hardware Processor Type: {</span>processor()<span class="string">}\n"</span>)</pre>
+
+    <h2>PART 2: Dynamic Introspection & Examining Modules</h2>
+    
+    <pre><span class="keyword">print</span>(<span class="string">"--- 4. Introspection Using the dir() Function ---"</span>)
+<span class="comment"># The built-in dir() function returns a sorted list of strings containing 
+# all defined names (variables, modules, functions) inside a specific scope or module.
+
+# Listing a fraction of available properties inside the platform module</span>
+platform_contents = <span class="keyword">dir</span>(platform)
+<span class="keyword">print</span>(<span class="string">f"Total defined properties inside 'platform': {</span><span class="keyword">len</span>(platform_contents)<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"First 5 available properties: {</span>platform_contents[:<span class="number">5</span>]<span class="string">}\n"</span>)</pre>
+
+    <h2>PART 3: Creating a Custom User-Defined Module</h2>
+    <p>To demonstrate how students can build their own code libraries, let's pretend we have an external file named <code>'mymodule.py'</code> containing structural dictionaries and custom functions.</p>
+
+    <pre><span class="comment"># --- SIMULATING THE EXTERNAL CODE STRUCTURE ---
+# File: mymodule.py
+# --------------------------------------------------
+# def greeting(name):
+#     return f"Hello, {name}!"
+#
+# person1 = {
+#     "name": "John",
+#     "age": 36,
+#     "country": "Norway"
+# }
+# --------------------------------------------------</span>
+
+<span class="keyword">print</span>(<span class="string">"--- 5. Dynamic Execution of Simulated Custom Module Data ---"</span>)
+<span class="comment"># Simulating database/configuration parsing from an external user module structure</span>
+simulated_person_dictionary = { <span class="string">"name"</span>: <span class="string">"John"</span>, <span class="string">"age"</span>: <span class="number">36</span>, <span class="string">"country"</span>: <span class="string">"Norway"</span> }
+
+<span class="keyword">not</span> <span class="keyword">def</span> simulated_greeting(name):
+    <span class="keyword">return</span> <span class="string">f"Hello, {</span>name<span class="string">}!"</span>
+
+<span class="comment"># Accessing simulated custom module components cleanly</span>
+target_age = simulated_person_dictionary[<span class="string">"age"</span>]
+welcome_banner = simulated_greeting(<span class="string">"Jonathan"</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Extracted User Age from Data Dictionary: {</span>target_age<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Custom Module Function Execution: {</span>welcome_banner<span class="string">}"</span>)</pre>
+</div>
+{% endblock %}

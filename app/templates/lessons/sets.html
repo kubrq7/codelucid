@@ -1,0 +1,102 @@
+    {% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>10. Comprehensive Guide to Python Sets & Frozensets (Mathematical Operations)</h1>
+
+
+    <h2>1. Set Core Definition & Truthy Duplicates</h2>
+    <pre>active_ips = {"192.168.1.1", "10.0.0.5", "172.16.0.2", "192.168.1.1"}
+print(active_ips) <span class="comment"># Duplicates are automatically ignored!</span>
+
+<span class="comment"># ⚠️ THE BOOLEAN-INTEGER OVERLAP TRAP</span>
+boolean_clash_1 = {"production", True, 1, 55} <span class="comment"># 1 is discarded!</span>
+empty_structure = set() <span class="comment"># Required for empty set</span></pre>
+
+    <h2>2. Accessing Items & Membership Speed</h2>
+    <p>Sets are unindexed. You cannot read them using index brackets like <code>set[0]</code>.</p>
+    <pre>monitored_services = {"Nginx", "Docker", "Redis", "Postgres"}
+print("Docker" in monitored_services) <span class="comment"># O(1) time complexity (lightning fast)</span></pre>
+
+    <h2>3. Modification Methods (Add, Discard, Pop)</h2>
+    <pre>admin_scopes = {"read", "write"}
+admin_scopes.add("execute")
+admin_scopes.discard("ghost_role") <span class="comment"># Safe; no crash if missing</span>
+popped_element = admin_scopes.pop() <span class="comment"># Arbitrary element</span></pre>
+
+    <h2>4. Mathematical Set Manipulations</h2>
+    <p>Supports Union (|), Intersection (&), Difference (-), and Symmetric Difference (^).</p>
+    <pre>backend_devs = {"Alice", "Bob", "Charlie"}
+cloud_devs = {"Charlie", "David", "Elena"}
+shared_devs_symbol = backend_devs & cloud_devs <span class="comment"># {'Charlie'}</span></pre>
+
+    <h2>5. In-place Mutation Updates</h2>
+    <pre>prod_packages.intersection_update(dev_packages)</pre>
+
+    <h2>6. Relational Set Checks (Subsets)</h2>
+    <pre>required_permissions = {"read", "write"}
+print(required_permissions.issubset(user_permissions))</pre>
+
+    <h2>7. The Immutable Frozenset</h2>
+    <p>A set that has been permanently write-protected. Modification commands are disabled.</p>
+    <pre>immutable_rules = frozenset({"strict_mode", "allow_cookies", "use_ssl"})</pre>
+</div>
+{% endblock %}

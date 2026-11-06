@@ -1,0 +1,151 @@
+    {% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+
+<div class="container">
+    <h1>08. Master Guide to Python Lists (Creation, Manipulation, Comprehension)</h1>
+
+    <h2>1. List Basics & The 4 Built-in Collections</h2>
+    <pre>engines = ["Cyberpunk", "Unreal", "Unity", "Godot", "Unreal"]
+print(engines)      <span class="comment"># Allows duplicates! Outputs both instances of 'Unreal'</span>
+print(type(engines)) <span class="comment"># Output: &lt;class 'list'&gt;</span>
+print(len(engines))  <span class="comment"># Output: 5</span>
+
+mixed_profile = ["Dev_Kubra", 2026, True, 98.7]
+languages = list(("Python", "HTML", "CSS"))</pre>
+
+    <h2>2. Accessing List Items & Slicing Boundaries</h2>
+    <pre>tools = ["VS_Code", "Git", "Docker", "Terminal", "Postman", "Figma"]
+
+print(tools[1])   <span class="comment"># Positive Indexing -&gt; Output: Git</span>
+print(tools[-1])  <span class="comment"># Negative Indexing (starts from end) -&gt; Output: Figma</span>
+
+<span class="comment"># ⚠️ THE SLICING RULES</span>
+print(tools[2:5]) <span class="comment"># Index 2, 3, and 4 -&gt; Output: ['Docker', 'Terminal', 'Postman']</span>
+print(tools[:3])  <span class="comment"># From start up to index 3 -&gt; Output: ['VS_Code', 'Git', 'Docker']</span>
+print(tools[3:])  <span class="comment"># From index 3 to the very end -&gt; Output: ['Terminal', 'Postman', 'Figma']</span>
+print(tools[-4:-1]) <span class="comment"># Negative slice -&gt; Output: ['Docker', 'Terminal', 'Postman']</span></pre>
+
+    <h2>3. Modifying & Inserting Items</h2>
+    <pre>servers = ["Apache", "Nginx", "IIS"]
+servers[2] = "LiteSpeed" 
+game_modes = ["Survival", "Sandbox", "Creative", "Hardcore"]
+game_modes[1:3] = ["StoryMode", "RPG", "Co-Op"] 
+game_modes[1:3] = ["Multiplayer"]</pre>
+
+    <h2>4. Adding & Extending Lists</h2>
+    <pre>backlog = ["Fix Bug 01", "Update CSS"]
+backlog.append("Deploy Server")
+backlog.insert(1, "Review Code")
+hardware = ["CPU", "GPU"]
+peripherals = ("Mouse", "Keyboard")
+hardware.extend(peripherals)
+print(hardware) <span class="comment"># Output: ['CPU', 'GPU', 'Mouse', 'Keyboard']</span></pre>
+
+    <h2>5. Removing List Items</h2>
+    <pre>projects = ["Web_App", "AI_Bot", "Game_Jam", "AI_Bot", "Scripts"]
+projects.remove("AI_Bot")
+popped_item = projects.pop(2)
+del projects[0]
+projects.clear()</pre>
+
+    <h2>6. Iterating / Looping Through Lists</h2>
+    <pre>skills = ["Frontend", "Backend", "Databases"]
+for skill in skills:
+    print(f"Skill: {skill}")
+
+for i in range(len(skills)):
+    print(f"Index {i}: {skills[i]}")
+
+[print(f"Short Loop: {item}") for item in skills]</pre>
+
+    <h2>7. List Comprehension (The Inline Magic)</h2>
+    <pre>scores = [45, 82, 94, 55, 70, 100]
+engineered_scores = [s for s in scores if s &gt; 60]
+caps_skills = [x.upper() for x in skills]
+tasks = ["Done", "WIP", "Pending", "WIP"]
+updated_tasks = [t if t != "WIP" else "Testing" for t in tasks]</pre>
+
+    <h2>8. Sorting & Reversing Realities</h2>
+    <div class="important">
+        <strong>⚠️ CRITICAL: sort() alters the ORIGINAL list directly (In-place mutation)!</strong><br>
+        <strong>⚠️ CASE-SENSITIVE SORT TRAP:</strong> sort() groups ALL Capital letters before lowercase letters! Use <code>tags.sort(key=str.lower)</code> for a true alphabetical sort.
+    </div>
+    <pre>matrix_values = [88, 21, 5, 64, 12]
+matrix_values.sort()
+matrix_values.sort(reverse=True)
+checkpoint_saves = ["Level 1", "Boss Fight", "Level 2"]
+checkpoint_saves.reverse()</pre>
+
+    <h2>9. Safe Copying & Memory Referencing</h2>
+    <p>Typing 'list_b = list_a' DOES NOT copy the list. It creates a reference link.</p>
+    <pre>copy_method_1 = original.copy()
+copy_method_2 = list(original)
+copy_method_3 = original[:]</pre>
+
+    <h2>10. Joining Collections</h2>
+    <pre>group_one = ["x", "y"]
+group_two = [7, 8]
+combined_1 = group_one + group_two
+for item in group_two:
+    group_one.append(item)</pre>
+</div>
+{% endblock %}

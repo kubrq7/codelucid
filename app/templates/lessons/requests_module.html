@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+    </style>
+<div class="container">
+    <h1>02. Python Core Module Reference - The Requests HTTP Library</h1>
+    <p>A rigorous architectural reference exploring synchronous network I/O, REST API consumption pipelines, automatic header negotiation, and robust socket timeout enforcement patterns.</p>
+
+    <pre><span class="keyword">import</span> requests</pre>
+
+    <h2>1. HTTP GET Requests & Response Status Code Validation</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Stateless I/O Handshaking:</strong> A <code>GET</code> request issues a synchronous HTTP transaction to pull a resource representation from an endpoint.</li>
+        <li><strong>Defensive Assertion:</strong> Rather than writing manual conditional status evaluations, <code>.raise_for_status()</code> programmatically parses response envelopes, throwing a <code>HTTPError</code> exception if the server answers with a 4xx client issue or 5xx infrastructure failure.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 1: Fetching Web Data (HTTP GET) ---"</span>)
+
+BASE_URL = <span class="string">"https://jsonplaceholder.typicode.com/posts"</span>
+
+<span class="keyword">try</span>:
+    <span class="comment"># Sending a standard synchronous GET request to retrieve web resources</span>
+    response = requests.get(<span class="string">f"{BASE_URL}/1"</span>)
+    
+    <span class="comment"># 1. status_code: Validating HTTP server handshake metrics</span>
+    <span class="keyword">print</span>(<span class="string">f"[Status Code] Server response output: {response.status_code}"</span>)
+    
+    <span class="comment"># raise_for_status() automatically throws an exception for 4xx or 5xx client/server errors</span>
+    response.raise_for_status()
+    <span class="keyword">print</span>(<span class="string">"[Success] HTTP handshake verified successfully."</span>)
+
+<span class="keyword">except</span> requests.exceptions.RequestException <span class="keyword">as</span> network_error:
+    <span class="keyword">print</span>(<span class="string">f"[Error] Failed to connect to server endpoint: {network_error}"</span>)
+<span class="keyword">print</span>(<span class="string">""</span>)</pre>
+
+    <h2>2. JSON Payload Parsing & Structured Data Extraction</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Stream Decoding:</strong> The <code>.text</code> property decodes raw byte packages into Python string structures using character encodings derived from the HTTP metadata headers.</li>
+        <li><strong>Object Deserialization:</strong> The <code>.json()</code> method invokes an internal parsing routine that converts the raw JSON string payload into a native, high-performance Python dictionary or list structure.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 2: JSON Parsing and Text Processing ---"</span>)
+
+<span class="keyword">if</span> response.status_code == <span class="number">200</span>:
+    <span class="comment"># 1. .json(): Converts the raw JSON network stream into a native Python dictionary</span>
+    post_data = response.json()
+    <span class="keyword">print</span>(<span class="string">f"[JSON Parsed] Native Object Type: {type(post_data)}"</span>)
+    <span class="keyword">print</span>(<span class="string">f" - Title: {post_data.get('title')}"</span>)
+    <span class="keyword">print</span>(<span class="string">f" - Body Snippet: {post_data.get('body')[:50]}...\n"</span>)
+    
+    <span class="comment"># 2. .text: Accessing the raw string content format directly</span>
+    raw_string_data = response.text
+    <span class="keyword">print</span>(<span class="string">f"[Raw Text Content] Sample byte length: {len(raw_string_data)} characters.\n"</span>)</pre>
+
+    <h2>3. HTTP POST Requests & Custom Header Configurations</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>State Mutation:</strong> A <code>POST</code> action transmits structured data payloads to create new database records under a designated resource domain.</li>
+        <li><strong>Header Orchestration:</strong> Custom header dictionaries let you attach crucial request metadata like explicit authentication vectors (e.g., <code>Bearer Tokens</code>) and payload type identifiers.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 3: Sending Data Payloads (HTTP POST) ---"</span>)
+
+new_payload = {
+    <span class="string">"title"</span>: <span class="string">"Backend Engineering Mastery"</span>,
+    <span class="string">"body"</span>: <span class="string">"Developing clean pythonic infrastructure layers with Kubra."</span>,
+    <span class="string">"userId"</span>: <span class="number">19</span>
+}
+
+custom_headers = {
+    <span class="string">"Content-type"</span>: <span class="string">"application/json; charset=UTF-8"</span>,
+    <span class="string">"Authorization"</span>: <span class="string">"Bearer sample_mock_token_string"</span>
+}
+
+<span class="comment"># Sending a POST transaction request to generate a new data entry on the remote service</span>
+post_response = requests.post(BASE_URL, json=new_payload, headers=custom_headers)
+
+<span class="keyword">print</span>(<span class="string">f"[Post Status] Entry submission result code: {post_response.status_code}"</span>)
+<span class="keyword">if</span> post_response.status_code == <span class="number">201</span>:
+    <span class="keyword">print</span>(<span class="string">f"[Server Echo] Confirmed write tracking ID: {post_response.json().get('id')}\n"</span>)</pre>
+
+    <h2>4. Timeout Configurations & Network Exception Handling</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Resource Starvation Prevention:</strong> By default, HTTP requests can hang indefinitely if an endpoint becomes unresponsive. Explicit <code>timeout</code> constraints drop dangling sockets if the server fails to complete its handshake within the allocated timeframe.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 4: Secure Timeout Latency Enforcement ---"</span>)
+
+<span class="keyword">try</span>:
+    <span class="comment"># Setting an explicit timeout boundary (measured in seconds)</span>
+    timed_response = requests.get(BASE_URL, timeout=<span class="number">2.5</span>)
+    <span class="keyword">print</span>(<span class="string">f"[Timeout Check] Query returned safely with array item count: {len(timed_response.json())}"</span>)
+
+<span class="keyword">except</span> requests.exceptions.Timeout:
+    <span class="keyword">print</span>(<span class="string">"[Alert] The network request exceeded its allocated runtime processing limit."</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] HTTP requests reference pipelines verified cleanly."</span>)</pre>
+</div>
+{% endblock %}

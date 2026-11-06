@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>17. Deep Dive into Datetime Engine, Math Operators, and JSON Pipelines</h1>
+
+    <pre><span class="keyword">import</span> datetime
+<span class="keyword">import</span> math
+<span class="keyword">import</span> json</pre>
+
+    <h2>1. The Datetime Engine & String Formatting</h2>
+    <p>Python relies on the built-in 'datetime' module to instantiate temporal stamps.</p>
+
+    <pre><span class="comment"># Fetching the exact current machine operational runtime parameters</span>
+current_snapshot = datetime.datetime.now()
+<span class="keyword">print</span>(<span class="string">"--- Datetime Extraction Matrix ---"</span>)
+<span class="keyword">print</span>(<span class="string">f"Raw Object: {</span>current_snapshot<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Extracted Year Factor: {</span>current_snapshot.year<span class="string">}"</span>)
+
+<span class="comment"># --- Formatting Datetime Objects into Strings via strftime() ---
+# %A -> Weekday fullname | %B -> Month fullname | %Y -> 4-digit Year</span>
+formatted_day = current_snapshot.strftime(<span class="string">"%A"</span>)
+formatted_month = current_snapshot.strftime(<span class="string">"%B"</span>)
+<span class="keyword">print</span>(<span class="string">f"Human Readable Strings: {</span>formatted_day<span class="string">} of {</span>formatted_month<span class="string">}"</span>)
+
+<span class="comment"># --- Manually Instantiating Explicit Target Dates ---
+# Signature: datetime.datetime(year, month, day, hour=0, minute=0, second=0)</span>
+historical_checkpoint = datetime.datetime(<span class="number">2020</span>, <span class="number">5</span>, <span class="number">17</span>, <span class="number">14</span>, <span class="number">30</span>)
+<span class="keyword">print</span>(<span class="string">f"Configured Static Checkpoint: {</span>historical_checkpoint<span class="string">}"</span>)</pre>
+
+    <h2>2. Core Mathematics & The Math Module</h2>
+    <p>Python provides global primitives (min, max, abs, pow) and a specialized 'math' module.</p>
+
+    <pre><span class="comment"># A) Global Built-in Functions</span>
+<span class="keyword">print</span>(<span class="string">"\n--- Core Mathematics Outputs ---"</span>)
+<span class="keyword">print</span>(<span class="string">f"Max Value Check: {</span><span class="keyword">max</span>(<span class="number">5</span>, <span class="number">10</span>, <span class="number">25</span>)<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Min Value Check: {</span><span class="keyword">min</span>(<span class="number">5</span>, <span class="number">10</span>, <span class="number">25</span>)<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Absolute Vector Magnitude: {</span><span class="keyword">abs</span>(-<span class="number">7.25</span>)<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Power Calculation Engine (4^3): {</span><span class="keyword">pow</span>(<span class="number">4</span>, <span class="number">3</span>)<span class="string">}"</span>)
+
+<span class="comment"># B) Specialized math Module Operations</span>
+<span class="keyword">print</span>(<span class="string">f"Square Root Calculation: {</span>math.sqrt(<span class="number">64</span>)<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Ceiling Rounding (math.ceil 1.4): {</span>math.ceil(<span class="number">1.4</span>)<span class="string">}"</span>)   <span class="comment"># Rounds UP to next integer</span>
+<span class="keyword">print</span>(<span class="string">f"Floor Rounding (math.floor 1.4): {</span>math.floor(<span class="number">1.4</span>)<span class="string">}"</span>) <span class="comment"># Rounds DOWN to next integer</span>
+<span class="keyword">print</span>(<span class="string">f"Mathematical PI Constant Value: {</span>math.pi<span class="string">}"</span>)</pre>
+
+    <h2>3. JSON Serialization & Deserialization Pipelines</h2>
+    <p>Data transmission requires mapping native Python objects into compliant JSON text strings.</p>
+    <ul>
+        <li><code>json.loads()</code>: Parses an incoming JSON string and transforms it into a Python Dict.</li>
+        <li><code>json.dumps()</code>: Converts a native Python collection into an outgoing JSON string format.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- JSON Serialization Actions ---"</span>)
+
+<span class="comment"># A) Deserialization: JSON Text String ---> Native Python Dictionary</span>
+incoming_json_payload = <span class="string">'{"name": "John", "age": 30, "city": "New York"}'</span>
+parsed_python_dict = json.loads(incoming_json_payload)
+<span class="keyword">print</span>(<span class="string">f"Deserialized Dict Lookup: {</span>parsed_python_dict[<span class="string">'city'</span>]<span class="string">} | Type: {</span><span class="keyword">type</span>(parsed_python_dict)<span class="string">}"</span>)
+
+<span class="comment"># B) Serialization: Native Python Object ---> Outgoing JSON Text String</span>
+developer_profile = {
+    <span class="string">"username"</span>: <span class="string">"kubra_dev"</span>,
+    <span class="string">"verified"</span>: <span class="keyword">True</span>,
+    <span class="string">"credentials"</span>: <span class="keyword">None</span>,
+    <span class="string">"active_repositories"</span>: [<span class="string">"engine_v1"</span>, <span class="string">"ui_v2"</span>]
+}
+
+<span class="comment"># Converting into a raw, single-line unformatted string payload</span>
+raw_json_output = json.dumps(developer_profile)
+<span class="keyword">print</span>(<span class="string">f"Raw Serialized String: {</span>raw_json_output<span class="string">}"</span>)
+
+<span class="comment"># --- Advanced Pretty Printing & Sorting Arguments ---
+# - indent: Formats with structured tab indent spaces.
+# - sort_keys: Forces JSON keys to be serialized alphabetically.
+# - separators: Overrides default token spaces to reduce data overhead padding.</span>
+optimized_json_output = json.dumps(
+    developer_profile, 
+    indent=<span class="number">4</span>, 
+    sort_keys=<span class="keyword">True</span>, 
+    separators=(<span class="string">","</span>, <span class="string">": "</span>)
+)
+<span class="keyword">print</span>(<span class="string">"\n--- Optimized Visual JSON Printout ---"</span>)
+<span class="keyword">print</span>(optimized_json_output)</pre>
+</div>
+{% endblock %}

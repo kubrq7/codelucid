@@ -1,0 +1,618 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --bg-main: #0f111a;
+        --bg-container: #161925;
+        --bg-card: #0b0c13;
+        --border-color: #1f2335;
+        --text-main: #e2e8f0;
+        --text-muted: #565f89;
+        --accent-blue: #4da6ff;
+        --accent-lime: #b5c937;
+        --accent-green: #9ece6a;
+        --accent-red: #f7768e;
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        background-color: var(--bg-main) !important;
+        color: var(--text-main) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        margin: 0 !important;
+        padding: 40px 20px !important;
+        line-height: 1.6;
+        display: block !important;
+        min-height: auto !important;
+    }
+
+    .quiz-wrapper {
+        max-width: 760px;
+        margin: 0 auto !important;
+        background-color: var(--bg-container);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Progress Tracker */
+    .progress-wrapper {
+        margin-bottom: 30px;
+    }
+    .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .progress-meta .meta-unit { color: var(--accent-blue); }
+    .progress-meta .meta-counter { color: var(--text-muted); }
+    .progress-meta .meta-counter span { color: var(--text-main); }
+    
+    .progress-bar-container {
+        background-color: var(--bg-card);
+        height: 6px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+    .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-lime));
+        border-radius: 10px;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quiz-title {
+        font-size: 24px;
+        color: var(--text-main);
+        margin: 0 0 25px 0;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .quiz-viewport {
+        position: relative;
+        min-height: auto !important;
+    }
+
+    .question-view {
+        display: none;
+        animation: fadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .question-view.active {
+        display: block !important;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-statement {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 25px 0;
+        color: var(--text-main);
+        white-space: pre-wrap;
+    }
+
+    .question-statement code {
+        display: block;
+        background-color: var(--bg-card);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-blue);
+        margin-top: 15px;
+        font-size: 15px;
+        border: 1px solid var(--border-color);
+    }
+    
+    .inline-code {
+        display: inline-block;
+        background-color: var(--bg-card);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-blue);
+        font-size: 15px;
+    }
+
+    /* Option Stack Engine */
+    .options-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .option-node {
+        display: flex;
+        align-items: center;
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 16px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        position: relative;
+    }
+    .option-node:hover {
+        border-color: var(--accent-blue);
+        background-color: #121520;
+    }
+    .option-node input[type="radio"] {
+        display: none;
+    }
+
+    .custom-indicator {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--text-muted);
+        border-radius: 50%;
+        margin-right: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: var(--transition-smooth);
+    }
+    .option-node:hover .custom-indicator {
+        border-color: var(--accent-blue);
+    }
+    .custom-indicator::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+        border-radius: 50%;
+        transition: var(--transition-smooth);
+    }
+
+    .option-node.selected-state {
+        border-color: var(--accent-blue);
+        background-color: rgba(77, 166, 255, 0.04);
+    }
+    .option-node.selected-state .custom-indicator {
+        border-color: var(--accent-blue);
+    }
+    .option-node.selected-state .custom-indicator::after {
+        background-color: var(--accent-blue);
+    }
+
+    .option-node.eval-correct {
+        border-color: var(--accent-green) !important;
+        background-color: rgba(158, 206, 106, 0.08) !important;
+        color: var(--accent-green) !important;
+    }
+    .option-node.eval-correct .custom-indicator {
+        border-color: var(--accent-green) !important;
+    }
+    .option-node.eval-correct .custom-indicator::after {
+        background-color: var(--accent-green) !important;
+    }
+
+    .option-node.eval-incorrect {
+        border-color: var(--accent-red) !important;
+        background-color: rgba(247, 118, 142, 0.08) !important;
+        color: var(--accent-red) !important;
+    }
+    .option-node.eval-incorrect .custom-indicator {
+        border-color: var(--accent-red) !important;
+    }
+    .option-node.eval-incorrect .custom-indicator::after {
+        background-color: var(--accent-red) !important;
+    }
+    .option-node.locked-state {
+        pointer-events: none;
+    }
+
+    /* Explanation Card */
+    .explanation-card {
+        background-color: #0e1626;
+        border: 1px dashed var(--accent-red);
+        border-left: 4px solid var(--accent-red);
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: none;
+        animation: fadeIn 0.4s ease forwards;
+    }
+    .explanation-card h4 {
+        margin: 0 0 6px 0;
+        color: var(--accent-red);
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .explanation-card p {
+        margin: 0;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+
+    .action-control-panel {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 25px;
+    }
+    .btn-action {
+        background-color: var(--accent-lime);
+        color: var(--bg-main);
+        border: none;
+        padding: 14px 36px;
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .btn-action:hover:not(:disabled) {
+        background-color: #9db02f;
+        transform: translateY(-1px);
+    }
+    .btn-action:disabled {
+        background-color: var(--border-color);
+        color: var(--text-muted);
+        cursor: not-allowed;
+    }
+
+    /* Final Scoreboard */
+    .results-matrix-view {
+        display: none;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        text-align: center !important;
+        padding: 30px 0 !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        height: auto !important;
+        animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .score-radial-emitter {
+        width: 140px !important;
+        height: 140px !important;
+        border-radius: 50% !important;
+        background-color: var(--bg-card) !important;
+        border: 4px solid var(--accent-lime) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 10px auto 25px auto !important;
+        box-shadow: 0 0 30px rgba(181, 201, 55, 0.2);
+        transition: var(--transition-smooth);
+    }
+    
+    .results-matrix-view.perfect .score-radial-emitter { border-color: var(--accent-green) !important; box-shadow: 0 0 35px rgba(158, 206, 106, 0.3) !important; }
+    .results-matrix-view.good .score-radial-emitter { border-color: var(--accent-lime) !important; box-shadow: 0 0 35px rgba(181, 201, 55, 0.25) !important; }
+    .results-matrix-view.fail .score-radial-emitter { border-color: var(--accent-red) !important; box-shadow: 0 0 35px rgba(247, 118, 142, 0.25) !important; }
+
+    .score-radial-emitter .score-num {
+        font-size: 42px !important;
+        font-weight: 800 !important;
+        line-height: 1 !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .perfect .score-num { color: var(--accent-green) !important; }
+    .good .score-num { color: var(--accent-lime) !important; }
+    .fail .score-num { color: var(--accent-red) !important; }
+
+    .score-radial-emitter .score-label {
+        font-size: 11px !important;
+        color: var(--text-muted) !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .feedback-headline {
+        font-size: 26px !important;
+        font-weight: 700 !important;
+        margin: 0 0 12px 0 !important;
+        letter-spacing: -0.5px;
+    }
+    
+    .feedback-subtext {
+        color: #a9b1d6 !important;
+        max-width: 520px !important;
+        margin: 0 auto 30px auto !important;
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+    }
+    
+    .btn-restart {
+        background-color: transparent !important;
+        border: 2px solid var(--accent-blue) !important;
+        color: var(--accent-blue) !important;
+        padding: 14px 36px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: var(--transition-smooth) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        display: inline-block !important;
+    }
+    
+    .btn-restart:hover {
+        background-color: var(--accent-blue) !important;
+        color: var(--bg-main) !important;
+        box-shadow: 0 0 20px rgba(77, 166, 255, 0.3) !important;
+    }
+</style>
+<div class="quiz-wrapper">
+    <div class="progress-wrapper" id="progressSubsystem">
+        <div class="progress-meta">
+            <span class="meta-unit">18. Regular Expressions Quiz</span>
+            <span class="meta-counter">Question <span id="currentIdxLabel">1</span> of <span id="totalCountLabel">9</span></span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+    </div>
+
+    <div class="quiz-viewport" id="quizViewport">
+        <form id="spaQuizEngine">
+            
+            <div class="question-view active" data-q-idx="0" data-answer="re">
+                <h2 class="quiz-title">01. Regex Module</h2>
+                <p class="question-statement">Which Python module is used for working with regular expressions?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q1" value="regex"><span class="custom-indicator"></span>regex</label>
+                    <label class="option-node"><input type="radio" name="q1" value="re"><span class="custom-indicator"></span>re</label>
+                    <label class="option-node"><input type="radio" name="q1" value="pattern"><span class="custom-indicator"></span>pattern</label>
+                    <label class="option-node"><input type="radio" name="q1" value="match"><span class="custom-indicator"></span>match</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Python'un dahili 're' modülü, düzenli ifadelerle işlem yapmak için standart kütüphanedir.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="1" data-answer="re.findall()">
+                <h2 class="quiz-title">02. Find All</h2>
+                <p class="question-statement">Which function returns a list of all matches found in a string?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q2" value="re.search()"><span class="custom-indicator"></span>re.search()</label>
+                    <label class="option-node"><input type="radio" name="q2" value="re.match()"><span class="custom-indicator"></span>re.match()</label>
+                    <label class="option-node"><input type="radio" name="q2" value="re.findall()"><span class="custom-indicator"></span>re.findall()</label>
+                    <label class="option-node"><input type="radio" name="q2" value="re.sub()"><span class="custom-indicator"></span>re.sub()</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>re.findall() tüm dizgiyi tarar ve eşleşmeleri liste olarak döndürür.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="2" data-answer="re.sub()">
+                <h2 class="quiz-title">03. Substitution</h2>
+                <p class="question-statement">Which function replaces matching text with another value?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q3" value="re.split()"><span class="custom-indicator"></span>re.split()</label>
+                    <label class="option-node"><input type="radio" name="q3" value="re.findall()"><span class="custom-indicator"></span>re.findall()</label>
+                    <label class="option-node"><input type="radio" name="q3" value="re.search()"><span class="custom-indicator"></span>re.search()</label>
+                    <label class="option-node"><input type="radio" name="q3" value="re.sub()"><span class="custom-indicator"></span>re.sub()</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>re.sub (Substitute) eşleşen kısımları yeni değerle değiştirir.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="3" data-answer="['ai', 'ai']">
+                <h2 class="quiz-title">04. Pattern Matching</h2>
+                <p class="question-statement">What will be printed?
+<code>import re
+text = "The rain in Spain"
+print(re.findall("ai", text))</code></p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q4" value="['ai']"><span class="custom-indicator"></span>['ai']</label>
+                    <label class="option-node"><input type="radio" name="q4" value="['ai', 'ai']"><span class="custom-indicator"></span>['ai', 'ai']</label>
+                    <label class="option-node"><input type="radio" name="q4" value="['rain', 'Spain']"><span class="custom-indicator"></span>['rain', 'Spain']</label>
+                    <label class="option-node"><input type="radio" name="q4" value="[]"><span class="custom-indicator"></span>[]</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>"ai" dizisi hem "rain" hem de "Spain" kelimelerinde geçmektedir.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="4" data-answer="Any digit from 0 to 9">
+                <h2 class="quiz-title">05. Digit Metacharacter</h2>
+                <p class="question-statement">What does the metacharacter \d match?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q5" value="Any letter"><span class="custom-indicator"></span>Any letter</label>
+                    <label class="option-node"><input type="radio" name="q5" value="Any whitespace character"><span class="custom-indicator"></span>Any whitespace</label>
+                    <label class="option-node"><input type="radio" name="q5" value="Any digit from 0 to 9"><span class="custom-indicator"></span>Any digit (0-9)</label>
+                    <label class="option-node"><input type="radio" name="q5" value="Any punctuation mark"><span class="custom-indicator"></span>Any punctuation</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>\d (digit) karakteri 0 ile 9 arasındaki sayıları yakalar.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="5" data-answer="Any whitespace character">
+                <h2 class="quiz-title">06. Whitespace Metacharacter</h2>
+                <p class="question-statement">What does the metacharacter \s match?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q6" value="Any digit"><span class="custom-indicator"></span>Any digit</label>
+                    <label class="option-node"><input type="radio" name="q6" value="Any uppercase letter"><span class="custom-indicator"></span>Any uppercase</label>
+                    <label class="option-node"><input type="radio" name="q6" value="Any whitespace character"><span class="custom-indicator"></span>Any whitespace</label>
+                    <label class="option-node"><input type="radio" name="q6" value="Any punctuation mark"><span class="custom-indicator"></span>Any punctuation</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>\s (space) boşluk, tab ve satır sonu karakterlerini kapsar.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="6" data-answer="group()">
+                <h2 class="quiz-title">07. Match Objects</h2>
+                <p class="question-statement">Which method returns the matched text from a Match object?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q7" value="span()"><span class="custom-indicator"></span>span()</label>
+                    <label class="option-node"><input type="radio" name="q7" value="group()"><span class="custom-indicator"></span>group()</label>
+                    <label class="option-node"><input type="radio" name="q7" value="string()"><span class="custom-indicator"></span>string()</label>
+                    <label class="option-node"><input type="radio" name="q7" value="start()"><span class="custom-indicator"></span>start()</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>group() eşleşen alt dizgiyi döndürür.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="7" data-answer='The string starts with "The" and ends with "Spain".'>
+                <h2 class="quiz-title">08. Anchors</h2>
+                <p class="question-statement">What does the following pattern check? <code>r"^The.*Spain$"</code></p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q8" value="The string contains the word &quot;The&quot;."><span class="custom-indicator"></span>Contains "The"</label>
+                    <label class="option-node"><input type="radio" name="q8" value='The string starts with "The" and ends with "Spain".'><span class="custom-indicator"></span>Starts with The, ends with Spain</label>
+                    <label class="option-node"><input type="radio" name="q8" value="The string contains only numbers."><span class="custom-indicator"></span>Only numbers</label>
+                    <label class="option-node"><input type="radio" name="q8" value="The string contains exactly one word."><span class="custom-indicator"></span>Exactly one word</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>^ başlangıcı, $ bitişi temsil eder. .* ise aradaki her türlü karakteri kapsar.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="8" data-answer="+">
+                <h2 class="quiz-title">09. Bonus: Quantifiers</h2>
+                <p class="question-statement">Which metacharacter matches one or more occurrences of the preceding character?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q9" value="*"><span class="custom-indicator">*</span></label>
+                    <label class="option-node"><input type="radio" name="q9" value="+"><span class="custom-indicator">+</span></label>
+                    <label class="option-node"><input type="radio" name="q9" value="?"><span class="custom-indicator">?</span></label>
+                    <label class="option-node"><input type="radio" name="q9" value="{}"><span class="custom-indicator">{}</span></label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>+ en az bir, * ise sıfır veya daha fazla eşleşme arar.</p>
+                </div>
+            </div>
+
+            <div class="action-control-panel">
+                <button type="button" class="btn-action" id="controlActionBtn" onclick="processEngineStep()" disabled>Submit Answer</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="results-matrix-view" id="resultsMatrixView">
+        <div class="score-radial-emitter">
+            <span class="score-num" id="finalMetricScore">0/0</span>
+            <span class="score-label">Correct</span>
+        </div>
+        <h3 class="feedback-headline" id="feedbackHeadline">Evaluation Processing...</h3>
+        <p class="feedback-subtext" id="feedbackSubtext">Infrastructure metrics computed.</p>
+        <button type="button" class="btn-restart" onclick="resetQuizEngine()">Restart Verification Pipeline</button>
+    </div>
+</div>
+
+<script>
+    let activeQuestionIndex = 0;
+    let computedCorrectAnswers = 0;
+    let hasEvaluatedCurrentStep = false;
+    const questionViews = document.querySelectorAll('.question-view');
+    const totalQuestionsCount = questionViews.length;
+    const controlActionBtn = document.getElementById('controlActionBtn');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const currentIdxLabel = document.getElementById('currentIdxLabel');
+    const totalCountLabel = document.getElementById('totalCountLabel');
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        totalCountLabel.innerText = totalQuestionsCount;
+        syncProgressBar();
+        initOptionListeners();
+    });
+
+    function initOptionListeners() {
+        questionViews.forEach(view => {
+            const nodes = view.querySelectorAll('.option-node');
+            nodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    if (hasEvaluatedCurrentStep) return;
+                    nodes.forEach(n => n.classList.remove('selected-state'));
+                    this.classList.add('selected-state');
+                    const targetInput = this.querySelector('input[type="radio"]');
+                    if (targetInput) targetInput.checked = true;
+                    controlActionBtn.disabled = false;
+                });
+            });
+        });
+    }
+
+    function syncProgressBar() {
+        const computedPercent = (activeQuestionIndex / totalQuestionsCount) * 100;
+        progressBarFill.style.width = `${computedPercent}%`;
+        currentIdxLabel.innerText = Math.min(activeQuestionIndex + 1, totalQuestionsCount);
+    }
+
+    function processEngineStep() {
+        const activeFrame = questionViews[activeQuestionIndex];
+        const rightAnswerStr = activeFrame.getAttribute('data-answer');
+        const selectedRadioInput = activeFrame.querySelector('input[type="radio"]:checked');
+        
+        if (!hasEvaluatedCurrentStep) {
+            const allOptionNodes = activeFrame.querySelectorAll('.option-node');
+            const isUserCorrect = selectedRadioInput.value === rightAnswerStr;
+            allOptionNodes.forEach(node => {
+                node.classList.remove('selected-state');
+                node.classList.add('locked-state');
+                const optionValue = node.querySelector('input').value;
+                if (optionValue === rightAnswerStr) node.classList.add('eval-correct');
+            });
+            if (isUserCorrect) computedCorrectAnswers++;
+            else {
+                selectedRadioInput.parentElement.classList.add('eval-incorrect');
+                const explanation = activeFrame.querySelector('.explanation-card');
+                if (explanation) explanation.style.display = 'block';
+            }
+            controlActionBtn.innerText = (activeQuestionIndex === totalQuestionsCount - 1) ? "Finish Evaluation" : "Next Question";
+            hasEvaluatedCurrentStep = true;
+        } else {
+            activeFrame.classList.remove('active');
+            activeQuestionIndex++;
+            if (activeQuestionIndex < totalQuestionsCount) {
+                const nextFrame = questionViews[activeQuestionIndex];
+                nextFrame.classList.add('active');
+                controlActionBtn.innerText = "Submit Answer";
+                controlActionBtn.disabled = true;
+                hasEvaluatedCurrentStep = false;
+                syncProgressBar();
+            } else {
+                progressBarFill.style.width = "100%";
+                document.getElementById('progressSubsystem').style.display = 'none';
+                document.getElementById('spaQuizEngine').style.display = 'none';
+                renderFinalMetricsScreen();
+            }
+        }
+    }
+
+    function renderFinalMetricsScreen() {
+        const scoreboard = document.getElementById('resultsMatrixView');
+        scoreboard.style.setProperty('display', 'flex', 'important');
+        document.getElementById('finalMetricScore').innerText = `${computedCorrectAnswers}/${totalQuestionsCount}`;
+    }
+
+    function resetQuizEngine() {
+        location.reload();
+    }
+</script>
+{% endblock %}

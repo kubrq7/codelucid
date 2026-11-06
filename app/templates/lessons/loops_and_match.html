@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>13. Comprehensive Guide to Structural Pattern Matching & Loops in Python</h1>
+
+    
+    <h2>1. Structural Pattern Matching (match-case)</h2>
+    <p>Introduced in Python 3.10+, <code>match-case</code> replaces deep if-elif trees with optimized patterns.</p>
+    <pre>match http_method:
+    case "POST" | "PUT" if status_code == 401:
+        print("Security Halt: User unauthenticated.")
+    case _:
+        print("HTTP Operation unrecognized.")</pre>
+
+    <h2>2. The While Loop (Conditional Control)</h2>
+    <p>Runs indefinitely as long as its condition is True. Beware of infinite loops!</p>
+    <pre>while retry_count &lt; max_retries and not system_ready:
+    retry_count += 1
+    if retry_count == 2:
+        system_ready = True</pre>
+
+    <h2>3. The For Loop (Sequence Iteration)</h2>
+    <pre>for node in target_nodes:
+    print(f"Deploying microservice configuration layer onto: {node}")
+
+for character in "A19":
+    print(f"Hex segment element processed: {character}")</pre>
+
+    
+
+    <h2>4. Loop Controls: Break, Continue, & Else</h2>
+    <div class="important">
+        <strong>⚠️ CRITICAL TRAP:</strong> The <code>else</code> block will NOT run if the loop is terminated via <code>break</code>.
+    </div>
+    <pre>for number in range(1, 6):
+    if number == 2: continue
+    if number == 5: break
+else:
+    print("Sequence fully depleted without structural interruption.")</pre>
+
+    <h2>5. Generating Dials via range()</h2>
+    <p>Memory-efficient sequence generator: <code>range(start, stop, step)</code>.</p>
+    <pre>for countdown in range(3, 0, -1):
+    print(f"Engine ignition countdown: {countdown}")</pre>
+
+    <h2>6. Nested Loops & Matrix Intersections</h2>
+    <p>The inner loop completes its <em>entire</em> cycle for every single step of the outer loop.</p>
+    <pre>for row in matrix_rows:
+    for col in matrix_cols:
+        print(f"Targeting sector coordinates -&gt; [{row} : {col}]")</pre>
+
+    <h2>7. The Pass Keyword in Loops</h2>
+    <p>Use <code>pass</code> as a null operation placeholder to maintain valid syntax when drafting structural templates.</p>
+</div>
+{% endblock %}

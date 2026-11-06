@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>02. Comprehensive Master Guide to Python's Standard Libraries: Math, Random, and Statistics</h1>
+
+    <pre><span class="keyword">import</span> math
+<span class="keyword">import</span> random
+<span class="keyword">import</span> statistics</pre>
+
+    <h2>1. The 'math' Module (Advanced Mathematics)</h2>
+    <p>The <code>math</code> module provides access to the mathematical functions defined by the C standard.</p>
+
+    <div class="important">
+        <strong>⚠️ NOTE:</strong> These functions do not work with complex numbers (use <code>cmath</code> for complex numbers).
+    </div>
+
+    <h3>A) Mathematical Constants & Precise Rounding</h3>
+    <pre><span class="comment"># Essential mathematical constants</span>
+<span class="keyword">print</span>(<span class="string">f"Archimedes' Constant (Pi): {math.pi}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Euler's Number (e): {math.e}"</span>)
+
+<span class="comment"># Precise rounding engines</span>
+value = <span class="number">4.23</span>
+<span class="keyword">print</span>(<span class="string">f"Absolute Ceiling (math.ceil): {math.ceil(value)}"</span>)    <span class="comment"># Rounds UP to next integer -> 5</span>
+<span class="keyword">print</span>(<span class="string">f"Absolute Floor (math.floor): {math.floor(value)}"</span>)    <span class="comment"># Rounds DOWN to next integer -> 4</span></pre>
+
+    <h3>B) Power, Logarithms, and Roots</h3>
+    <pre><span class="comment"># Square Root calculation</span>
+<span class="keyword">print</span>(<span class="string">f"Square Root of 144: {math.sqrt(144)}"</span>)
+
+<span class="comment"># Absolute value (removes negative signs, always returns float)</span>
+<span class="keyword">print</span>(<span class="string">f"Absolute Value of -7.5: {math.fabs(-7.5)}"</span>)
+
+<span class="comment"># Power function (x raised to power y)</span>
+<span class="keyword">print</span>(<span class="string">f"Power (2^3): {math.pow(2, 3)}"</span>)
+
+<span class="comment"># Logarithmic operations</span>
+<span class="keyword">print</span>(<span class="string">f"Natural Logarithm of 10: {math.log(10)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Logarithm Base 10 of 100: {math.log10(100)}"</span>)</pre>
+
+    <h2>2. The 'random' Module (Pseudo-Random Generation)</h2>
+    <div class="important">
+        <strong>❌ SECURITY WARNING:</strong> This module uses pseudo-random algorithms. Do not use it for security or cryptography! For security tokens or passwords, use the built-in <code>secrets</code> module.
+    </div>
+
+    <h3>A) Numerical Random Generation</h3>
+    <pre><span class="comment"># random() generates a float between 0.0 and 1.0 (exclusive)</span>
+<span class="keyword">print</span>(<span class="string">f"Random Float [0.0 - 1.0): {random.random()}"</span>)
+
+<span class="comment"># uniform(a, b) generates a float between a and b (inclusive)</span>
+<span class="keyword">print</span>(<span class="string">f"Random Uniform Float [5.0 - 10.0]: {random.uniform(5.0, 10.0)}"</span>)
+
+<span class="comment"># randint(a, b) generates an integer between a and b (inclusive)</span>
+<span class="keyword">print</span>(<span class="string">f"Random Integer [1 - 100]: {random.randint(1, 100)}"</span>)
+
+<span class="comment"># randrange(start, stop, step) generates a random item from a specified range</span>
+<span class="keyword">print</span>(<span class="string">f"Random Even Integer from Range [0, 2, 4, ... 10]: {random.randrange(0, 11, 2)}"</span>)</pre>
+
+    <h3>B) Sequence Manipulation (Choices & Shuffling)</h3>
+    <pre>items_list = [<span class="string">"Apple"</span>, <span class="string">"Banana"</span>, <span class="string">"Cherry"</span>, <span class="string">"Date"</span>, <span class="string">"Elderberry"</span>]
+
+<span class="comment"># choice(sequence) picks a single random element</span>
+<span class="keyword">print</span>(<span class="string">f"Single Random Choice: {random.choice(items_list)}"</span>)
+
+<span class="comment"># sample(sequence, k) picks k unique elements without changing the original list</span>
+<span class="keyword">print</span>(<span class="string">f"Random Sample (3 Unique Items): {random.sample(items_list, k=3)}"</span>)
+
+<span class="comment"># shuffle(sequence) reorders the original list IN-PLACE (mutates the list)</span>
+random.shuffle(items_list)
+<span class="keyword">print</span>(<span class="string">f"Mutated List After Shuffle: {items_list}"</span>)</pre>
+
+    <h2>3. The 'statistics' Module (Basic Data Analysis)</h2>
+    <p>Perfect for quick mathematical data analysis without importing heavy frameworks.</p>
+
+    <h3>A) Statistical Central Tendency Metrics</h3>
+    <pre>dataset = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">20</span>, <span class="number">35</span>, <span class="number">40</span>, <span class="number">50</span>, <span class="number">90</span>]
+
+<span class="comment"># mean() calculates the arithmetic average</span>
+<span class="keyword">print</span>(<span class="string">f"Dataset: {dataset}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Arithmetic Mean (Average): {statistics.mean(dataset)}"</span>)
+
+<span class="comment"># median() finds the exact middle value of the dataset</span>
+<span class="keyword">print</span>(<span class="string">f"Median (Middle Value): {statistics.median(dataset)}"</span>)
+
+<span class="comment"># mode() finds the most common/frequent value in the data</span>
+<span class="keyword">print</span>(<span class="string">f"Mode (Most Frequent Value): {statistics.mode(dataset)}"</span>)
+
+<span class="comment"># stdev() calculates the standard deviation (measure of data dispersion)</span>
+<span class="keyword">print</span>(<span class="string">f"Standard Deviation: {statistics.stdev(dataset):.4f}"</span>)</pre>
+
+</div>
+{% endblock %}

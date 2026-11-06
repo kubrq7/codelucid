@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>03. Comprehensive Map of Built-in Data Types in Python</h1>
+
+    <h2>1. The Python Data Type Map</h2>
+    <p>Python has several built-in data types grouped into specific categories. You can check the data type of any object by passing it into the <code>type()</code> function.</p>
+    
+    <pre>
+1. Text Type:     str
+2. Numeric Types: int, float, complex
+3. Sequence Types:list, tuple, range
+4. Mapping Type:  dict
+5. Set Types:     set, frozenset
+6. Boolean Type:  bool
+7. Binary Types:  bytes, bytearray, memoryview
+8. None Type:     NoneType</pre>
+    
+    <p>Quick verification example:</p>
+    <pre>x = 2
+print(type(x))  # Output: &lt;class 'int'&gt;</pre>
+
+    <h2>2. Detailed Category Examples</h2>
+
+    <h3>Category A: Text & Numeric Types</h3>
+    <p>Fundamental types for storing words, whole numbers, decimals, and imaginary coordinates.</p>
+    <pre>string_data = "Hello World"  # str: Textual data enclosed in quotes
+integer_data = 20            # int: Whole numbers without decimals
+float_data = 20.5            # float: Numbers containing decimal points
+complex_data = 1j            # complex: Written with a "j" as the imaginary part</pre>
+
+    <h3>Category B: Sequence Types</h3>
+    <p>Used to store multiple values in an ordered format.</p>
+    <pre>my_list = ["apple", "banana", "cherry"]   # list: Mutable (changeable) and ordered collection
+my_tuple = ("apple", "banana", "cherry")  # tuple: Immutable (unchangeable) and ordered collection
+my_range = range(6)                       # range: Generates a fixed sequence of numbers</pre>
+
+    <h3>Category C: Mapping & Set Types</h3>
+    <p>Used to store collections of unique items or key-value structures.</p>
+    <pre>my_dict = {"name": "John", "age": 36}              # dict: Changeable key-value pairs
+my_set = {"apple", "banana", "cherry"}             # set: Unordered, unindexed, unique items
+my_frozenset = frozenset({"apple", "banana"})      # frozenset: An unchangeable (immutable) version of a set</pre>
+
+    <h3>Category D: Boolean & Special Types</h3>
+    <p>Used for condition logic handling and representing empty states.</p>
+    <pre>is_active = True       # bool: Represents logical state: True or False
+empty_value = None      # NoneType: A special constant representing the absence of a value</pre>
+
+    <h3>Category E: Binary Types</h3>
+    <p>Used to manipulate raw binary data/bytes of information.</p>
+    <pre>binary_bytes = b"Hello"                # bytes: Immutable sequence of bytes
+binary_array = bytearray(5)             # bytearray: Mutable sequence of bytes
+binary_view = memoryview(bytes(5))      # memoryview: Directly accesses internal object buffers</pre>
+</div>
+{% endblock %}

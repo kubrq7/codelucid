@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+    
+<div class="container">
+    <h1>12. Python Decision-Making Mechanisms (if, elif, else, Short-Hands, and pass)</h1>    
+
+    <h2>1. Core Architecture & Indentation Bounds</h2>
+    <p>Scope is defined entirely by indentation. Falsy values are 0, 0.0, "", None, [], {}, set().</p>
+    <pre>if cpu_load &gt; 80:
+    print("WARNING: High CPU utilization detected!")
+    print("Please check system resources.")</pre>
+
+    <h2>2. Elif and Else Chain Structures</h2>
+    <p>Python evaluates conditions top to bottom. It executes the FIRST true block and skips the rest.</p>
+    <pre>if server_status_code == 200:
+    print("Status: OK")
+elif server_status_code == 404:
+    print("Status: Not Found")
+else:
+    print("Status: Unknown")</pre>
+
+    <h2>3. Short-Hand (Single Line) Conditional Logic</h2>
+    <pre>if port_number == 80: print("HTTP Protocol active.")
+
+<span class="comment"># Ternary Operator:</span>
+access_status = "Access Granted" if user_role == "admin" else "Access Denied"</pre>
+
+    <h2>4. Logical Operators & Evaluation Priority</h2>
+    <p>Precedence order: <code>not</code> first, then <code>and</code>, finally <code>or</code>.</p>
+    <pre>if (is_verified and has_token) or bypass_code:
+    print("Access Protocol Verified!")</pre>
+
+    <h2>5. Nested If (Deeper Decision Matrixes)</h2>
+    <p>Placing conditional blocks inside others for dependent flows.</p>
+    <pre>if api_key_valid:
+    if account_balance &gt;= withdrawal_amount:
+        ...
+    else:
+        print("Error: Insufficient Funds.")</pre>
+
+    <h2>6. The Pass Statement (Placeholder Mechanics)</h2>
+    <div class="important">
+        <strong>⚠️ PLACEHOLDER:</strong> Python code blocks cannot be empty. Use <code>pass</code> as a null operation placeholder to avoid syntax errors.
+    </div>
+    <pre>if debug_mode:
+    pass <span class="comment"># TODO: Implement later</span></pre>
+</div>
+{% endblock %}

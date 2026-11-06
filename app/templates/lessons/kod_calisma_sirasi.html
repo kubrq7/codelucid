@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>02. Code Execution Order, Variables, Data Types & Global/Local Scope</h1>
+
+    <h2>1. Code Execution Order (How Python Reads)</h2>
+    <p>Python programs contain multiple statements/lines. Python executes these statements one by one, from <strong>TOP to BOTTOM</strong>, in the exact order they are written.</p>
+    <pre>print("Hello World!")            <span class="comment"># 1st statement: Executed first</span>
+print("Have a good day.")        <span class="comment"># 2nd statement: Executed second</span>
+print("Learning Python is fun!") <span class="comment"># 3rd statement: Executed third</span></pre>
+
+    <h2>2. Creating Variables & Dynamic Typing</h2>
+    <p>A variable is created the moment you assign a value to it for the first time using (=).</p>
+    <pre>x = 5
+y = "Max"
+print(x)
+print(y)</pre>
+    <p><strong>Dynamic Typing:</strong> Python variables do not need to be declared with a specific type. Their data types can change even after they have been defined. The latest value wins!</p>
+    <pre>x = 4        <span class="comment"># x is of type int</span>
+x = "Sally"  <span class="comment"># x is now overwritten and becomes a type of str</span></pre>
+
+    <h2>3. Type Casting & The type() Function</h2>
+    <p><strong>A) Type Casting:</strong> Specifying or changing data types explicitly.</p>
+    <pre>x = str(3)    <span class="comment"># x will be '3'</span>
+y = int(3)    <span class="comment"># y will be 3</span>
+z = float(3)  <span class="comment"># z will be 3.0</span></pre>
+    <p><strong>B) The type() Function:</strong> Tells you exactly what data type a variable holds.</p>
+    <pre>print(type(5))   <span class="comment"># Output: &lt;class 'int'&gt;</span>
+print(type("Max")) <span class="comment"># Output: &lt;class 'str'&gt;</span></pre>
+
+    <h2>4. Variable Names are Case-Sensitive</h2>
+    <p>'a' and 'A' are completely different variables. Capital letters will <strong>NOT</strong> overwrite lowercase variables.</p>
+
+    <h2>5. Multiple Assignments & Unpacking</h2>
+    <pre><span class="comment"># A) Many Values to Multiple Variables</span>
+x, y, z = "Apple", "Banana", "Cherry"
+
+<span class="comment"># B) One Value to Multiple Variables</span>
+x = y = z = "strawberry"
+
+<span class="comment"># C) Unpacking a Collection</span>
+fruits = ["apple", "banana", "cherry"]
+x, y, z = fruits</pre>
+
+    <h2>6. Global vs Local Variables (Scope)</h2>
+    <p>Variables created <strong>OUTSIDE</strong> a function are GLOBAL. Variables created <strong>INSIDE</strong> a function are LOCAL (they only live inside that block).</p>
+    
+    
+    
+    <div class="important">
+        <strong>Trick Zone:</strong> To understand which variable Python will use, always check whether the 'print' command is <strong>indented</strong> (inside) or <strong>not indented</strong> (outside) the function.
+    </div>
+
+    <h2>7. Advanced Outputs with print()</h2>
+    <p><strong>Commas (,):</strong> Automatically adds a space. Best for combining different types.</p>
+    <p><strong>Plus (+):</strong> Glues strings together <em>without</em> spaces. <strong>Warning:</strong> Trying to add a string and a number with '+' will crash Python (TypeError)!</p>
+</div>
+{% endblock %}

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CodeLucid Verification</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050608;
+      --panel: rgba(15, 17, 21, 0.74);
+      --line: rgba(148, 163, 184, 0.18);
+      --line-strong: rgba(203, 213, 225, 0.26);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --soft: #cbd5e1;
+      --red: #d57777;
+      --green: #34d399;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .auth-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand { color: var(--text); font-size: 20px; font-weight: 600; margin-bottom: 8px; letter-spacing: 1px; }
+    .copy { color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+    .otp-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 24px; }
+    
+    .otp-input { 
+      width: 44px; height: 52px; text-align: center; font-size: 20px; font-weight: 600;
+      border-radius: 8px; background: rgba(0,0,0,0.4); border: 1px solid var(--line);
+      color: var(--text); transition: all 0.2s ease;
+    }
+    .otp-input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2); }
+
+    button {
+      width: 100%; padding: 12px; background: var(--text); color: var(--bg);
+      border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+
+    .back { display: inline-block; margin-top: 16px; color: var(--muted); font-size: 13px; text-decoration: none; }
+    .back:hover { color: var(--text); }
+    .flash-msg { background: rgba(213, 119, 119, 0.1); border: 1px solid var(--red); color: var(--red); padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <div class="brand">CODELUCID</div>
+    <div class="copy">
+      Enter the 6-digit access key sent to<br>
+      <strong style="color: var(--green);">{{ email }}</strong>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-msg">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('auth.verify') }}">
+      <div class="otp-container">
+        <input type="text" name="digit" class="otp-input" maxlength="1" required autofocus autocomplete="off">
+        <input type="text" name="digit" class="otp-input" maxlength="1" required autocomplete="off">
+        <input type="text" name="digit" class="otp-input" maxlength="1" required autocomplete="off">
+        <input type="text" name="digit" class="otp-input" maxlength="1" required autocomplete="off">
+        <input type="text" name="digit" class="otp-input" maxlength="1" required autocomplete="off">
+        <input type="text" name="digit" class="otp-input" maxlength="1" required autocomplete="off">
+      </div>
+      <button type="submit">Verify & Enter</button>
+    </form>
+
+    <a href="{{ url_for('auth.login') }}" class="back">Cancel / Use a different email</a>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        input.value = input.value.replace(/\D/g, ''); 
+        if (input.value && index < inputs.length - 1) inputs[index + 1].focus();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) inputs[index - 1].focus();
+      });
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+        text.split('').forEach((char, i) => {
+          if (inputs[i]) {
+            inputs[i].value = char;
+            if (i < inputs.length - 1) inputs[i + 1].focus();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

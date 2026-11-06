@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    h3 {
+        color: #ff9e64;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>18. Comprehensive Mastering Guide to Python Regular Expressions (RegEx)</h1>
+
+    <h2>1. Core RegEx Operations & Match Objects</h2>
+    <p>The <code>re</code> module permits robust pattern scanning inside string targets. Pre-checking boundaries can be achieved using anchors: <code>^</code> (Starts with) and <code>$</code> (Ends with).</p>
+
+    <pre>sample_text = <span class="string">"The rain in Spain"</span>
+
+<span class="comment"># Basic Verification using re.search()</span>
+search_check = re.search(<span class="string">"^The.*Spain$"</span>, sample_text)
+<span class="keyword">if</span> search_check:
+    <span class="keyword">print</span>(<span class="string">"Pattern Validated: String starts with 'The' and ends with 'Spain'"</span>)
+
+<span class="comment"># --- The 4 Primary Engine Functions ---</span>
+
+<span class="comment"># A) re.findall() -> Returns a list containing all successful string matches</span>
+matches = re.findall(<span class="string">"ai"</span>, sample_text)
+<span class="keyword">print</span>(<span class="string">f"findall() Result: {</span>matches<span class="string">}"</span>) <span class="comment"># Outputs: ['ai', 'ai']</span>
+
+<span class="comment"># B) re.search() -> Scans from left to right; returns a structural Match Object for the FIRST occurrence</span>
+first_space = re.search(<span class="string">"\s"</span>, sample_text)
+<span class="keyword">print</span>(<span class="string">f"First whitespace absolute memory tracking start position: {</span>first_space.start()<span class="string">}"</span>)
+
+<span class="comment"># C) re.split() -> Dissects a string into pieces at each matching character junction</span>
+split_words = re.split(<span class="string">"\s"</span>, sample_text)
+<span class="keyword">print</span>(<span class="string">f"Split Result List: {</span>split_words<span class="string">}"</span>) <span class="comment"># Outputs: ['The', 'rain', 'in', 'Spain']</span>
+
+<span class="comment"># Controlling splits via maxsplit parameter:</span>
+restricted_split = re.split(<span class="string">"\s"</span>, sample_text, maxsplit=<span class="number">1</span>)
+<span class="keyword">print</span>(<span class="string">f"Maxsplit=1 Boundary Output: {</span>restricted_split<span class="string">}"</span>)
+
+<span class="comment"># D) re.sub() -> Replaces matching patterns with an explicitly configured replacement string</span>
+modified_text = re.sub(<span class="string">"\s"</span>, <span class="string">"9"</span>, sample_text)
+<span class="keyword">print</span>(<span class="string">f"Substituted Output String: {</span>modified_text<span class="string">}"</span>) <span class="comment"># Outputs: The9rain9in9Spain</span>
+
+<span class="comment"># Restricting replacements via count parameter:</span>
+limited_substitution = re.sub(<span class="string">"\s"</span>, <span class="string">"9"</span>, sample_text, count=<span class="number">2</span>)
+<span class="keyword">print</span>(<span class="string">f"Counted Substitution Output: {</span>limited_substitution<span class="string">}"</span>)</pre>
+
+    <h2>2. Match Object Introspection Methods</h2>
+    <p>When <code>re.search()</code> successfully flags a pattern, it creates an internal <strong>Match Object</strong>. If no criteria match, it returns <code>None</code>.</p>
+
+    <pre>target_match = re.search(<span class="string">r"\bS\w+"</span>, sample_text) <span class="comment"># Scanning for a word starting with capital 'S'</span>
+
+<span class="keyword">if</span> target_match:
+    <span class="comment"># .span() -> Returns a tuple containing the (start_index, end_index) locations</span>
+    <span class="keyword">print</span>(<span class="string">f"Match Coordinate Boundaries (.span()): {</span>target_match.span()<span class="string">}"</span>)
+    
+    <span class="comment"># .string -> Returns the exact raw input string passed into the execution engine</span>
+    <span class="keyword">print</span>(<span class="string">f"Inspected Raw String Context (.string): {</span>target_match.string<span class="string">}"</span>)
+    
+    <span class="comment"># .group() -> Returns the concrete piece of the text where the match was triggered</span>
+    <span class="keyword">print</span>(<span class="string">f"Extracted Value String (.group()): {</span>target_match.group()<span class="string">}"</span>)</pre>
+
+    <h2>3. Metacharacters, Special Sequences & Sets</h2>
+    <p>Below is a quick structural blueprint tracking common RegEx expressions:</p>
+
+    <h3>Metacharacters</h3>
+    <ul>
+        <li><code>[]</code> &rarr; Character sets (e.g., <code>"[a-m]"</code> scans lower-case letters from a to m)</li>
+        <li><code>\</code> &rarr; Signals a special escape sequence or turns off metacharacter meaning</li>
+        <li><code>.</code> &rarr; Wildcard operator tracking any character except newline structures</li>
+        <li><code>*</code> &rarr; Zero or more occurrences of the preceding element</li>
+        <li><code>+</code> &rarr; One or more occurrences of the preceding element</li>
+        <li><code>?</code> &rarr; Zero or one occurrence of the preceding element</li>
+        <li><code>{}</code> &rarr; Matches exactly the specified number of pattern repetitions</li>
+    </ul>
+
+    <h3>Special Sequences</h3>
+    <p><small class="comment">(Prefixing with r'' avoids raw slash escape string corruption)</small></p>
+    <ul>
+        <li><code>\A</code> &rarr; Matches only if specified characters are at the absolute start of the sequence</li>
+        <li><code>\Z</code> &rarr; Matches only if specified characters are at the absolute end of the sequence</li>
+        <li><code>\b</code> &rarr; Flags matches at the boundary edges of words (e.g., <code>r"\bain"</code> or <code>r"ain\b"</code>)</li>
+        <li><code>\d</code> &rarr; Matches any standard digit tracking from 0-9</li>
+        <li><code>\D</code> &rarr; Matches any element that is NOT a standard digit</li>
+        <li><code>\s</code> &rarr; Matches any generic whitespace layout character</li>
+        <li><code>\w</code> &rarr; Matches alphanumeric characters including alpha, numbers, and underscore (_)</li>
+    </ul>
+
+    <h3>Explicit Custom Sets</h3>
+    <ul>
+        <li><code>[arn]</code> &rarr; Targets any single character present in the set</li>
+        <li><code>[^arn]</code> &rarr; Targets any single character EXCEPT those specified in the exclusion brackets</li>
+        <li><code>[0-9]</code> &rarr; Ranges matching any number from 0 to 9 inclusive</li>
+    </ul>
+</div>
+{% endblock %}

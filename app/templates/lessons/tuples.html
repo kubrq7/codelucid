@@ -1,0 +1,113 @@
+    {% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+
+<div class="container">
+    <h1>09. Master Guide to Python Tuples (Immutability, Unpacking, and Workarounds)</h1>
+
+
+    <h2>1. Tuple Definition & The 4 Core Collections</h2>
+    <pre>server_config = ("192.168.1.1", "admin", "token_99x", "192.168.1.1")
+print(server_config)       
+print(type(server_config)) # Output: &lt;class 'tuple'&gt;
+print(len(server_config))  # Output: 4
+
+<span class="comment"># ⚠️ THE SINGLE-ITEM TUPLE TRAP</span>
+invalid_tuple = ("standalone_metric") 
+valid_tuple = ("standalone_metric",)</pre>
+
+    <h2>2. Accessing Elements & Range Slicing</h2>
+    <pre>telemetry_tuple = ("Altitude", "Velocity", "Temperature", "Pressure", "Humidity", "Latency")
+print(telemetry_tuple[1])    # Output: Velocity
+print(telemetry_tuple[2:5])  # ('Temperature', 'Pressure', 'Humidity')</pre>
+
+    <h2>3. Immutability Workarounds (Updating Tuples)</h2>
+    <pre>system_ports = (80, 443, 8080)
+temp_list = list(system_ports)
+temp_list[2] = 9000
+system_ports = tuple(temp_list)
+
+<span class="comment"># Concatenating brand-new Tuple</span>
+system_ports += (5000,)</pre>
+
+    <h2>4. Packing & Advanced Tuple Unpacking</h2>
+    <div class="important">
+        <strong>⚡ THE ASTERISK '*' UNPACKING CONTROL:</strong> When unpacking into fewer variables than items, prefix a variable with '*' to catch all excess items.
+    </div>
+    <pre>boss, scenario, *inventory = ("Monster_Boss", "Lab_Escape", "Keycard", "Flashlight", "Battery", "Medkit")</pre>
+
+    <h2>5. Looping Algorithms Through Tuples</h2>
+    <pre>for node in hardware_nodes:
+    print(f"Active Element: {node}")</pre>
+
+    <h2>6. Mathematical Joining & Repetition</h2>
+    <pre>merged_tuple = alpha + numeric
+duplicated_pattern = alpha * 3</pre>
+
+    <h2>7. Exclusive Native Tuple Methods</h2>
+    <pre>test_matrix = (12, 45, 78, 12, 90, 12)
+print(test_matrix.count(12)) # Output: 3
+print(test_matrix.index(78)) # Output: 2</pre>
+
+    <h2>🚀 Why use Tuples over Lists?</h2>
+    <p>Performance, Memory Optimization, Data Integrity, and Dictionary Keys compatibility.</p>
+</div>
+{% endblock %}

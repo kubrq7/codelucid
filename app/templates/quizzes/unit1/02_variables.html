@@ -1,0 +1,709 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --bg-main: #0f111a;
+        --bg-container: #161925;
+        --bg-card: #0b0c13;
+        --border-color: #1f2335;
+        --text-main: #e2e8f0;
+        --text-muted: #565f89;
+        --accent-blue: #4da6ff;
+        --accent-lime: #b5c937;
+        --accent-green: #9ece6a;
+        --accent-red: #f7768e;
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        background-color: var(--bg-main) !important;
+        color: var(--text-main) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        margin: 0 !important;
+        padding: 40px 20px !important;
+        line-height: 1.6;
+        display: block !important;
+        min-height: auto !important;
+    }
+
+    .quiz-wrapper {
+        max-width: 760px;
+        margin: 0 auto !important;
+        background-color: var(--bg-container);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Progress Tracker */
+    .progress-wrapper {
+        margin-bottom: 30px;
+    }
+    .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .progress-meta .meta-unit { color: var(--accent-blue); }
+    .progress-meta .meta-counter { color: var(--text-muted); }
+    .progress-meta .meta-counter span { color: var(--text-main); }
+    
+    .progress-bar-container {
+        background-color: var(--bg-card);
+        height: 6px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+    .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-lime));
+        border-radius: 10px;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quiz-title {
+        font-size: 24px;
+        color: var(--text-main);
+        margin: 0 0 25px 0;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .quiz-viewport {
+        position: relative;
+        min-height: auto !important;
+    }
+
+    .question-view {
+        display: none;
+        animation: fadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .question-view.active {
+        display: block !important;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-statement {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 25px 0;
+        color: var(--text-main);
+        white-space: pre-wrap;
+    }
+
+    .question-statement code {
+        display: block;
+        background-color: var(--bg-card);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-blue);
+        margin-top: 15px;
+        font-size: 15px;
+        border: 1px solid var(--border-color);
+    }
+    
+    .inline-code {
+        display: inline-block;
+        background-color: var(--bg-card);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-blue);
+        font-size: 15px;
+    }
+
+    /* Option Stack Engine */
+    .options-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .option-node {
+        display: flex;
+        align-items: center;
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 16px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        position: relative;
+    }
+    .option-node:hover {
+        border-color: var(--accent-blue);
+        background-color: #121520;
+    }
+    .option-node input[type="radio"] {
+        display: none;
+    }
+
+    .custom-indicator {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--text-muted);
+        border-radius: 50%;
+        margin-right: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: var(--transition-smooth);
+    }
+    .option-node:hover .custom-indicator {
+        border-color: var(--accent-blue);
+    }
+    .custom-indicator::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+        border-radius: 50%;
+        transition: var(--transition-smooth);
+    }
+
+    .option-node.selected-state {
+        border-color: var(--accent-blue);
+        background-color: rgba(77, 166, 255, 0.04);
+    }
+    .option-node.selected-state .custom-indicator {
+        border-color: var(--accent-blue);
+    }
+    .option-node.selected-state .custom-indicator::after {
+        background-color: var(--accent-blue);
+    }
+
+    .option-node.eval-correct {
+        border-color: var(--accent-green) !important;
+        background-color: rgba(158, 206, 106, 0.08) !important;
+        color: var(--accent-green) !important;
+    }
+    .option-node.eval-correct .custom-indicator {
+        border-color: var(--accent-green) !important;
+    }
+    .option-node.eval-correct .custom-indicator::after {
+        background-color: var(--accent-green) !important;
+    }
+
+    .option-node.eval-incorrect {
+        border-color: var(--accent-red) !important;
+        background-color: rgba(247, 118, 142, 0.08) !important;
+        color: var(--accent-red) !important;
+    }
+    .option-node.eval-incorrect .custom-indicator {
+        border-color: var(--accent-red) !important;
+    }
+    .option-node.eval-incorrect .custom-indicator::after {
+        background-color: var(--accent-red) !important;
+    }
+    .option-node.locked-state {
+        pointer-events: none;
+    }
+
+    /* Explanation Card */
+    .explanation-card {
+        background-color: #0e1626;
+        border: 1px dashed var(--accent-red);
+        border-left: 4px solid var(--accent-red);
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: none;
+        animation: fadeIn 0.4s ease forwards;
+    }
+    .explanation-card h4 {
+        margin: 0 0 6px 0;
+        color: var(--accent-red);
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .explanation-card p {
+        margin: 0;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+
+    .action-control-panel {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 25px;
+    }
+    .btn-action {
+        background-color: var(--accent-lime);
+        color: var(--bg-main);
+        border: none;
+        padding: 14px 36px;
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .btn-action:hover:not(:disabled) {
+        background-color: #9db02f;
+        transform: translateY(-1px);
+    }
+    .btn-action:disabled {
+        background-color: var(--border-color);
+        color: var(--text-muted);
+        cursor: not-allowed;
+    }
+
+    /* Final Scoreboard */
+    .results-matrix-view {
+        display: none;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        text-align: center !important;
+        padding: 30px 0 !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        height: auto !important;
+        animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .score-radial-emitter {
+        width: 140px !important;
+        height: 140px !important;
+        border-radius: 50% !important;
+        background-color: var(--bg-card) !important;
+        border: 4px solid var(--accent-lime) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 10px auto 25px auto !important;
+        box-shadow: 0 0 30px rgba(181, 201, 55, 0.2);
+        transition: var(--transition-smooth);
+    }
+    
+    .results-matrix-view.perfect .score-radial-emitter { border-color: var(--accent-green) !important; box-shadow: 0 0 35px rgba(158, 206, 106, 0.3) !important; }
+    .results-matrix-view.good .score-radial-emitter { border-color: var(--accent-lime) !important; box-shadow: 0 0 35px rgba(181, 201, 55, 0.25) !important; }
+    .results-matrix-view.fail .score-radial-emitter { border-color: var(--accent-red) !important; box-shadow: 0 0 35px rgba(247, 118, 142, 0.25) !important; }
+
+    .score-radial-emitter .score-num {
+        font-size: 42px !important;
+        font-weight: 800 !important;
+        line-height: 1 !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .perfect .score-num { color: var(--accent-green) !important; }
+    .good .score-num { color: var(--accent-lime) !important; }
+    .fail .score-num { color: var(--accent-red) !important; }
+
+    .score-radial-emitter .score-label {
+        font-size: 11px !important;
+        color: var(--text-muted) !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .feedback-headline {
+        font-size: 26px !important;
+        font-weight: 700 !important;
+        margin: 0 0 12px 0 !important;
+        letter-spacing: -0.5px;
+    }
+    
+    .feedback-subtext {
+        color: #a9b1d6 !important;
+        max-width: 520px !important;
+        margin: 0 auto 30px auto !important;
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+    }
+    
+    .btn-restart {
+        background-color: transparent !important;
+        border: 2px solid var(--accent-blue) !important;
+        color: var(--accent-blue) !important;
+        padding: 14px 36px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: var(--transition-smooth) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        display: inline-block !important;
+    }
+    
+    .btn-restart:hover {
+        background-color: var(--accent-blue) !important;
+        color: var(--bg-main) !important;
+        box-shadow: 0 0 20px rgba(77, 166, 255, 0.3) !important;
+    }
+</style>
+
+<div class="quiz-wrapper">
+    <div class="progress-wrapper" id="progressSubsystem">
+        <div class="progress-meta">
+            <span class="meta-unit">02. Variables Quiz</span>
+            <span class="meta-counter">Question <span id="currentIdxLabel">1</span> of <span id="totalCountLabel">10</span></span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+    </div>
+
+    <div class="quiz-viewport" id="quizViewport">
+        <form id="spaQuizEngine">
+            
+            <div class="question-view active" data-q-idx="0" data-answer="From top to bottom">
+                <h2 class="quiz-title">01. Code Execution Flow</h2>
+                <p class="question-statement">In what order does Python execute statements in a program?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q1" value="From bottom to top"><span class="custom-indicator"></span>From bottom to top</label>
+                    <label class="option-node"><input type="radio" name="q1" value="Randomly"><span class="custom-indicator"></span>Randomly</label>
+                    <label class="option-node"><input type="radio" name="q1" value="From top to bottom"><span class="custom-indicator"></span>From top to bottom</label>
+                    <label class="option-node"><input type="radio" name="q1" value="Alphabetically"><span class="custom-indicator"></span>Alphabetically</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Python executes statements sequentially from the first line to the last unless control structures (such as loops or conditions) change the flow.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="1" data-answer="First_Second_Third">
+                <h2 class="quiz-title">02. Statement Outputs</h2>
+                <p class="question-statement">What is the output of the following code?
+<code>print("First")
+print("Second")
+print("Third")</code></p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q2" value="Third_Second_First"><span class="custom-indicator"></span>Third<br>Second<br>First</label>
+                    <label class="option-node"><input type="radio" name="q2" value="First_Second_Third"><span class="custom-indicator"></span>First<br>Second<br>Third</label>
+                    <label class="option-node"><input type="radio" name="q2" value="First Third Second"><span class="custom-indicator"></span>First Third Second</label>
+                    <label class="option-node"><input type="radio" name="q2" value="Python raises an error."><span class="custom-indicator"></span>Python raises an error.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Python executes each statement in the exact order it appears.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="2" data-answer="A variable can hold different data types during execution.">
+                <h2 class="quiz-title">03. Dynamic Typing</h2>
+                <p class="question-statement">What is dynamic typing in Python?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q3" value="Variables cannot change their data type."><span class="custom-indicator"></span>Variables cannot change their data type.</label>
+                    <label class="option-node"><input type="radio" name="q3" value="Variables must be declared before use."><span class="custom-indicator"></span>Variables must be declared before use.</label>
+                    <label class="option-node"><input type="radio" name="q3" value="A variable can hold different data types during execution."><span class="custom-indicator"></span>A variable can hold different data types during execution.</label>
+                    <label class="option-node"><input type="radio" name="q3" value="Python automatically converts every value into a string."><span class="custom-indicator"></span>Python automatically converts every value into a string.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Python variables are dynamically typed, meaning the same variable can store different types of values at different times.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="3" data-answer="str">
+                <h2 class="quiz-title">04. Variable Reassignment</h2>
+                <p class="question-statement">What is the final data type of x?
+<code>x = 4
+x = "Sally"</code></p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q4" value="int"><span class="custom-indicator"></span>int</label>
+                    <label class="option-node"><input type="radio" name="q4" value="float"><span class="custom-indicator"></span>float</label>
+                    <label class="option-node"><input type="radio" name="q4" value="str"><span class="custom-indicator"></span>str</label>
+                    <label class="option-node"><input type="radio" name="q4" value="bool"><span class="custom-indicator"></span>bool</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>The second assignment replaces the previous value. The latest assignment determines the variable's current type.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="4" data-answer="float()">
+                <h2 class="quiz-title">05. Data Casting</h2>
+                <p class="question-statement">Which function converts a value into a floating-point number?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q5" value="str()"><span class="custom-indicator"></span>str()</label>
+                    <label class="option-node"><input type="radio" name="q5" value="int()"><span class="custom-indicator"></span>int()</label>
+                    <label class="option-node"><input type="radio" name="q5" value="float()"><span class="custom-indicator"></span>float()</label>
+                    <label class="option-node"><input type="radio" name="q5" value="type()"><span class="custom-indicator"></span>type()</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>The float() function converts compatible values into floating-point numbers.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="5" data-answer="<class 'int'>">
+                <h2 class="quiz-title">06. The Type Function</h2>
+                <p class="question-statement">What is the output of the following statement?
+<code>print(type(5))</code></p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q6" value="&lt;class 'str'&gt;"><span class="custom-indicator"></span>&lt;class 'str'&gt;</label>
+                    <label class="option-node"><input type="radio" name="q6" value="&lt;class 'float'&gt;"><span class="custom-indicator"></span>&lt;class 'float'&gt;</label>
+                    <label class="option-node"><input type="radio" name="q6" value="&lt;class 'int'&gt;"><span class="custom-indicator"></span>&lt;class 'int'&gt;</label>
+                    <label class="option-node"><input type="radio" name="q6" value="int"><span class="custom-indicator"></span>int</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>The type() function returns the exact data type of the object.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="6" data-answer="age and Age are different variables.">
+                <h2 class="quiz-title">07. Naming Conventions</h2>
+                <p class="question-statement">Which statement about variable names is correct?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q7" value="age and Age are the same variable."><span class="custom-indicator"></span>age and Age are the same variable.</label>
+                    <label class="option-node"><input type="radio" name="q7" value="Python ignores uppercase and lowercase letters."><span class="custom-indicator"></span>Python ignores uppercase and lowercase letters.</label>
+                    <label class="option-node"><input type="radio" name="q7" value="age and Age are different variables."><span class="custom-indicator"></span>age and Age are different variables.</label>
+                    <label class="option-node"><input type="radio" name="q7" value="Variable names cannot contain uppercase letters."><span class="custom-indicator"></span>Variable names cannot contain uppercase letters.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Python is case-sensitive. Changing the capitalization creates a completely different variable.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="7" data-answer="x = y = z = &quot;apple&quot;">
+                <h2 class="quiz-title">08. Multiple Assignments</h2>
+                <p class="question-statement">Which statement correctly assigns one value to three variables?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q8" value="x, y, z = &quot;apple&quot;"><span class="custom-indicator"></span>x, y, z = "apple"</label>
+                    <label class="option-node"><input type="radio" name="q8" value="x = y = z = &quot;apple&quot;"><span class="custom-indicator"></span>x = y = z = "apple"</label>
+                    <label class="option-node"><input type="radio" name="q8" value="x = (&quot;apple&quot;, &quot;apple&quot;, &quot;apple&quot;)"><span class="custom-indicator"></span>x = ("apple", "apple", "apple")</label>
+                    <label class="option-node"><input type="radio" name="q8" value="x := y := z = &quot;apple&quot;"><span class="custom-indicator"></span>x := y := z = "apple"</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>Using chained assignment stores the same value in multiple variables.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="8" data-answer="Only inside the function where it was created.">
+                <h2 class="quiz-title">09. Variable Scope</h2>
+                <p class="question-statement">Where is a local variable accessible?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q9" value="Anywhere in the program."><span class="custom-indicator"></span>Anywhere in the program.</label>
+                    <label class="option-node"><input type="radio" name="q9" value="Only inside the function where it was created."><span class="custom-indicator"></span>Only inside the function where it was created.</label>
+                    <label class="option-node"><input type="radio" name="q9" value="Only outside the function."><span class="custom-indicator"></span>Only outside the function.</label>
+                    <label class="option-node"><input type="radio" name="q9" value="In every imported module."><span class="custom-indicator"></span>In every imported module.</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>A local variable exists only within the function where it is defined.</p>
+                </div>
+            </div>
+
+            <div class="question-view" data-q-idx="9" data-answer="print(&quot;Age &quot; + 20)">
+                <h2 class="quiz-title">10. Operations & Errors</h2>
+                <p class="question-statement">Which statement causes a TypeError?</p>
+                <div class="options-stack">
+                    <label class="option-node"><input type="radio" name="q10" value="print(&quot;Age:&quot;, 20)"><span class="custom-indicator"></span>print("Age:", 20)</label>
+                    <label class="option-node"><input type="radio" name="q10" value="print(&quot;Age &quot; + str(20))"><span class="custom-indicator"></span>print("Age " + str(20))</label>
+                    <label class="option-node"><input type="radio" name="q10" value="print(&quot;Age &quot; + 20)"><span class="custom-indicator"></span>print("Age " + 20)</label>
+                    <label class="option-node"><input type="radio" name="q10" value="print(20)"><span class="custom-indicator"></span>print(20)</label>
+                </div>
+                <div class="explanation-card">
+                    <h4>Reason</h4>
+                    <p>The + operator cannot concatenate a string and an integer directly. Convert the integer to a string first or use commas in print().</p>
+                </div>
+            </div>
+
+            <div class="action-control-panel">
+                <button type="button" class="btn-action" id="controlActionBtn" onclick="processEngineStep()" disabled>Submit Answer</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="results-matrix-view" id="resultsMatrixView">
+        <div class="score-radial-emitter">
+            <span class="score-num" id="finalMetricScore">0/0</span>
+            <span class="score-label">Correct</span>
+        </div>
+        <h3 class="feedback-headline" id="feedbackHeadline">Evaluation Processing...</h3>
+        <p class="feedback-subtext" id="feedbackSubtext">Infrastructure metrics computed.</p>
+        <button type="button" class="btn-restart" onclick="resetQuizEngine()">Restart Verification Pipeline</button>
+    </div>
+</div>
+
+<script>
+    let activeQuestionIndex = 0;
+    let computedCorrectAnswers = 0;
+    let hasEvaluatedCurrentStep = false;
+    
+    const questionViews = document.querySelectorAll('.question-view');
+    const totalQuestionsCount = questionViews.length;
+    
+    const controlActionBtn = document.getElementById('controlActionBtn');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const currentIdxLabel = document.getElementById('currentIdxLabel');
+    const totalCountLabel = document.getElementById('totalCountLabel');
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        totalCountLabel.innerText = totalQuestionsCount;
+        syncProgressBar();
+        initOptionListeners();
+    });
+
+    function initOptionListeners() {
+        questionViews.forEach(view => {
+            const nodes = view.querySelectorAll('.option-node');
+            nodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    if (hasEvaluatedCurrentStep) return;
+                    
+                    nodes.forEach(n => n.classList.remove('selected-state'));
+                    this.classList.add('selected-state');
+                    const targetInput = this.querySelector('input[type="radio"]');
+                    if (targetInput) targetInput.checked = true;
+                    
+                    controlActionBtn.disabled = false;
+                });
+            });
+        });
+    }
+
+    function syncProgressBar() {
+        const computedPercent = (activeQuestionIndex / totalQuestionsCount) * 100;
+        progressBarFill.style.width = `${computedPercent}%`;
+        currentIdxLabel.innerText = Math.min(activeQuestionIndex + 1, totalQuestionsCount);
+    }
+
+    function processEngineStep() {
+        const activeFrame = questionViews[activeQuestionIndex];
+        const rightAnswerStr = activeFrame.getAttribute('data-answer');
+        const selectedRadioInput = activeFrame.querySelector('input[type="radio"]:checked');
+        
+        if (!hasEvaluatedCurrentStep) {
+            // --- EVALUATION MODE ---
+            const allOptionNodes = activeFrame.querySelectorAll('.option-node');
+            const isUserCorrect = selectedRadioInput.value === rightAnswerStr;
+            
+            allOptionNodes.forEach(node => {
+                node.classList.remove('selected-state');
+                node.classList.add('locked-state');
+                
+                const optionValue = node.querySelector('input').value;
+                if (optionValue === rightAnswerStr) {
+                    node.classList.add('eval-correct');
+                }
+            });
+            
+            if (isUserCorrect) {
+                computedCorrectAnswers++;
+            } else {
+                selectedRadioInput.parentElement.classList.add('eval-incorrect');
+                
+                const explanationElement = activeFrame.querySelector('.explanation-card');
+                if (explanationElement) explanationElement.style.display = 'block';
+            }
+            
+            if (activeQuestionIndex === totalQuestionsCount - 1) {
+                controlActionBtn.innerText = "Finish Evaluation";
+            } else {
+                controlActionBtn.innerText = "Next Question";
+            }
+            
+            hasEvaluatedCurrentStep = true;
+        } else {
+            // --- NAVIGATION MODE ---
+            activeFrame.classList.remove('active');
+            activeQuestionIndex++;
+            
+            if (activeQuestionIndex < totalQuestionsCount) {
+                const nextFrame = questionViews[activeQuestionIndex];
+                nextFrame.classList.add('active');
+                
+                controlActionBtn.innerText = "Submit Answer";
+                controlActionBtn.disabled = true;
+                hasEvaluatedCurrentStep = false;
+                syncProgressBar();
+            } else {
+                progressBarFill.style.width = "100%";
+                document.getElementById('progressSubsystem').style.display = 'none';
+                document.getElementById('spaQuizEngine').style.display = 'none';
+                renderFinalMetricsScreen();
+            }
+        }
+    }
+
+    function renderFinalMetricsScreen() {
+        const scoreboardView = document.getElementById('resultsMatrixView');
+        const finalMetricScore = document.getElementById('finalMetricScore');
+        const feedbackHeadline = document.getElementById('feedbackHeadline');
+        const feedbackSubtext = document.getElementById('feedbackSubtext');
+        
+        finalMetricScore.innerText = `${computedCorrectAnswers}/${totalQuestionsCount}`;
+        
+        scoreboardView.classList.remove('perfect', 'good', 'fail');
+        scoreboardView.style.setProperty('display', 'flex', 'important');
+        
+        const successRateRatio = computedCorrectAnswers / totalQuestionsCount;
+        
+        if (successRateRatio === 1) {
+            scoreboardView.classList.add('perfect');
+            feedbackHeadline.innerText = "Infrastructure Flawless!";
+            feedbackHeadline.style.setProperty('color', 'var(--accent-green)', 'important');
+            feedbackSubtext.innerText = "All conceptual runtime operations verified perfectly without compiler interventions.";
+        } else if (successRateRatio >= 0.7) {
+            scoreboardView.classList.add('good');
+            feedbackHeadline.innerText = "Compilation Successful";
+            feedbackHeadline.style.setProperty('color', 'var(--accent-lime)', 'important');
+            feedbackSubtext.innerText = "Core mechanics operate within nominal parameters. Review flagged scopes to secure production parity.";
+        } else {
+            scoreboardView.classList.add('fail');
+            feedbackHeadline.innerText = "Traceback Interception Error";
+            feedbackHeadline.style.setProperty('color', 'var(--accent-red)', 'important');
+            feedbackSubtext.innerText = "Inconsistent structural tracking verified. Re-evaluate architecture documentation and re-execute pipeline compilation.";
+        }
+    }
+
+    function resetQuizEngine() {
+        activeQuestionIndex = 0;
+        computedCorrectAnswers = 0;
+        hasEvaluatedCurrentStep = false;
+        
+        document.getElementById('spaQuizEngine').reset();
+        
+        questionViews.forEach((view, idx) => {
+            view.classList.remove('active');
+            if (idx === 0) view.classList.add('active');
+            
+            const explanationElement = view.querySelector('.explanation-card');
+            if (explanationElement) explanationElement.style.display = 'none';
+            
+            const nodes = view.querySelectorAll('.option-node');
+            nodes.forEach(node => {
+                node.classList.remove('eval-correct', 'eval-incorrect', 'locked-state', 'selected-state');
+            });
+        });
+        
+        controlActionBtn.innerText = "Submit Answer";
+        controlActionBtn.disabled = true;
+        
+        document.getElementById('resultsMatrixView').style.setProperty('display', 'none', 'important');
+        document.getElementById('progressSubsystem').style.display = 'block';
+        document.getElementById('spaQuizEngine').style.display = 'block';
+        
+        syncProgressBar();
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>03. Python DSA Unit - Chapter 3: Searching & Basic Sorting Algorithms</h1>
+    <p>An academic and practical resource evaluating classic computational searching frameworks and fundamental in-place sorting strategies.</p>
+
+    <h2>1. Searching Algorithms (Linear vs. Binary Search)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Linear Search:</strong> Evaluates every single element sequentially from start to finish. Essential for unordered collections.
+            <ul>
+                <li>Time Complexity: Best $O(1)$, Worst/Average $O(n)$</li>
+            </ul>
+        </li>
+        <li><strong>Binary Search:</strong> A structured Divide-and-Conquer paradigm. It strictly mandates a pre-sorted array structure. The algorithm repeatedly splits the search area in half by verifying the central item index.
+            <ul>
+                <li>Time Complexity: Best $O(1)$, Worst/Average $O(\log_2 n) \rightarrow O(\log n)$</li>
+            </ul>
+        </li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Searching Algorithms: Sequential vs. Divide-and-Conquer ---"</span>)
+
+<span class="comment"># Pythonic Membership Test (Syntactic sugar using 'in' operator - O(n) worst case)</span>
+<span class="keyword">def</span> <span class="text">pythonic_search</span>(target_list, target_val):
+    <span class="keyword">if</span> target_val <span class="keyword">in</span> target_list:
+        <span class="keyword">return</span> <span class="string">f"[Pythonic] Target {target_val} exists in list."</span>
+    <span class="keyword">return</span> <span class="string">f"[Pythonic] Target {target_val} not found."</span>
+
+<span class="comment"># Classic Linear Search (Returns index of the element)</span>
+<span class="keyword">def</span> <span class="text">linear_search</span>(arr, target_val):
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(arr)):
+        <span class="keyword">if</span> arr[i] == target_val:
+            <span class="keyword">return</span> i  <span class="comment"># Target found, return index immediately</span>
+    <span class="keyword">return</span> -<span class="number">1</span>  <span class="comment"># Target does not exist</span>
+
+<span class="comment"># Optimized Binary Search (Iterative Approach)</span>
+<span class="keyword">def</span> <span class="text">binary_search</span>(sorted_arr, target_val):
+    left = <span class="number">0</span>
+    right = len(sorted_arr) - <span class="number">1</span>
+
+    <span class="keyword">while</span> left &lt;= right:
+        mid = (left + right) // <span class="number">2</span>  <span class="comment"># Find the midpoint integer</span>
+
+        <span class="keyword">if</span> sorted_arr[mid] == target_val:
+            <span class="keyword">return</span> mid  <span class="comment"># Target localized
+        </span>
+        <span class="keyword">if</span> sorted_arr[mid] &lt; target_val:
+            left = mid + <span class="number">1</span>  <span class="comment"># Discard the left half of the array</span>
+        <span class="keyword">else</span>:
+            right = mid - <span class="number">1</span>  <span class="comment"># Discard the right half of the array</span>
+
+    <span class="keyword">return</span> -<span class="number">1</span>  <span class="comment"># Search space exhausted, target missing</span>
+
+<span class="comment"># Search Demonstrations</span>
+unsorted_dataset = [<span class="number">3</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">8</span>, <span class="number">4</span>, <span class="number">6</span>]
+sorted_dataset = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">15</span>, <span class="number">17</span>, <span class="number">19</span>]
+
+<span class="keyword">print</span>(pythonic_search(unsorted_dataset, <span class="number">4</span>))
+<span class="keyword">print</span>(<span class="string">f"Linear Search Index for 4: {linear_search(unsorted_dataset, 4)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Binary Search Index for 11: {binary_search(sorted_dataset, 11)}"</span>)</pre>
+
+    <h2>2. Bubble Sort & Early-Stopping Optimization</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Mechanism:</strong> Steps through the array sequentially, evaluating side-by-side neighbors and shifting them if their sequence values are inverted. The maximum unsorted element actively "bubbles up" to its correct destination on each run.</li>
+        <li><strong>Optimization:</strong> Baseline bubble sort routines execute redundant loops even if data structures reach absolute balance early. Tracking state modifications via a boolean <code>swapped</code> flag allows the script to drop out early if a pass occurs without updates.</li>
+        <li><strong>Complexity:</strong> Worst $O(n^2)$, Best (Optimized) $O(n)$ if pre-sorted. Space Complexity: $O(1)$ Auxiliary.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 2. Optimized Bubble Sort with Adaptive Early-Stopping ---"</span>)
+
+<span class="keyword">def</span> <span class="text">adaptive_bubble_sort</span>(arr):
+    n = len(arr)
+    <span class="comment"># Outer loop dictates the maximum possible passes (n-1)</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(n - <span class="number">1</span>):
+        swapped = <span class="keyword">False</span>
+        <span class="comment"># Inner loop performs adjacent comparisons; ignores already sorted tail elements (-i)</span>
+        <span class="keyword">for</span> j <span class="keyword">in</span> range(n - i - <span class="number">1</span>):
+            <span class="keyword">if</span> arr[j] &gt; arr[j + <span class="number">1</span>]:
+                <span class="comment"># Concurrent variable assignment for in-place swapping</span>
+                arr[j], arr[j + <span class="number">1</span>] = arr[j + <span class="number">1</span>], arr[j]
+                swapped = <span class="keyword">True</span>
+        
+        <span class="comment"># Optimization Trigger: If no two elements were swapped, the array is already sorted!</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> swapped:
+            <span class="keyword">print</span>(<span class="string">f"[OPTIMIZATION] Algorithm halted early at pass index {i}."</span>)
+            <span class="keyword">break</span>
+    <span class="keyword">return</span> arr
+
+nearly_sorted = [<span class="number">7</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">11</span>, <span class="number">12</span>]
+<span class="keyword">print</span>(<span class="string">f"Bubble Sorted Array: {adaptive_bubble_sort(nearly_sorted)}"</span>)</pre>
+
+    <h2>3. Selection Sort & In-Place Swapping Mechanics</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Mechanism:</strong> Divides elements into distinct sorted and unsorted segments. It continuously inspects the remaining unsorted section to find the absolute minimum value, shifting it directly to the head of the unsorted segment.</li>
+        <li><strong>Critical Pitfall:</strong> Abstract implementations utilizing high-level methods like <code>list.pop()</code> and <code>list.insert()</code> trigger hidden inner memory realignments that cost $O(n)$, dragging down CPU resource management.</li>
+        <li><strong>Solution:</strong> Retain precise tracking indices to swap elements directly in memory without changing array allocations, keeping an exact $O(1)$ space configuration.</li>
+        <li><strong>Complexity:</strong> $O(n^2)$ across all operational modes (Best, Average, Worst). Space Complexity: $O(1)$ Auxiliary.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 3. In-Place Selection Sort (Anti-Shifting Mechanism) ---"</span>)
+
+<span class="keyword">def</span> <span class="text">optimized_selection_sort</span>(arr):
+    n = len(arr)
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):
+        min_index = i  <span class="comment"># Assume current index holds the minimum value
+        </span>
+        <span class="comment"># Scan the remaining unsorted portion of the array</span>
+        <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, n):
+            <span class="keyword">if</span> arr[j] &lt; arr[min_index]:
+                min_index = j  <span class="comment"># Update index of the true minimum element
+        </span>
+        <span class="comment"># Execute an in-place swap to prevent backend memory shifting</span>
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+    <span class="keyword">return</span> arr
+
+scrambled_array = [<span class="number">64</span>, <span class="number">34</span>, <span class="number">25</span>, <span class="number">12</span>, <span class="number">22</span>, <span class="number">11</span>, <span class="number">90</span>, <span class="number">5</span>]
+<span class="keyword">print</span>(<span class="string">f"Selection Sorted Array: {optimized_selection_sort(scrambled_array)}"</span>)</pre>
+
+    <h2>4. Insertion Sort & In-Place Element Shifting</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Mechanism:</strong> Constructs the final structured array one item at a time, mimicking how a human inspects and reorganizes playing cards. Unsorted records are selected one by one and filtered backward until they settle into position.</li>
+        <li><strong>Optimization Strategy:</strong> Rather than executing costly popping sequences, we save the active target element to a brief local buffer and shift preceding records to the right. This opens up an insertion index slot while matching direct memory pointer operations.</li>
+        <li><strong>Complexity:</strong> Worst/Average $O(n^2)$, Best $O(n)$ when elements are encountered in an pre-sorted sequence. Space: $O(1)$ Auxiliary.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 4. Optimized Insertion Sort with In-Place Value Shifting ---"</span>)
+
+<span class="keyword">def</span> <span class="text">optimized_insertion_sort</span>(arr):
+    n = len(arr)
+    <span class="comment"># The first element is considered sorted by default; start loop at index 1</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n):
+        current_value = arr[i]  <span class="comment"># Temporary buffer holding the element to insert</span>
+        insert_index = i
+        
+        <span class="comment"># Traverse backward through the sorted sub-array</span>
+        <span class="keyword">for</span> j <span class="keyword">in</span> range(i - <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>):
+            <span class="keyword">if</span> arr[j] &gt; current_value:
+                arr[j + <span class="number">1</span>] = arr[j]  <span class="comment"># Shift larger element one position to the right</span>
+                insert_index = j     <span class="comment"># Dynamically mark the potential insertion slot</span>
+            <span class="keyword">else</span>:
+                <span class="keyword">break</span>  <span class="comment"># Correct position found, cease comparisons for this pass</span>
+                
+        arr[insert_index] = current_value  <span class="comment"># Place the buffered value into its correct slot</span>
+    <span class="keyword">return</span> arr
+
+target_unsorted = [<span class="number">64</span>, <span class="number">34</span>, <span class="number">25</span>, <span class="number">12</span>, <span class="number">22</span>, <span class="number">11</span>, <span class="number">90</span>, <span class="number">5</span>]
+<span class="keyword">print</span>(<span class="string">f"Insertion Sorted Array: {optimized_insertion_sort(target_unsorted)}"</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] Searching and Basic Sorting unit executed flawlessly with zero bugs."</span>)</pre>
+</div>
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+    </style>
+<div class="container">
+    <h1>01. Python Core Reference Unit - String & List Methods</h1>
+    <p>A comprehensive master cheat sheet detailing production-grade string transformation algorithms, validation routines, list sequence manipulation, and memory management mechanics.</p>
+
+    <h2>1. Advanced String Manipulation & Formatting Methods</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Immutability Fact:</strong> Python strings are strictly immutable sequences. Every modification method yields a brand-new string allocated in memory rather than transforming the existing sequence in place.</li>
+        <li><strong>Casing Paradigms:</strong> <code>.title()</code> dynamically capitalizes the first letter of every isolated token word, whereas <code>.capitalize()</code> handles sentence-level orchestration by restricting uppercase formatting strictly to index 0.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 1: String Manipulation & Formatting ---"</span>)
+
+raw_title = <span class="string">"   coDding bY kÜbra - python backend deVelopment   "</span>
+
+<span class="comment"># 1. Stripping whitespaces and converting case structures</span>
+clean_title = raw_title.strip() <span class="comment"># Removes leading/trailing spaces</span>
+<span class="keyword">print</span>(<span class="string">f"[Strip] Cleaned: '{clean_title}'"</span>)
+
+upper_title = clean_title.upper()
+<span class="keyword">print</span>(<span class="string">f"[Upper] Upper Case: {upper_title}"</span>)
+
+lower_title = clean_title.lower()
+<span class="keyword">print</span>(<span class="string">f"[Lower] Lower Case: {lower_title}"</span>)
+
+swap_title = clean_title.swapcase()
+<span class="keyword">print</span>(<span class="string">f"[Swapcase] Swapped Cases: {swap_title}"</span>)
+
+title_case = clean_title.title() <span class="comment"># Capitalizes first letter of each word</span>
+<span class="keyword">print</span>(<span class="string">f"[Title] Title Case: {title_case}"</span>)
+
+capitalize_case = clean_title.capitalize() <span class="comment"># Only capitalizes the very first letter</span>
+<span class="keyword">print</span>(<span class="string">f"[Capitalize] Capitalized: {capitalize_case}"</span>)
+
+<span class="comment"># 2. String Alignment and Padding</span>
+padded_string = <span class="string">"MongoDB"</span>.center(<span class="number">20</span>, <span class="string">"-"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Center] Center Padding: {padded_string}"</span>)
+
+left_padded = <span class="string">"MySQL"</span>.ljust(<span class="number">15</span>, <span class="string">"*"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Ljust] Left Alignment: {left_padded}\n"</span>)</pre>
+
+    <h2>2. String Searching, Splitting, and Validation</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Boundary Checking:</strong> Substring scanning routines like <code>.startswith()</code> and <code>.endswith()</code> accept tuple parameters for multi-condition evaluations.</li>
+        <li><strong>Tokenization:</strong> The <code>.split()</code> function divides string sequences using specified character keys into an array, providing a foundation for parsing data streams.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 2: String Searching and Validation ---"</span>)
+
+log_message = <span class="string">"ERROR: Database connection failed. Code: 404"</span>
+
+<span class="comment"># 1. Searching and checking boundaries</span>
+<span class="keyword">print</span>(<span class="string">f"[Starts-With] Starts with 'ERROR': {log_message.startswith('ERROR')}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Ends-With] Ends with '404': {log_message.endswith('404')}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Find] Position of 'Database': {log_message.find('Database')}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Count] Occurrences of 'e': {log_message.count('e')}"</span>)
+
+<span class="comment"># 2. Replacing and Splitting data frameworks</span>
+replaced_log = log_message.replace(<span class="string">"ERROR"</span>, <span class="string">"CRITICAL"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Replace] Modified Log: {replaced_log}"</span>)
+
+split_words = log_message.split(<span class="string">" "</span>)
+<span class="keyword">print</span>(<span class="string">f"[Split] Component List: {split_words}"</span>)
+
+<span class="comment"># 3. Validation operations</span>
+numeric_str = <span class="string">"2026"</span>
+alpha_str = <span class="string">"Kubra"</span>
+<span class="keyword">print</span>(<span class="string">f"[Is-Digit] '2026' is numeric: {numeric_str.isdigit()}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Is-Alpha] 'Kubra' is alphabetic: {alpha_str.isalpha()}\n"</span>)</pre>
+
+    <h2>3. List Modification & Element Management Mechanics</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Amortized O(1) Growth:</strong> <code>.append()</code> adds items directly to the end of the list structure in amortized constant time.</li>
+        <li><strong>Linear Shifts:</strong> Methods like <code>.insert(index, obj)</code> and <code>.pop(index)</code> force systematic memory reallocation, requiring elements to shift forward or backward with a cost of O(n).</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 3: List Modification Mechanics ---"</span>)
+
+<span class="comment"># Initializing an active data container tracking stack structures</span>
+frameworks = [<span class="string">"Flask"</span>, <span class="string">"Django"</span>]
+
+<span class="comment"># 1. Append: Adding element to the end sequence</span>
+frameworks.append(<span class="string">"FastAPI"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Append] Framework List: {frameworks}"</span>)
+
+<span class="comment"># 2. Insert: Adding element at a specific index location</span>
+frameworks.insert(<span class="number">1</span>, <span class="string">"Pyramid"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Insert] Indexed Frameworks: {frameworks}"</span>)
+
+<span class="comment"># 3. Extend: Merging another collection architecture safely</span>
+additional_tools = [<span class="string">"Tornado"</span>, <span class="string">"Sanic"</span>]
+frameworks.extend(additional_tools)
+<span class="keyword">print</span>(<span class="string">f"[Extend] Aggregated List: {frameworks}"</span>)
+
+<span class="comment"># 4. Pop: Removing and returning element by index (or last element by default)</span>
+popped_element = frameworks.pop(<span class="number">2</span>) <span class="comment"># Removes 'Django'</span>
+<span class="keyword">print</span>(<span class="string">f"[Pop] Extracted Element: {popped_element} | Remaining: {frameworks}"</span>)
+
+<span class="comment"># 5. Remove: Eliminating element by structural value</span>
+frameworks.remove(<span class="string">"Pyramid"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Remove] After Value Elimination: {frameworks}\n"</span>)</pre>
+
+    <h2>4. List Sorting, Copying, and Structural Optimization</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Timsort Engine:</strong> The native <code>.sort()</code> engine utilizes Timsort—a stable, adaptive hybrid sorting algorithm combining merge sort and insertion sort features with a complexity boundary of O(n log n).</li>
+        <li><strong>Shallow Clones:</strong> The <code>.copy()</code> operation builds a shallow copy of the list tracking container. It copies the outer shell structure while references to any inner nested mutables remain linked.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 4: List Sorting and Optimization ---"</span>)
+
+scores = [<span class="number">85</span>, <span class="number">92</span>, <span class="number">78</span>, <span class="number">99</span>, <span class="number">64</span>]
+
+<span class="comment"># 1. Reverse: Flipping elements order sequence horizontally</span>
+scores.reverse()
+<span class="keyword">print</span>(<span class="string">f"[Reverse] Flipped State: {scores}"</span>)
+
+<span class="comment"># 2. Sort: Arranging elements in ascending or descending sequence natively</span>
+scores.sort(reverse=<span class="keyword">True</span>) <span class="comment"># Sort descending</span>
+<span class="keyword">print</span>(<span class="string">f"[Sort] Sorted Evaluation (Descending): {scores}"</span>)
+
+<span class="comment"># 3. Copy: Creating a shallow clone copy to preserve data integrity</span>
+cloned_scores = scores.copy()
+cloned_scores.append(<span class="number">100</span>)
+<span class="keyword">print</span>(<span class="string">f"[Copy] Original Scores: {scores}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Copy] Cloned System State: {cloned_scores}"</span>)
+
+<span class="comment"># 4. Clear: Truncating list structure context entirely</span>
+scores.clear()
+<span class="keyword">print</span>(<span class="string">f"[Clear] Flushed List Count: {len(scores)}"</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] String and List architectural reference engines completed."</span>)</pre>
+</div>
+{% endblock %}

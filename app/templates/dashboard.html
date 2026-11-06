@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<button id="menu-toggle" class="menu-toggle">
+    ☰
+</button>
+<style>
+    /* Orijinal temaya ve yazı biçimlerine sadık kalınmıştır */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: #0D0F14; color: #E2E8F0; overflow: hidden; height: 100vh; }
+    .app-shell { display: flex; height: 100vh; width: 100vw; }
+
+    .sidebar { width: 280px; background: #12151C; padding: 30px; border-right: 1px solid #1E232D; flex-shrink: 0; }
+    .brand { font-size: 24px; font-weight: 800; color: #7C9060; margin-bottom: 50px; letter-spacing: 2px; }
+    .nav-btn { display: block; width: 100%; padding: 15px; color: #8A96A8; text-align: left; background: none; border: none; cursor: pointer; border-radius: 8px; transition: 0.3s; font-size: 15px; margin-bottom: 5px; }
+    .nav-btn:hover, .nav-btn.active { background: #1A1D24; color: #fff; border-left: 4px solid #7C9060; }
+
+    .main-content { flex: 1; padding: 40px; overflow-y: auto; height: 100vh; }
+    .section-container { display: none; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; }
+    .section-container.active { display: block; }
+    
+    .doc-card { background: #161A22; border-radius: 12px; padding: 30px; margin-bottom: 25px; border: 1px solid #2D3748; }
+    .doc-title { color: #fff; font-size: 32px; margin-bottom: 30px; border-left: 4px solid #7C9060; padding-left: 15px; }
+    .doc-subtitle { color: #7C9060; font-size: 22px; margin-top: 10px; margin-bottom: 20px; font-weight: bold; }
+    .doc-text { color: #CBD5E0; font-size: 16px; line-height: 1.8; margin-bottom: 15px; }
+    .doc-code { background: #000; color: #8FBF8F; padding: 15px; border-radius: 8px; font-family: 'Consolas', monospace; display: block; margin: 15px 0; border: 1px solid #2D3748; white-space: pre-wrap; font-size: 15px; }
+    .doc-highlight { color: #fff; font-weight: bold; background: #2D3748; padding: 2px 6px; border-radius: 4px; }
+    .note-box { background: #1C222E; padding: 25px; border-radius: 12px; border-left: 5px solid #7C9060; margin-top: 30px; }
+
+    /* Alt Düzen (Menü ve İçerik Yan Yana) */
+    .sub-layout { 
+        display: flex; 
+        gap: 20px;
+        width: 100%; 
+        height: 75vh; 
+    }
+
+    
+
+    /* İnce Kaydırma Çubuğu */
+    .sub-sidebar::-webkit-scrollbar { width: 5px; }
+    .sub-sidebar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+    /* Linkleri alt alta dizmek için */
+    .link-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sub-nav-link { 
+        display: block; 
+        padding: 12px; 
+        color: #8A96A8; 
+        text-decoration: none; 
+        font-size: 14px; 
+        background: #1A1D24;
+        border-radius: 6px;
+        border: 1px solid #2D3748;
+        transition: 0.2s;
+    }
+    .sub-nav-link:hover { color: #fff; border-color: #7C9060; background: #222937; }
+
+    /* Sağ panelin ferah görünmesi için */
+    .sub-content { 
+        flex: 1; 
+        padding: 20px; 
+        background: #161A22; 
+        border-radius: 12px; 
+        border: 1px solid #2D3748;
+        overflow-y: auto;
+    }
+    
+    .unit-title { font-size: 13px; font-weight: 800; color: #7C9060; margin: 20px 0 8px 5px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #1E232D; padding-bottom: 4px; }
+    .unit-title:first-child { margin-top: 0; }
+    
+    .lesson-page, .quiz-page { display: none; width: 100%; }
+    .lesson-page.active, .quiz-page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Quiz Şıkları Tasarımı */
+    .quiz-option { background: #1C222E; border: 1px solid #2D3748; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; color: #E2E8F0; font-size: 15px; }
+    .quiz-option:hover { border-color: #7C9060; background: #222937; }
+
+
+    /* Sadece Lessons sekmesindeki kutuyu tam genişlik yapar */
+#lessons .sub-sidebar, #lessons nav {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-right: none !important;
+}
+
+/* İçindeki linkleri yan yana kutular (Grid) haline getirir */
+#lessons .link-grid, #lessons .lesson-links-list {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+}
+
+
+/* Quiz Lab'deki sağ panel içeriğini (soru kutusunu) tamamen gizler */
+#quizzes .sub-content {
+    display: none !important;
+}
+
+/* 2. Quiz alanını tüm genişliğe yayar ve sayfaya sığdırır */
+#quizzes .sub-sidebar {
+    width: 100% !important;
+    max-width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    overflow-y: auto !important;
+    max-height: 75vh !important; /* Ekrandan aşağı taşmayı önler */
+}
+
+/* 3. Linklerin YAN YANA gelmesini ENGELLER, Lessons gibi ALT ALTA dizilmesini sağlar */
+#quizzes .link-grid, #quizzes nav {
+    display: flex !important;
+    flex-direction: column !important; /* Alt alta sıralama kuralı */
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+/* 4. Quiz butonlarının genişliğini Lessons bölümündeki gibi dengeli yapar */
+#quizzes .sub-nav-link {
+    width: 100% !important;
+    max-width:400px !important; /* Çok fazla uzayıp göz yormaması için ideal genişlik */
+    margin-bottom: 0 !important;
+}
+
+/* Gri butonların sağa doğru tam genişlik uzamasını sağlar */
+#quizzes .sub-nav-link {
+    width: 100% !important;
+    max-width: 100% !important; /* Kısa kalmasını engelleyen ve boydan boya uzatan sihirli dokunuş */
+}
+
+</style>
+<div class="app-shell">
+    <aside class="sidebar" style="display: flex; flex-direction: column;">
+        <div class="brand">CODELUCID</div>
+        <button class="nav-btn active" onclick="show('home', this)">Home </button>
+        <button class="nav-btn" onclick="show('whatis', this)">What is Python?</button>
+        <button class="nav-btn" onclick="show('lessons', this)">Lessons</button>
+        <button class="nav-btn" onclick="show('quizzes', this)">Quiz Lab</button>
+        <button class="nav-btn" onclick="show('learn', this)">Learn with Code</button>
+        <button class="nav-btn" onclick="show('about', this)">About Me & Contact</button>
+        
+        <!-- Log out butonu en altta sabit, ortalanmış ve alt çizgili -->
+        <a href="{{ url_for('auth.logout') }}" style="color: #ff4d4d; font-family: inherit; font-size: 14px; font-weight: bold; text-decoration: underline; text-underline-offset: 4px; text-align: center; margin-top: auto; padding: 15px 0; width: 100%; display: block; box-sizing: border-box;">
+            Log out
+        </a>
+    </aside>
+    <main class="main-content">
+        
+<div id="home" class="section-container active">
+    <div style="text-align: center; padding: 120px 20px;">
+        <h1 style="font-size: 56px; color: #fff; margin-bottom: 20px;">
+            Learn Python.<br>
+            <span style="color: #7C9060;">Like a Software Engineer.</span>
+        </h1>
+        <p style="font-size: 22px; color: #8A96A8; margin-bottom: 40px; font-weight: 300;">
+            Master the fundamentals. Build the future.
+        </p>
+        <button onclick="show('lessons', document.querySelector('[onclick*=\'lessons\']'))" 
+                style="padding: 18px 50px; background: #7C9060; border: none; color: white; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s;">
+            Start Learning
+        </button>
+        <footer style="text-align: center; padding: 40px; color: #4A5568; font-size: 14px; border-top: 1px solid #1E232D; margin-top: 50px;">
+    <p>Created by <strong>Kübra Aktaş</strong> | July 2026</p>
+</footer>
+    </div>
+</div>
+
+
+        <div id="whatis" class="section-container">
+            <h1 class="doc-title">1. WHAT IS PYTHON? WHY AND WHERE IS IT USED?</h1>
+            
+            <div class="doc-card">
+                <div class="doc-text">Python is a high-level, interpreted programming language known for its readability and simplicity.</div>
+                
+                <div class="doc-subtitle">WHY PYTHON?</div>
+                <div class="doc-text">
+                    • It has a clean syntax; it does not use complex rules or curly braces for code blocks.<br>
+                    • It has one of the largest communities in the world, making it very easy to find resources.
+                </div>
+
+                <div class="doc-subtitle">WHERE IS IT USED?</div>
+                <div class="doc-text">
+                    • Artificial Intelligence & Data Science (Machine Learning, Deep Learning)<br>
+                    • Web Development (Backend management using frameworks like Django and Flask)<br>
+                    • Game Development (Basic and 2D games with libraries like Pygame)<br>
+                    • Cyber Security & Automation (Writing scripts to automate repetitive tasks)
+                </div>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-subtitle">2. ESSENTIAL SYMBOLS AND THEIR MEANINGS</div>
+                <div class="doc-text">
+                    <p><span class="doc-highlight">[ Curly Braces { } ]</span><br>In other languages (C++, Java, C#): Used to define the boundaries of code blocks.<br>In Python: NEVER used for code blocks (Python uses indentation instead). It is only used for Dictionaries, Sets, or string formatting (f-strings). Example: <span style="color:#8FBF8F;">my_dict = {"name": "Kubra", "age": 19}</span></p>
+                    
+                    <p><span class="doc-highlight">[ Colon : ]</span><br>It signals the start of a code block (a condition, a loop, or a function). The lines following a colon must always be INDENTED (shifted to the right). Example: <span style="color:#8FBF8F;">if x > 5:</span></p>
+                    
+                    <p><span class="doc-highlight">[ Hash / Pound Sign # ]</span><br>Used to write comments. Python ignores lines starting with this symbol.</p>
+                    
+                    <p><span class="doc-highlight">[ Equals Signs (= vs ==) ]</span><br>Single Equals (=): Used for assignment (putting a value inside a variable).<br>Double Equals (==): Used for comparison (checks if two values are equal).</p>
+                    
+                    <p><span class="doc-highlight">[ Parentheses ( ) ]</span><br>Used to call/execute functions (like print(), input()) or for math priority.</p>
+                    
+                    <p><span class="doc-highlight">[ Square Brackets [ ] ]</span><br>Used to create Lists to store multiple items in a specific order. Example: <span style="color:#8FBF8F;">languages = ["Python", "HTML", "CSS"]</span></p>
+                </div>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-subtitle">4. PYTHON INSTALL AND QUICKSTART</div>
+                <div class="doc-text">
+                    If Python is not installed on your computer, you can download it for free from the official website: https://www.python.org/<br>
+                    Python is an interpreted programming language; this means that as a developer you write Python (.py) files in a text editor and then put those files into the python interpreter to be executed. Let's write our first Python file, called hello.py:
+                </div>
+                <code class="doc-code"># hello.py:
+print("Hello, World!")</code>
+                <div class="doc-text">Save your file. Open your command line, navigate to the directory where you saved your file, and run: The output should be: Hello, World! Congratulations, you have written and executed your first Python program.</div>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-subtitle">6. CHECKING PYTHON VERSION & HOW IT WORKS</div>
+                <div class="doc-text">
+                    - sys.version: A built-in variable that holds your Python version info.<br>
+                    - print(): The tool used to display any data or text on the terminal screen.<br>
+                    - Together: print(sys.version) fetches the version info and displays it.
+                </div>
+                <code class="doc-code">import sys             #Imported at the top according to professional standards (PEP 8)
+print(sys.version)</code>
+            </div>
+
+            <div class="note-box">
+                <h2 style="color: #fff; margin-top:0;">💡 CURIOUS NOTE</h2>
+                <div class="doc-text">
+                    When you run the code above, you will see a date in the terminal (e.g., Jun 7 2023).<br>
+                    <strong>Q: Why does it show a past date (like 2023) even though not this time?</strong><br>
+                    <strong>A:</strong> That date has nothing to do with today's date or your computer's clock! It is the official "Release/Production Date" of that specific Python version. It tells you exactly when the Python team packaged and released this version to the world.
+                </div>
+            </div>
+        </div>
+
+        <div id="lessons" class="section-container">
+            <h1 class="doc-title">Lessons & Curriculum</h1>
+            
+            <div class="sub-layout">
+                <nav class="sub-sidebar">
+                    <div class="unit-title">Unit 1: Python Core</div>
+                    <a href="{{ url_for('main.temel_bilgiler_dersi') }}" class="sub-nav-link">01. Basic Information </a>
+                    <a href="{{ url_for('main.kod_calisma_sirasi_dersi') }}" class="sub-nav-link">02. Variables</a>
+                    <a href="{{ url_for('main.veri_tipleri_dersi') }}" class="sub-nav-link">03. Data Types Overview</a>
+                    <a href="{{ url_for('main.sayilar_ve_rastgele_dersi') }}" class="sub-nav-link">04. Numbers and Random</a>
+                    <a href="{{ url_for('main.strings_dersi') }}" class="sub-nav-link">05. Strings</a>
+                    <a href="{{ url_for('main.booleans_dersi') }}" class="sub-nav-link">06. Booleans</a>
+                    <a href="{{ url_for('main.operatorler_dersi') }}" class="sub-nav-link">07. Operators</a>
+                    <a href="{{ url_for('main.listeler_dersi') }}" class="sub-nav-link">08. Lists</a>
+                    <a href="{{ url_for('main.tuple_dersi') }}" class="sub-nav-link">09. Tuples</a>
+                    <a href="{{ url_for('main.setler_dersi') }}" class="sub-nav-link">10. Sets</a>
+                    <a href="{{ url_for('main.dictionary_dersi') }}" class="sub-nav-link">11. Dictionaries</a>
+                    <a href="{{ url_for('main.kosullar_dersi') }}" class="sub-nav-link">12. Conditions</a>
+                    <a href="{{ url_for('main.donguler_ve_match_dersi') }}" class="sub-nav-link">13. Loops and Match</a>
+                    <a href="{{ url_for('main.fonksiyonlar_dersi') }}" class="sub-nav-link">14. Functions</a>
+                    <a href="{{ url_for('main.diziler_dersi') }}" class="sub-nav-link">15. Sequences and Arrays</a>
+                    <a href="{{ url_for('main.iterators_and_modules_dersi') }}" class="sub-nav-link">16. Iterators and Modules</a>
+                    <a href="{{ url_for('main.datetime_math_json_dersi') }}" class="sub-nav-link">17. Datetime, Math, and JSON</a>
+                    <a href="{{ url_for('main.regex_dersi') }}" class="sub-nav-link">18. RegEx</a>
+                    <a href="{{ url_for('main.pip_exceptions_dersi') }}" class="sub-nav-link">19. PIP and Exceptions</a>
+                    <a href="{{ url_for('main.string_formatlama_dersi') }}" class="sub-nav-link">20. String Formatting</a>
+                    <a href="{{ url_for('main.none_input_venv_dersi') }}" class="sub-nav-link">21. None, Input, and venv</a>
+
+                    <div class="unit-title">Unit 2: Classes</div>
+                    <a href="{{ url_for('main.oop_architecture_dersi') }}" class="sub-nav-link">01. OOP Architecture</a>
+
+                    <div class="unit-title">Unit 3: File Operations</div>
+                    <a href="{{ url_for('main.file_handling_dersi') }}" class="sub-nav-link">01. File Handling</a>
+
+                    <div class="unit-title">Unit 4: Built-in Modules</div>
+                    <a href="{{ url_for('main.modules_concept_dersi') }}" class="sub-nav-link">01. Modules Concept</a>
+                    <a href="{{ url_for('main.math_and_random_dersi') }}" class="sub-nav-link">02 . Math and Random</a>
+                    <a href="{{ url_for('main.advanced_ecosystem_dersi') }}" class="sub-nav-link">03. Advanced Ecosystem Preview</a>
+
+                    <div class="unit-title">Unit 5: Data & ML Preview</div>
+                    <a href="{{ url_for('main.matplotlib_visualization_dersi') }}" class="sub-nav-link">01. Matplotlib Visualization</a>
+                    <a href="{{ url_for('main.ml_stats_dersi') }}" class="sub-nav-link">02. Machine Learning Stats</a>
+                    <a href="{{ url_for('main.predictive_ml_dersi') }}" class="sub-nav-link">03. Predictive Machine Learning</a>
+
+                    <div class="unit-title">Unit 6: Data Structures & Algo</div>
+                    <a href="{{ url_for('main.linear_data_structures_dersi') }}" class="sub-nav-link">01. Linear Data Structures</a>
+                    <a href="{{ url_for('main.nonlinear_structures_dersi') }}" class="sub-nav-link">02. Nonlinear & Hash Structures</a>
+                    <a href="{{ url_for('main.searching_and_basic_sorting_dersi') }}" class="sub-nav-link">03. Searching & Basic Sorting</a>
+                    <a href="{{ url_for('main.advanced_algorithms_dersi') }}" class="sub-nav-link">04. Advanced Sorting Algorithms</a>
+
+                    <div class="unit-title">Unit 7: Database Management</div>
+                    <a href="{{ url_for('main.mongodb_crud') }}" class="sub-nav-link">1. MongoDB CRUD Operations</a>
+                    <a href="{{ url_for('main.mysql_operations') }}" class="sub-nav-link">2. MySQL Relational Operations</a>
+
+                    <div class="unit-title">Unit 8: Python References</div>
+                    <a href="{{ url_for('main.string_and_list_methods') }}" class="sub-nav-link">1. String and List Methods</a>
+                    <a href="{{ url_for('main.dict_tuple_and_set_methods') }}" class="sub-nav-link">2. Dict, Tuple and Set Methods</a>
+                    <a href="{{ url_for('main.file_methods_and_exceptions') }}" class="sub-nav-link">3. File Methods and Exceptions</a>
+
+                    <div class="unit-title">Unit 9: Module References</div>
+                    <a href="{{ url_for('main.built_in_and_math_modules') }}" class="sub-nav-link">1. Built in and Math Modules</a>
+                    <a href="{{ url_for('main.requests_module') }}" class="sub-nav-link">2. Requests Module</a>
+
+                    <div class="unit-title">Unit 10: Python How To</div>
+                    <a href="{{ url_for('main.how_to_basic_recipes') }}" class="sub-nav-link">1. How to Basic Recipes</a>
+                </nav>
+            </div>
+        </div>
+
+
+        <div id="quizzes" class="section-container">
+    <h1 class="doc-title">Course Quizzes</h1>
+    
+        <nav class="quiz-bar">
+                <div class="unit-title">Unit 1: Python Core Quizzes</div>
+                <a href="{{ url_for('main.quiz_basic_info') }}" class="sub-nav-link">01. Basic Information Quiz</a>
+                <a href="{{ url_for('main.quiz_variables') }}" class="sub-nav-link">02. Variables Quiz</a>
+                <a href="{{ url_for('main.quiz_types_numbers') }}" class="sub-nav-link">03. Types & Numbers Quiz</a>
+                <a href="{{ url_for('main.quiz_numbers_random') }}" class="sub-nav-link">04. Numbers and Random Quiz</a>
+                <a href="{{ url_for('main.quiz_strings') }}" class="sub-nav-link">05. Strings Quiz</a>
+                <a href="{{ url_for('main.quiz_booleans') }}" class="sub-nav-link">06. Booleans Quiz</a>
+                <a href="{{ url_for('main.quiz_operators') }}" class="sub-nav-link">07. Operators Quiz</a>
+                <a href="{{ url_for('main.quiz_lists') }}" class="sub-nav-link">08. Lists Quiz</a>
+                <a href="{{ url_for('main.quiz_tuples') }}" class="sub-nav-link">09. Tuples Quiz</a>
+                <a href="{{ url_for('main.quiz_sets') }}" class="sub-nav-link">10. Sets Quiz</a>
+                <a href="{{ url_for('main.quiz_dictionaries') }}" class="sub-nav-link">11. Dictionaries Quiz</a>
+                <a href="{{ url_for('main.quiz_conditions') }}" class="sub-nav-link">12. Conditions Quiz</a>
+                <a href="{{ url_for('main.quiz_loops') }}" class="sub-nav-link">13. Loops Quiz</a>
+                <a href="{{ url_for('main.quiz_functions') }}" class="sub-nav-link">14. Functions Quiz</a>
+                <a href="{{ url_for('main.quiz_sequences') }}" class="sub-nav-link">15. Sequences Quiz</a>
+                <a href="{{ url_for('main.quiz_iterators_modules') }}" class="sub-nav-link">16. Iterators and Modules Quiz</a>
+                <a href="{{ url_for('main.quiz_datetime_math_json') }}" class="sub-nav-link">17. Datetime, Math, and JSON Quiz</a>
+                <a href="{{ url_for('main.quiz_regex') }}" class="sub-nav-link">18. RegEx Quiz</a>
+                <a href="{{ url_for('main.quiz_pip_exceptions') }}" class="sub-nav-link">19. PIP and Exceptions Quiz</a>
+                <a href="{{ url_for('main.quiz_string_formatting') }}" class="sub-nav-link">20. String Formatting Quiz</a>
+                <a href="{{ url_for('main.quiz_none_input_venv') }}" class="sub-nav-link">21. None, Input, and venv Quiz</a>
+
+                <div class="unit-title" style="margin-top: 20px;">Unit 2: Advanced Topics Quizzes</div>
+                <a href="{{ url_for('main.quiz_oop') }}" class="sub-nav-link">01. OOP Quiz</a>
+
+                <div class="unit-title" style="margin-top: 20px;">Unit 3: File Systems Quizzes</div>
+                <a href="{{ url_for('main.quiz_file_handling') }}" class="sub-nav-link">01. File Handling Quiz</a>
+        </nav>
+    </div>
+
+        <div id="learn" class="section-container">
+            <h1 class="doc-title">Learn with Code</h1>
+            
+            <div style="display: flex; gap: 20px; height: 500px; width: 100%; box-sizing: border-box;">
+                <div class="doc-card" style="flex: 1; margin-bottom: 0; display: flex; flex-direction: column; box-sizing: border-box;">
+                    <h2 style="color: #A3C78B; font-size: 18px; margin-top: 0; margin-bottom: 10px;">✍️ Write your code</h2>
+                    <div class="doc-text" style="margin-bottom: 15px;">You can write your Python code here:</div>
+                    
+                    <div style="display: flex; flex-grow: 1; background: #0D0F14; border: 1px solid #2D3748; border-radius: 8px; overflow: hidden; height: 100%;">
+                        <div id="lineNumbers" style="width: 40px; background: #090B0E; color: #4A5568; padding: 15px 8px 15px 0; text-align: right; user-select: none; border-right: 1px solid #1E232D; overflow: hidden; font-family: 'Consolas', monospace; font-size: 15px; line-height: 22px; box-sizing: border-box;">1<br>2<br>3</div>
+                        <textarea id="codeEditor" spellcheck="false" oninput="updateLineNumbers()" onscroll="syncScroll()" style="flex-grow: 1; background: transparent; color: #8FBF8F; padding: 15px 15px 15px 10px; border: none; resize: none; outline: none; white-space: pre; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 15px; line-height: 22px; margin: 0; box-sizing: border-box;">
+print("Hello")</textarea>
+                    </div>
+                </div>
+
+                <div class="doc-card" style="flex: 1; margin-bottom: 0; border-left: 4px solid #7C9060; display: flex; flex-direction: column; box-sizing: border-box;">
+                    <h2 style="color: #A3C78B; font-size: 18px; margin-top: 0; margin-bottom: 10px;">🖥️ Console Output</h2>
+                    <div class="doc-text" style="margin-bottom: 15px;">You will see the output of your code here:</div>
+                    
+                    <pre id="consoleOutput" style="background: #000; color: #7C9060; padding: 15px; border-radius: 6px; font-family: 'Consolas', monospace; flex-grow: 1; margin: 0; overflow-y: auto; white-space: pre-wrap; font-size: 15px; border: 1px solid #1A1D24;">> </pre>
+                    
+                    <button onclick="executePythonSimulation()" style="margin-top: 15px; background: #7C9060; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px;">Run Code</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="about" class="section-container">
+            <h1 class="doc-title">About Me & Contact</h1>
+            
+            <div class="doc-card">
+                <h2 style="color: #A3C78B;">About the author</h2>
+                <div class="doc-text">
+                    I am <strong>Kübra Aktaş</strong>, a 19-year-old software developer and the founder of <em>codelucid_</em>. My journey began with web design classes in vocational high school.
+                </div>
+                <div class="doc-text">
+                    While trying to learn Python and other programming languages, I noticed that the available resources were either overly chaotic or too shallow. To put an end to this confusion, I decided to build an interactive e-learning ecosystem that takes absolute beginners directly to industry-level software engineering. 
+                </div>
+                <div class="doc-text">
+                    This is my very first project, and it marks the beginning of my journey. I truly appreciate your support, and I hope you enjoy the platform!
+                </div>
+            </div>
+
+            <div class="doc-card">
+                <h2 style="color: #A3C78B;">Let's Connect</h2>
+                <div class="doc-text" style="margin-bottom: 20px;">
+                    For any suggestions, feedback, collaboration inquiries, or technical support, feel free to connect with me through my official channels:
+                </div>
+
+                <ul style="list-style: none; padding: 0; line-height: 2.2;">
+                    <li>📸 <strong>Instagram:</strong> <a href="https://instagram.com/codelucid_" style="color:#7C9060; text-decoration:none;">@codelucid_</a></li>
+                    <li>🎵 <strong>TikTok:</strong> <a href="https://tiktok.com/@codelucid_" style="color:#7C9060; text-decoration:none;">@codelucid_</a></li>
+                    <li>💻 <strong>GitHub:</strong> <a href="https://github.com/kubrq7/codelucid_" style="color:#7C9060; text-decoration:none;">kubrq7/codelucid_</a></li>
+                    <li>💼 <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/kubra-aktas" style="color:#7C9060; text-decoration:none;">Kübra Aktaş</a></li>
+                    <li>📧 <strong>E-Mail:</strong> <a href="mailto:codelucid.contact@gmail.com" style="color:#7C9060; text-decoration:none;">codelucid.contact@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+        
+    </main>
+</div>
+
+<script>
+    // Ana Menü Geçişleri
+    function show(id, btn) {
+        document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        const targetSection = document.getElementById(id);
+        if(targetSection) targetSection.classList.add('active');
+        
+        btn.classList.add('active');
+    }
+
+    // Quiz Cevap Kontrolü
+    function checkAnswer(optionElement, isCorrect, feedbackText) {
+        const parentCard = optionElement.parentElement;
+        const feedbackBox = parentCard.querySelector('.quiz-feedback');
+        
+        parentCard.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.style.borderColor = '#2D3748';
+            opt.style.background = '#1C222E';
+        });
+
+        feedbackBox.style.display = 'block';
+        feedbackBox.innerText = feedbackText;
+
+        if(isCorrect) {
+            optionElement.style.borderColor = '#7C9060';
+            optionElement.style.background = '#1A241A';
+            feedbackBox.style.backgroundColor = '#1A241A';
+            feedbackBox.style.color = '#8FBF8F';
+        } else {
+            optionElement.style.borderColor = '#FF6B6B';
+            optionElement.style.background = '#2D1A1A';
+            feedbackBox.style.backgroundColor = '#2D1A1A';
+            feedbackBox.style.color = '#FF6B6B';
+        }
+    }
+
+    // Editör - Satır Numaraları
+    function updateLineNumbers() {
+        const textarea = document.getElementById("codeEditor");
+        const lineCounter = document.getElementById("lineNumbers");
+        const lines = textarea.value.split("\n");
+        let numberString = "";
+        for (let i = 1; i <= lines.length; i++) { numberString += i + "<br>"; }
+        lineCounter.innerHTML = numberString;
+    }
+
+    // Editör - Kaydırma Senkronizasyonu
+    function syncScroll() {
+        const textarea = document.getElementById("codeEditor");
+        const lineCounter = document.getElementById("lineNumbers");
+        lineCounter.scrollTop = textarea.scrollTop;
+    }
+
+    // Python Simülatörü
+    function executePythonSimulation() {
+        const code = document.getElementById("codeEditor").value;
+        const consoleDisplay = document.getElementById("consoleOutput");
+        consoleDisplay.innerText = "";
+        consoleDisplay.style.color = "#7C9060"; 
+        const lines = code.split("\n");
+        let variables = {};
+        let outputs = [];
+
+        try {
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (line === "" || line.startsWith("#")) continue;
+                if (line.includes("=")) {
+                    let parts = line.split("=");
+                    let varName = parts[0].trim();
+                    let varValue = parts[1].trim();
+                    if ((varValue.startsWith('"') && varValue.endsWith('"')) || (varValue.startsWith("'") && varValue.endsWith("'"))) {
+                        variables[varName] = varValue.slice(1, -1);
+                    } else {
+                        variables[varName] = eval(varValue);
+                    }
+                } else if (line.startsWith("print") && line.includes("(") && line.endsWith(")")) {
+                    let content = line.substring(line.indexOf("(") + 1, line.lastIndexOf(")")).trim();
+                    if ((content.startsWith('"') && content.endsWith('"')) || (content.startsWith("'") && content.endsWith("'"))) {
+                        outputs.push(content.slice(1, -1));
+                    } else if (variables[content] !== undefined) {
+                        outputs.push(variables[content]);
+                    }
+                } 
+            }
+            if (outputs.length > 0) { consoleDisplay.innerText = outputs.map(o => `> ${o}`).join("\n"); }
+            else { consoleDisplay.innerText = "> Code executed successfully."; }
+        } catch (error) {
+            consoleDisplay.style.color = "#FF6B6B";
+            consoleDisplay.innerText = `> Error occurred.`;
+        }
+    }
+    
+    // Sayfa Yüklendiğinde Editör Satırlarını Hazırla
+    window.onload = function() {
+        if(document.getElementById("codeEditor")) {
+            updateLineNumbers();
+        }
+    };
+
+    const menuToggle = document.getElementById("menu-toggle");
+const sidebar = document.querySelector(".sidebar");
+
+menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+});
+
+</script>
+{% endblock %}

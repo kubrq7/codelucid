@@ -1,0 +1,119 @@
+ {% extends 'base.html' %}
+    {% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>05. Deep Dive into Python Strings, Slicing, Methods, and F-Strings</h1>
+
+    <div class="important">
+        <strong>⚠️ GOLDEN RULE: STRINGS ARE IMMUTABLE!</strong><br>
+        All string methods return NEW values. They DO NOT modify the original string! To change a string permanently, you must assign it back to the variable.<br><br>
+        <em>Example:</em><br>
+        <code>txt = "hello"</code><br>
+        <code>txt = txt.upper()</code> <em># Now it is permanently changed!</em>
+    </div>
+
+    <h2>1. Strings are Arrays (Indexing & Loops)</h2>
+    <p>Python does not have a separate "character" data type. Strings are ordered sequences of Unicode characters. Indexing starts at 0.</p>
+    <pre>a = "Hello, World!"
+print(a[0])  <span class="comment"># Returns: H</span>
+print(a[4])  <span class="comment"># Returns: o</span>
+print(len(a)) <span class="comment"># Returns: 13</span>
+
+for character in "cherry":
+    print(character)</pre>
+
+    <h2>2. String Slicing (Substring Extraction)</h2>
+    <p>Syntax: <code>string[start_index : end_index]</code>. CRITICAL: Python includes the 'start' index but EXCLUDES the 'end' index!</p>
+    <pre>b = "Hello, World!"
+print(b[2:8])   <span class="comment"># Returns: "llo, W"</span>
+print(b[:5])    <span class="comment"># Returns: "Hello"</span>
+print(b[2:])    <span class="comment"># Returns: "llo, World!"</span>
+print(b[-5:-2]) <span class="comment"># Returns: "orl"</span></pre>
+
+    <h2>3. Membership Operators</h2>
+    <p>Used to check if a specific phrase or character exists inside a text using <code>in</code> or <code>not in</code>.</p>
+    <pre>txt = "The best things in life are free!"
+print("free" in txt)      <span class="comment"># Output: True</span>
+print("expensive" not in txt) <span class="comment"># Output: True</span></pre>
+
+    <h2>4. Most Common String Methods</h2>
+    <pre>sample = "  Hello, World!  "
+print(sample.upper())       <span class="comment"># "  HELLO, WORLD!  "</span>
+print(sample.strip())       <span class="comment"># "Hello, World!"</span>
+print(sample.replace("H", "J")) <span class="comment"># "  Jello, World!  "</span>
+print(sample.split(","))    <span class="comment"># ['  Hello', ' World!  ']</span></pre>
+
+    <h2>5. String Concatenation & F-Strings</h2>
+    <pre>age = 19
+intro = f"My name is Kubra, I am {age} years old."
+price = 59
+formatted_price = f"The price is {price:.2f} dollars" <span class="comment"># "The price is 59.00 dollars"</span>
+print(f"Math: {20 * 59}") <span class="comment"># 1180</span></pre>
+
+    <h2>6. Escape Characters</h2>
+    <p>Used to insert characters that are otherwise illegal in a string.</p>
+    <pre>viking_text = "We are the so-called \"Vikings\" from the north."
+<span class="comment"># \" : Double Quote, \n : New Line, \t : Tab, \\ : Backslash</span></pre>
+
+    <h2>7. Appendix: Built-in String Methods</h2>
+    <ul>
+        <li><code>capitalize()</code>, <code>casefold()</code>, <code>center()</code>, <code>count()</code></li>
+        <li><code>endswith()</code>, <code>find()</code>, <code>index()</code>, <code>isalnum()</code></li>
+        <li><code>isalpha()</code>, <code>isdigit()</code>, <code>islower()</code>, <code>isupper()</code></li>
+        <li><code>join()</code>, <code>replace()</code>, <code>split()</code>, <code>startswith()</code></li>
+        <li><code>strip()</code>, <code>swapcase()</code>, <code>title()</code>, <code>zfill()</code></li>
+    </ul>
+</div>
+{% endblock %}

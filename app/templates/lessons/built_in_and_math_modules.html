@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+    </style>
+<div class="container">
+    <h1>01. Python Core Module Reference - Built-in, Math, Random & Statistics</h1>
+    <p>A comprehensive technical architectural reference evaluating low-level built-in math utilities, complex domain workflows, pseudo-randomization routines, and statistical distribution computations.</p>
+
+    <pre><span class="keyword">import</span> math
+<span class="keyword">import</span> cmath
+<span class="keyword">import</span> random
+<span class="keyword">import</span> statistics</pre>
+
+    <h2>1. Essential Built-in Utility Functions</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Native Optimization:</strong> Built-in methods are globally accessible within the global namespace without explicit import declarations, utilizing native C implementations for raw execution speed.</li>
+        <li><strong>Tuple Packing Optimization:</strong> The <code>divmod(a, b)</code> method avoids double evaluation by computing both mathematical properties concurrently, returning a packed tuple: $(\lfloor a/b \rfloor, a \pmod b)$.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 1: Built-in Utility Functions ---"</span>)
+
+negative_metric = -<span class="number">42.75</span>
+
+<span class="comment"># abs() returns the absolute magnitude value</span>
+absolute_value = abs(negative_metric)
+<span class="keyword">print</span>(<span class="string">f"[Abs] Absolute magnitude of {negative_metric} is: {absolute_value}"</span>)
+
+<span class="comment"># round() handles precision decimal structures cleanly</span>
+<span class="keyword">print</span>(<span class="string">f"[Round] Rounded integer: {round(absolute_value)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Round] Rounded with precision (1 decimal place): {round(absolute_value, 1)}"</span>)
+
+<span class="comment"># divmod() returns both quotient and remainder as a tuple efficiently</span>
+quotient, remainder = divmod(<span class="number">100</span>, <span class="number">7</span>)
+<span class="keyword">print</span>(<span class="string">f"[Divmod] 100 divided by 7 yields Quotient: {quotient}, Remainder: {remainder}"</span>)
+
+<span class="comment"># pow() calculates exponent structures power scales</span>
+<span class="keyword">print</span>(<span class="string">f"[Pow] 2 raised to the power of 5 is: {pow(2, 5)}\n"</span>)</pre>
+
+    <h2>2. Comprehensive Math & CMath Execution Pipelines</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Domain Separation:</strong> The standard <code>math</code> module is optimized strictly for real numbers ($\mathbb{R}$). Attempting to calculate the square root of a negative scalar throws a <code>ValueError</code>.</li>
+        <li><strong>Complex Domains:</strong> The <code>cmath</code> module explicitly operates within the complex field ($\mathbb{C}$), mapping values onto a 2D complex coordinate spectrum with real and imaginary parts.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 2: Math and Complex Math Operations ---"</span>)
+
+<span class="comment"># 1. Standard Math operations</span>
+<span class="keyword">print</span>(<span class="string">f"[Math.ceil] Ceiling value of 4.1: {math.ceil(4.1)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Math.floor] Floor value of 4.9: {math.floor(4.9)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Math.sqrt] Square root of 144: {math.sqrt(144)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Math.factorial] Factorial of 5: {math.factorial(5)}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[Math.constants] Pi: {math.pi} | Euler's Number: {math.e}"</span>)
+
+<span class="comment"># 2. CMath operations for tracking complex numbers</span>
+complex_number = <span class="number">2</span> + <span class="number">3j</span>
+phase_angle = cmath.phase(complex_number)
+<span class="keyword">print</span>(<span class="string">f"[CMath.phase] Phase angle representation of {complex_number}: {phase_angle}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[CMath.sqrt] Square root of a negative value (-16): {cmath.sqrt(-16)}\n"</span>)</pre>
+
+    <h2>3. Stochastic Engines & Randomization Algorithms</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Mersenne Twister Engine:</strong> Python leverages the Mersenne Twister ($MT19937$) algorithm as its core pseudo-random number generator (PRNG). This engine provides a massive period of $2^{19937}-1$, though it is not cryptographically secure.</li>
+        <li><strong>Determinism & Seeding:</strong> Providing an explicit state tracker via <code>random.seed()</code> freezes the initialization matrix, allowing stochastic behaviors to be exactly replicated across different runtime environments.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 3: Stochastic Randomization Systems ---"</span>)
+
+<span class="comment"># Setting a pseudo-random seed to secure simulation reproducibility</span>
+random.seed(<span class="number">42</span>)
+
+<span class="comment"># 1. Generating primitive numerical streams</span>
+random_float = random.random() <span class="comment"># Floating point token between 0.0 and 1.0</span>
+<span class="keyword">print</span>(<span class="string">f"[Random] Uniform distributed float value: {random_float}"</span>)
+
+random_integer = random.randint(<span class="number">10</span>, <span class="number">50</span>) <span class="comment"># Inclusive range bounded sequence</span>
+<span class="keyword">print</span>(<span class="string">f"[Random.randint] Random integer between 10 and 50: {random_integer}"</span>)
+
+<span class="comment"># 2. Collection selection mechanics</span>
+framework_choices = [<span class="string">"Flask"</span>, <span class="string">"Django"</span>, <span class="string">"FastAPI"</span>, <span class="string">"Sanic"</span>]
+selected_tool = random.choice(framework_choices)
+<span class="keyword">print</span>(<span class="string">f"[Random.choice] Randomly extracted stack item: {selected_tool}"</span>)
+
+<span class="comment"># 3. Permutations and shuffling</span>
+number_sequence = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+random.shuffle(number_sequence) <span class="comment"># Mutates list layout in-place</span>
+<span class="keyword">print</span>(<span class="string">f"[Random.shuffle] Mutated sequence distribution: {number_sequence}\n"</span>)</pre>
+
+    <h2>4. Data Distribution Analysis & Metrics</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Central Tendency Indices:</strong> <code>mean()</code> calculates the arithmetic average ($\mu$), <code>median()</code> resolves the exact central 50th-percentile breakpoint, and <code>mode()</code> isolates the highest frequency recurring element.</li>
+        <li><strong>Dispersion Profiling:</strong> <code>variance()</code> measures the average squared deviation from the mean, while <code>stdev()</code> computes its square root ($\sigma$), providing a clear metric of variance spread across a sample collection.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 4: Statistical Metrics Analysis ---"</span>)
+
+sample_dataset = [<span class="number">12</span>, <span class="number">15</span>, <span class="number">12</span>, <span class="number">18</span>, <span class="number">22</span>, <span class="number">12</span>, <span class="number">30</span>, <span class="number">25</span>, <span class="number">18</span>]
+
+<span class="comment"># 1. Mean: Central arithmetic average metric</span>
+dataset_mean = statistics.mean(sample_dataset)
+<span class="keyword">print</span>(<span class="string">f"[Mean] Central average calculation: {dataset_mean:.2f}"</span>)
+
+<span class="comment"># 2. Median: Exact middle structural point threshold</span>
+dataset_median = statistics.median(sample_dataset)
+<span class="keyword">print</span>(<span class="string">f"[Median] Middle item divider checkpoint: {dataset_median}"</span>)
+
+<span class="comment"># 3. Mode: Most frequent recurring entry token</span>
+dataset_mode = statistics.mode(sample_dataset)
+<span class="keyword">print</span>(<span class="string">f"[Mode] Highest frequency structural asset: {dataset_mode}"</span>)
+
+<span class="comment"># 4. Variance and Standard Deviation: Tracking distribution dispersion metrics</span>
+variance_metric = statistics.variance(sample_dataset)
+std_deviation = statistics.stdev(sample_dataset)
+<span class="keyword">print</span>(<span class="string">f"[Variance] Spread deviation framework: {variance_metric:.2f}"</span>)
+<span class="keyword">print</span>(<span class="string">f"[StDev] Standard Deviation index: {std_deviation:.2f}"</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] Math, Random, and Statistics modular engines evaluated."</span>)</pre>
+</div>
+{% endblock %}

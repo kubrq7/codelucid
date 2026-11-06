@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>01. Python Backend Unit - MongoDB (NoSQL)</h1>
+    <p>A comprehensive master guide to working with MongoDB in a Python backend ecosystem using the official <code>pymongo</code> library standard to implement complete CRUD architectures.</p>
+
+    <pre><span class="keyword">import</span> pymongo</pre>
+
+    <h2>1. MongoDB Initialization & Collection Setup</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>NoSQL Core Structure:</strong> MongoDB stores data in flexible, JSON-like documents rather than traditional relational tables.</li>
+        <li><strong>Mapping Paradigms:</strong> A SQL <em>Database</em> maps directly to a NoSQL <em>Database</em>, a SQL <em>Table</em> equates to a MongoDB <em>Collection</em>, and a SQL <em>Row</em> is stored as a BSON (Binary JSON) <em>Document</em>.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 1: Database and Collection Setup ---"</span>)
+
+<span class="comment"># Establish connection to the local MongoDB instance (Default port: 27017)</span>
+client = pymongo.MongoClient(<span class="string">"mongodb://localhost:27017/"</span>)
+
+<span class="comment"># Initialize the target database container</span>
+target_db = client[<span class="string">"production_database"</span>]
+
+<span class="comment"># Initialize the target collection (Equivalent to a SQL table)</span>
+product_collection = target_db[<span class="string">"products"</span>]
+<span class="keyword">print</span>(<span class="string">"[INFO] MongoDB client connected and 'products' collection initialized.\n"</span>)</pre>
+
+    <h2>2. Data Insertion Mechanics (Create)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Insert One:</strong> Adds a single Python dictionary mapped directly to BSON into the cluster collection. If no explicit <code>_id</code> is given, MongoDB assigns a unique 12-byte <code>ObjectId</code> automatically.</li>
+        <li><strong>Insert Many:</strong> Passes an iterable array list of records via a single atomic network request, radically minimizing network latency and overhead.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 2: Document Insertion Operations ---"</span>)
+
+<span class="comment"># Inserting a single document (Python dictionary structure mapping to BSON)</span>
+single_product = { <span class="string">"name"</span>: <span class="string">"Wireless Headphones"</span>, <span class="string">"price"</span>: <span class="number">1200</span>, <span class="string">"category"</span>: <span class="string">"Electronics"</span>, <span class="string">"stock"</span>: <span class="number">45</span> }
+insert_result = product_collection.insert_one(single_product)
+<span class="keyword">print</span>(<span class="string">f"[Insert] Single document inserted with ID: {insert_result.inserted_id}"</span>)
+
+<span class="comment"># Inserting multiple documents simultaneously (Optimized bulk insertion)</span>
+bulk_products = [
+    { <span class="string">"name"</span>: <span class="string">"Mechanical Keyboard"</span>, <span class="string">"price"</span>: <span class="number">2500</span>, <span class="string">"category"</span>: <span class="string">"Electronics"</span>, <span class="string">"stock"</span>: <span class="number">15</span> },
+    { <span class="string">"name"</span>: <span class="string">"Gaming Mouse"</span>, <span class="string">"price"</span>: <span class="number">850</span>, <span class="string">"category"</span>: <span class="string">"Electronics"</span>, <span class="string">"stock"</span>: <span class="number">60</span> },
+    { <span class="string">"name"</span>: <span class="string">"Smart Watch"</span>, <span class="string">"price"</span>: <span class="number">3400</span>, <span class="string">"category"</span>: <span class="string">"Wearables"</span>, <span class="string">"stock"</span>: <span class="number">20</span> },
+    { <span class="string">"name"</span>: <span class="string">"Ergonomic Chair"</span>, <span class="string">"price"</span>: <span class="number">4500</span>, <span class="string">"category"</span>: <span class="string">"Furniture"</span>, <span class="string">"stock"</span>: <span class="number">5</span> }
+]
+bulk_result = product_collection.insert_many(bulk_products)
+<span class="keyword">print</span>(<span class="string">f"[Insert] Bulk insertion completed. Total count: {len(bulk_result.inserted_ids)}\n"</span>)</pre>
+
+    <h2>3. Document Retrieval, Querying & Limiting (Read)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Find One:</strong> Resolves and yields the first matching physical document from the target sequence structure.</li>
+        <li><strong>Query Operators:</strong> Evaluation keys handle advanced condition filtering without writing raw code strings. Common operations include:
+            <ul>
+                <li><code>$gt</code>: Greater Than ($>$)</li>
+                <li><code>$gte</code>: Greater Than or Equal To ($\ge$)</li>
+                <li><code>$lt</code>: Less Than ($<$)</li>
+                <li><code>$lte</code>: Less Than or Equal To ($\le$)</li>
+            </ul>
+        </li>
+        <li><strong>Cursor Modification:</strong> Methods like <code>.limit()</code> don't slice datasets locally; they restrict records directly inside the database cluster to protect system memory.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 3: Advanced Querying and Result Limiting ---"</span>)
+
+<span class="comment"># 1. Fetching the first available document in the collection</span>
+first_item = product_collection.find_one()
+<span class="keyword">print</span>(<span class="string">f"[Find One] Initial Document: {first_item['name'] if first_item else 'None'}"</span>)
+
+<span class="comment"># 2. Querying with evaluation operators ($gt = Greater Than)</span>
+price_query = { <span class="string">"price"</span>: { <span class="string">"$gt"</span>: <span class="number">1500</span> } }
+filtered_items = product_collection.find(price_query)
+
+<span class="keyword">print</span>(<span class="string">"[Query Result] Products with price greater than 1500:"</span>)
+<span class="keyword">for</span> item <span class="keyword">in</span> filtered_items:
+    <span class="keyword">print</span>(<span class="string">f" - {item['name']}: {item['price']} TRY"</span>)
+
+<span class="comment"># 3. Restricting result set volume using the Limit clause</span>
+limited_items = product_collection.find().limit(<span class="number">2</span>)
+<span class="keyword">print</span>(<span class="string">"[Limit Result] Restricted Output (Top 2 Items):"</span>)
+<span class="keyword">for</span> item <span class="keyword">in</span> limited_items:
+    <span class="keyword">print</span>(<span class="string">f" - {item['name']}"</span>)
+<span class="keyword">print</span>(<span class="string">""</span>)</pre>
+
+    <h2>4. Data Sorting Mechanics</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Ordering:</strong> The <code>.sort()</code> method accepts directional integer metrics to order your documents. Using a <code>1</code> enforces <strong>Ascending</strong> order, whereas a <code>-1</code> enforces <strong>Descending</strong> order.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 4: Document Sorting Operations ---"</span>)
+
+<span class="comment"># Sorting order definition: Ascending (1) or Descending (-1)</span>
+<span class="comment"># Sorting products from highest price to lowest price</span>
+sorted_by_price = product_collection.find().sort(<span class="string">"price"</span>, -<span class="number">1</span>)
+
+<span class="keyword">print</span>(<span class="string">"[Sort Result] Price Evaluation (Descending):"</span>)
+<span class="keyword">for</span> item <span class="keyword">in</span> sorted_by_price:
+    <span class="keyword">print</span>(<span class="string">f" - {item['name']}: {item['price']} TRY"</span>)
+<span class="keyword">print</span>(<span class="string">""</span>)</pre>
+
+    <h2>5. Document Modification (Update)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Atomic Operators:</strong> Modifications require explicit updates to prevent accidentally overwriting the entire document.
+            <ul>
+                <li><code>$set</code>: Rewrites specific fields with new values while leaving other keys untouched.</li>
+                <li><code>$inc</code>: Mathematically adjusts existing numeric values by a positive or negative amount directly in memory.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 5: Document Modification Operations ---"</span>)
+
+<span class="comment"># Modifying a single document using the atomic $set operator</span>
+update_filter = { <span class="string">"name"</span>: <span class="string">"Gaming Mouse"</span> }
+new_values = { <span class="string">"$set"</span>: { <span class="string">"price"</span>: <span class="number">950</span>, <span class="string">"stock"</span>: <span class="number">55</span> } }
+product_collection.update_one(update_filter, new_values)
+<span class="keyword">print</span>(<span class="string">"[Update] 'Gaming Mouse' metrics updated successfully."</span>)
+
+<span class="comment"># Modifying multiple documents utilizing the arithmetic $inc operator</span>
+<span class="comment"># Increments stock value by 5 for all records matching the 'Electronics' category</span>
+product_collection.update_many({ <span class="string">"category"</span>: <span class="string">"Electronics"</span> }, { <span class="string">"$inc"</span>: { <span class="string">"stock"</span>: <span class="number">5</span> } })
+<span class="keyword">print</span>(<span class="string">"[Update Many] Stock incremented for all items under 'Electronics' category.\n"</span>)</pre>
+
+    <h2>6. Document Deletion & Collection Drop (Delete)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Delete One / Many:</strong> Removes active documents that match targeted query filters from the collection space.</li>
+        <li><strong>Drop:</strong> Completely purges the entire collection structural framework and its indices from physical memory, making it much more efficient than executing long individual document deletions.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 6: Deletion and Cleanup Operations ---"</span>)
+
+<span class="comment"># Removing a specific document from the collection context</span>
+delete_query = { <span class="string">"name"</span>: <span class="string">"Wireless Headphones"</span> }
+product_collection.delete_one(delete_query)
+<span class="keyword">print</span>(<span class="string">"[Delete] 'Wireless Headphones' removed from collection."</span>)
+
+<span class="comment"># Erasing the entire collection structural framework from the database (Drop)</span>
+product_collection.drop()
+<span class="keyword">print</span>(<span class="string">"[Drop] 'products' collection completely removed from the database instance."</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] All MongoDB CRUD architectural layers executed flawlessly."</span>)</pre>
+</div>
+{% endblock %}

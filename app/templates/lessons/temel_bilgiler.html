@@ -1,0 +1,116 @@
+    {% extends 'base.html' %}
+    {% block content %}
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+    <a href="{{ url_for('main.dashboard') }}" class="back-button">
+    ← Back to Lessons
+</a>
+<div class="container">
+    <h1>01. Python Indentation Rules, Output Methods, and Basic Variables</h1>
+
+    <h2>1. Python Indentation (The Most Important Rule)</h2>
+    <p>In other languages, indentation is just for readability. In Python, it is <strong>MANDATORY</strong>. Python uses indentation to define and indicate a block of code.</p>
+    <ul>
+        <li>The standard is <strong>4 spaces (or 1 Tab)</strong>.</li>
+        <li>It must be at least 1 space, and you <strong>MUST</strong> use the same amount within the same block.</li>
+    </ul>
+
+    <pre><span class="keyword">if</span> <span class="number">5</span> > <span class="number">2</span>:
+    print(<span class="string">"Five is greater than two!"</span>)  <span class="comment"># Shifted right by 4 spaces</span>
+
+<span class="keyword">if</span> <span class="number">5</span> > <span class="number">2</span>:
+    print(<span class="string">"Line 1 of the block"</span>)
+    print(<span class="string">"Line 2 of the block"</span>)  <span class="comment"># Matches the indentation above</span></pre>
+
+    <div class="important">
+        <strong>Strict Rule:</strong> Incorrect indentation will directly raise an <code>IndentationError</code> or <code>SyntaxError</code>.
+    </div>
+
+    <h2>2. Python Variables (Quick Introduction)</h2>
+    <p>A variable is automatically created the moment you assign a value to it using the single equals sign (<code>=</code>).</p>
+
+    <pre>x = <span class="number">5</span>
+y = <span class="string">"Hello, World!"</span>
+print(x, y)  <span class="comment"># Displays the values stored inside x and y</span></pre>
+
+    <h2>3. Advanced print() Methods & Outputs</h2>
+    
+    <h3>A) Using the `end` Parameter</h3>
+    <p>By default, print() automatically jumps to a new line at the end. You can change this behavior using <code>end=" "</code> to print things on the same line:</p>
+    <pre>print(<span class="string">"Hello"</span>, end=<span class="string">" "</span>)
+print(<span class="string">"World!"</span>)  <span class="comment"># Output: Hello World!</span></pre>
+
+    <h3>B) Numbers vs Text in Print</h3>
+    <p>Unlike text/strings, we do NOT enclose numbers or mathematical operations in quotation marks to perform calculation directly inside print:</p>
+    <pre>print(<span class="number">300</span>)
+print(<span class="number">5</span> * <span class="number">2</span>)  <span class="comment"># Output: 10</span></pre>
+
+    <h3>C) Combining Text and Numbers</h3>
+    <p>You must separate different data types using commas (<code>,</code>) inside print(). Python automatically puts a space character where the comma is:</p>
+    <pre>print(<span class="string">"I am"</span>, <span class="number">20</span>, <span class="string">"years old"</span>)</pre>
+
+    <h3>D) Writing Multiple Statements on a Single Line</h3>
+    <p>Although writing code line-by-line is preferred, you can use a semicolon (<code>;</code>) to separate and execute multiple statements on a single line:</p>
+    <pre>print(<span class="string">"Hello!"</span>); print(<span class="string">"Hey!"</span>)</pre>
+
+    <h2>4. Code Comments in Python</h2>
+    <p>Comments are used to explain Python code and make it readable. Comments begin with a hash sign (<code>#</code>), and Python will ignore them. Triple quotes (<code>"""</code>) are used for multi-line notes.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>04. Deep Dive into Python Numbers, Scientific Notation, Casting & Random</h1>
+
+    <h2>1. The Three Numeric Types</h2>
+    <p>Python recognizes integers, floats, and complex numbers automatically upon assignment.</p>
+    <pre>x = 1    # int (Integer)
+y = 2.8  # float (Floating-Point Number)
+z = 1j   # complex (Complex Number)</pre>
+
+    <h3>A) Deep Dive: int (Integer)</h3>
+    <p>Whole numbers, positive or negative, without decimals, of unlimited length.</p>
+    <pre>integer_pos = 1
+integer_huge = 35656222554887711
+integer_neg = -3255522</pre>
+
+    <h3>B) Deep Dive: float (Floating-Point)</h3>
+    <p>Numbers containing one or more decimals, positive or negative. Floats can also be scientific numbers with an "e" or "E" to indicate the power of 10.</p>
+    <pre>sci_pos = 35e3     # 35 * 10^3  -> 35000.0
+sci_capital = 12E4 # 12 * 10^4  -> 120000.0
+sci_huge = -87.7e100</pre>
+
+    <h3>C) Deep Dive: complex</h3>
+    <p>Complex numbers are written with a "j" as the imaginary part.</p>
+    <pre>comp1 = 3+5j
+comp2 = 5j
+comp3 = -5j</pre>
+
+    <h2>2. Type Casting Between Numbers</h2>
+    <p>Convert numbers using <code>int()</code>, <code>float()</code>, and <code>complex()</code>.</p>
+    <pre># Convert from float to int:
+# WARNING: This truncates the decimal part (2.8 becomes 2)
+b = int(2.8)</pre>
+
+    <div class="important">
+        <strong>❌ THE COMPLEX CRASH RULE:</strong> You CANNOT convert complex numbers into another number type! Writing <code>int(1j)</code> or <code>float(1j)</code> will crash Python immediately.
+    </div>
+
+    <h2>3. Random Number Generation</h2>
+    <p>Python includes a built-in module named 'random'.</p>
+    <pre>import random
+
+# random.randrange(start, stop)
+# Generates a random number from 'start' up to (but NOT including) 'stop'.
+print(random.randrange(1, 10))</pre>
+</div>
+{% endblock %}

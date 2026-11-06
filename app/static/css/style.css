@@ -1,0 +1,316 @@
+:root {
+  color-scheme: dark;
+  --bg: #030406;
+  --panel: rgba(13, 15, 20, 0.65);
+  --line: rgba(255, 255, 255, 0.08);
+  --text-main: #f8fafc;
+  --text-muted: #8b96a5;
+  --accent-olive: #7C9060; /* Bespoke Zeytin Yeşili */
+  --accent-olive-glow: rgba(124, 144, 96, 0.2);
+  --error: #df7a7a;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  --font-mono: "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background grid for corporate-cyber feel */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Authentication Layouts */
+.auth-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--panel);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--line);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+input {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--line);
+  color: white;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent-olive);
+  box-shadow: 0 0 0 3px var(--accent-olive-glow);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent-olive-glow);
+  color: var(--accent-olive);
+  border: 1px solid var(--accent-olive);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.btn-primary:hover {
+  background: var(--accent-olive);
+  color: #000;
+  transform: translateY(-2px);
+}
+
+/* Monogram Logo */
+.brand-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+/* Dashboard Layout */
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  background: rgba(7, 9, 13, 0.8);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.manifesto-panel {
+  background: rgba(124, 144, 96, 0.05);
+  border: 1px solid var(--accent-olive-glow);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.manifesto-panel h2 { color: var(--text-main); margin-top: 0; }
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.editor-section, .console-section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea.code-editor {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  color: #a9b7c6;
+  font-family: var(--font-mono);
+  padding: 20px;
+  resize: none;
+}
+textarea.code-editor:focus { outline: none; }
+
+.status-indicator.success { color: var(--accent-olive); }
+.status-indicator.error { color: var(--error); }
+
+
+
+/* ===========================
+   MOBILE
+=========================== */
+
+.menu-toggle{
+    display:none;
+}
+
+@media (max-width:768px){
+
+    .menu-toggle{
+        display:block;
+        position:fixed;
+        top:18px;
+        left:18px;
+        z-index:9999;
+
+        background:#111827;
+        color:white;
+
+        border:none;
+
+        width:46px;
+        height:46px;
+
+        border-radius:10px;
+
+        font-size:24px;
+
+        cursor:pointer;
+    }
+@media (max-width:768px){
+
+    .brand{
+        margin-top:70px;
+    }
+
+}
+
+    .sidebar{
+
+        position:fixed;
+
+        left:-270px;
+
+        top:0;
+
+        height:100vh;
+
+        transition:.3s;
+
+        z-index:999;
+    }
+
+    .sidebar.active{
+
+        left:0;
+
+    }
+
+    .main-content{
+
+        margin-left:0;
+
+        width:100%;
+
+        padding:90px 25px;
+
+    }
+
+}
+
+.back-button{
+    display:inline-block;
+    margin:0 auto 20px;
+    color:#b5c937;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.back-button:hover{
+    color:#d6ec57;
+}
+@media (max-width:768px){
+
+    .container{
+        padding:24px;
+    }
+
+    h1{
+        font-size:36px;
+        line-height:1.2;
+    }
+
+    h2{
+        font-size:28px;
+    }
+
+    h3{
+        font-size:22px;
+    }
+
+    p,
+    li{
+        font-size:18px;
+    }
+
+    pre{
+        font-size:15px;
+    }
+
+}
+
+@media (max-width:768px){
+
+    #learn > div{
+        display:flex !important;
+        flex-direction:column !important;
+        height:auto !important;
+        gap:20px !important;
+    }
+
+    #learn .doc-card{
+        width:100% !important;
+    }
+
+    #codeEditor{
+        min-height:260px !important;
+    }
+
+    #consoleOutput{
+        min-height:180px !important;
+    }
+
+}
+
+.quiz-page{
+    padding:20px !important;
+}
+
+.quiz-question{
+    font-size:20px !important;
+}
+
+.quiz-option{
+    padding:12px !important;
+    font-size:15px !important;
+}
+

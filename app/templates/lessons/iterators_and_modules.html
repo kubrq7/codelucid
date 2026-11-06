@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>16. Unified Master Guide to Python Iterators and Module Architecture</h1>
+
+    <h2>1. The Iterator Protocol (__iter__ & __next__)</h2>
+    <ul>
+        <li><strong>Iterable:</strong> An object that can return an iterator using the <code>iter()</code> method (e.g., lists, strings).</li>
+        <li><strong>Iterator:</strong> A stateful object that produces values sequentially when <code>next()</code> is called.</li>
+    </ul>
+    <p>Under the hood, for-loops call <code>iter()</code> and handle <code>StopIteration</code> automatically.</p>
+
+    <pre>fruits_tuple = (<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>)
+iterator_obj = <span class="keyword">iter</span>(fruits_tuple)
+
+<span class="keyword">print</span>(<span class="keyword">next</span>(iterator_obj))  <span class="comment"># Outputs: apple</span>
+<span class="keyword">print</span>(<span class="keyword">next</span>(iterator_obj))  <span class="comment"># Outputs: banana</span>
+<span class="keyword">print</span>(<span class="keyword">next</span>(iterator_obj))  <span class="comment"># Outputs: cherry</span>
+<span class="comment"># next(iterator_obj)       # -> Triggers StopIteration Exception at runtime</span>
+
+<span class="comment"># Strings are also built-in iterables</span>
+word_iterator = <span class="keyword">iter</span>(<span class="string">"code"</span>)
+<span class="keyword">print</span>(<span class="keyword">next</span>(word_iterator))  <span class="comment"># Outputs: c</span></pre>
+
+    <h2>2. Custom Iterators (Class Implementation)</h2>
+    <p>To create an iterator object from scratch, a class must define:</p>
+    <ul>
+        <li><code>__iter__()</code>: Initializes state and returns the iterator object itself (<code>self</code>).</li>
+        <li><code>__next__()</code>: Computes the next element, tracks index updates, and raises <code>StopIteration</code> to signal the collection boundary limit.</li>
+    </ul>
+
+    <pre><span class="keyword">class</span> FiniteCounter:
+    <span class="string">"""Generates sequential numbers up to a specified maximum ceiling."""</span>
+    <span class="keyword">def</span> __init__(self, max_limit):
+        self.max_limit = max_limit
+
+    <span class="keyword">def</span> __iter__(self):
+        self.current_value = <span class="number">1</span>
+        <span class="keyword">return</span> self
+
+    <span class="keyword">def</span> __next__(self):
+        <span class="keyword">if</span> self.current_value &lt;= self.max_limit:
+            output = self.current_value
+            self.current_value += <span class="number">1</span>
+            <span class="keyword">return</span> output
+        <span class="keyword">else</span>:
+            <span class="keyword">raise</span> <span class="keyword">StopIteration</span>
+
+<span class="comment"># Consuming the custom iterator via clean loop interaction</span>
+counter_pipeline = FiniteCounter(max_limit=<span class="number">3</span>)
+<span class="keyword">for</span> num <span class="keyword">in</span> counter_pipeline:
+    <span class="keyword">print</span>(<span class="string">f"Custom Iterator Output: {</span>num<span class="string">}"</span>)</pre>
+
+    <h2>3. Python Module Architecture & Import Mechanics</h2>
+    <p>Modules allow engineers to break massive codebases into separate reusable .py files. Let's mock a module environment and check built-in platform utilities.</p>
+
+    <pre><span class="keyword">import</span> platform
+
+<span class="comment"># Accessing platform diagnostic variables</span>
+os_type = platform.system()
+<span class="keyword">print</span>(<span class="string">f"\nHost Operating System: {</span>os_type<span class="string">}"</span>)
+
+<span class="comment"># --- Introspection via dir() ---</span>
+<span class="comment"># The dir() built-in function extracts all structural names and variables inside a module.</span>
+platform_attributes = <span class="keyword">dir</span>(platform)
+<span class="keyword">print</span>(<span class="string">f"Sample of internal methods in platform module: {</span>platform_attributes[:<span class="number">5</span>]<span class="string">}"</span>)</pre>
+
+    <h2>4. Structural Import Syntax Variations</h2>
+    <pre><span class="comment"># A) Standard Namespace Import:</span>
+<span class="comment"># import math</span>
+<span class="comment"># print(math.sqrt(16))</span>
+
+<span class="comment"># B) Alias Namespace Import:</span>
+<span class="comment"># import statistics as stats</span>
+<span class="comment"># print(stats.mean([10, 20, 30]))</span>
+
+<span class="comment"># C) Targeted Extract Import (Omits module namespace prefixes completely):</span>
+<span class="comment"># from os import path</span>
+<span class="comment"># print(path.exists("17_iterators_and_modules.py"))</span></pre>
+</div>
+{% endblock %}

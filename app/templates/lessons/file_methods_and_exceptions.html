@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+    </style>
+<div class="container">
+    <h1>03. Python Core Reference Unit - File Methods & Exception Handling</h1>
+    <p>A rigorous engineering reference guide mapping persistent I/O stream mechanics and fault-tolerant, multi-layered exception mitigation structures.</p>
+
+    <pre><span class="keyword">import</span> os</pre>
+
+    <h2>1. Safe File Creation and Data Writing Mechanics</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Context Management (RAII):</strong> The <code>with</code> statement encapsulates a context manager that ensures deterministic cleanup of operating system file handles. It guarantees that the stream's underlying <code>.close()</code> hook is called even if runtime disruptions interrupt execution.</li>
+        <li><strong>Buffer Interleaving:</strong> While <code>.write()</code> transfers a distinct character string payload to the disk stream buffer, <code>.writelines()</code> iterates through a sequence of strings without injecting native newline characters.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 1: File Writing Mechanics ---"</span>)
+
+target_filename = <span class="string">"execution_log.txt"</span>
+
+<span class="comment"># Open file in 'w' (write) mode inside a safe content manager context</span>
+<span class="keyword">with</span> open(target_filename, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> file_stream:
+    <span class="comment"># 1. write(): Writing standalone string data blocks</span>
+    file_stream.write(<span class="string">"LOG_START: System initialized successfully.\n"</span>)
+    file_stream.write(<span class="string">"STATUS: Processing architectural reference layers.\n"</span>)
+    
+    <span class="comment"># 2. writelines(): Inserting an iterative sequence of string lines</span>
+    buffered_lines = [
+        <span class="string">"METRIC: CPU consumption within nominal ranges.\n"</span>,
+        <span class="string">"METRIC: Memory registers allocated safely.\n"</span>,
+        <span class="string">"LOG_END: Operational task completed.\n"</span>
+    ]
+    file_stream.writelines(buffered_lines)
+
+<span class="keyword">print</span>(<span class="string">f"[INFO] File '{target_filename}' written and flushed to disk memory.\n"</span>)</pre>
+
+    <h2>2. Stream Reading Mechanics (Input Streams)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Buffer Consumption:</strong> Every read operation moves the underlying file system stream pointer forward.</li>
+        <li><strong>Pointer Repositioning:</strong> Calling <code>.seek(0)</code> moves the stream pointer back to the exact byte offset 0, allowing files to be safely re-read within the same execution path.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 2: Stream Reading Operations ---"</span>)
+
+<span class="comment"># Validating file existence before executing sequential read pipelines</span>
+<span class="keyword">if</span> os.path.exists(target_filename):
+    <span class="keyword">with</span> open(target_filename, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> file_stream:
+        <span class="comment"># 1. readlines(): Reads the entire file structure into a Python list</span>
+        all_lines = file_stream.readlines()
+        <span class="keyword">print</span>(<span class="string">f"[Readlines] Total line structure count: {len(all_lines)}"</span>)
+        
+        <span class="comment"># Resetting stream pointer position back to the beginning of the file (seek)</span>
+        file_stream.seek(<span class="number">0</span>)
+        
+        <span class="comment"># 2. readline(): Fetches file lines sequentially one by one</span>
+        first_line = file_stream.readline().strip()
+        second_line = file_stream.readline().strip()
+        <span class="keyword">print</span>(<span class="string">f"[Readline] Pointer Row 1: {first_line}"</span>)
+        <span class="keyword">print</span>(<span class="string">f"[Readline] Pointer Row 2: {second_line}"</span>)
+<span class="keyword">print</span>(<span class="string">""</span>)</pre>
+
+    <h2>3. Comprehensive Exception Handling Pipeline (Try-Except-Finally)</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Polymorphic Resolution:</strong> Exception routing cascades sequentially down matching branches. Catch blocks should always be arranged from most narrow and specialized (e.g., <code>ZeroDivisionError</code>) to most broad and generic (e.g., base <code>Exception</code>).</li>
+        <li><strong>Guaranteed Finalization:</strong> The <code>finally</code> block executes reliably regardless of whether an exception is raised or caught, making it the standard location for cleaning up critical system resources.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 3: Robust Fault-Tolerance Execution ---"</span>)
+
+<span class="keyword">try</span>:
+    <span class="keyword">print</span>(<span class="string">"[Try] Attempting calculation division arithmetic sequence..."</span>)
+    denominator = <span class="number">0</span>
+    <span class="comment"># This statement invokes a dangerous execution path (ZeroDivisionError)</span>
+    result = <span class="number">100</span> / denominator
+
+<span class="keyword">except</span> ZeroDivisionError <span class="keyword">as</span> explicit_error:
+    <span class="comment"># Capturing and logging specific math faults gracefully without crashing</span>
+    <span class="keyword">print</span>(<span class="string">f"[Except] Intercepted math runtime fault: {explicit_error}"</span>)
+
+<span class="keyword">except</span> FileNotFoundError <span class="keyword">as</span> file_error:
+    <span class="comment"># Multilayered protection structure to catch file mapping failures</span>
+    <span class="keyword">print</span>(<span class="string">f"[Except] Intercepted missing asset link: {file_error}"</span>)
+
+<span class="keyword">except</span> Exception <span class="keyword">as</span> general_error:
+    <span class="comment"># Global fallback container for unexpected execution anomalies</span>
+    <span class="keyword">print</span>(<span class="string">f"[Except] Global generic system catch: {general_error}"</span>)
+
+<span class="keyword">with</span>:<span class="comment"># This architectural block ALWAYS runs, regardless of whether a fault occurred</span>
+    <span class="keyword">print</span>(<span class="string">"[Finally] Executing mandatory resource sanitation routines."</span>)
+<span class="keyword">print</span>(<span class="string">"[System] Core runtime successfully survived the interruption pipeline.\n"</span>)</pre>
+
+    <h2>4. Custom Error Raising and Constraints Enforcement</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Assertion Interception:</strong> The <code>raise</code> keyword halts standard code execution and bubbles an explicit error object up the call stack to signal that a business domain rule or program constraint has been violated.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- Section 4: Validation Trigger Mechanisms ---"</span>)
+
+<span class="keyword">def</span> <span class="topic">validate_user_age</span>(age: <span class="keyword">int</span>):
+    <span class="comment"># Enforcing business logic thresholds explicitly</span>
+    <span class="keyword">if</span> age &lt; <span class="number">0</span>:
+        <span class="comment"># raise keyword manually triggers a specific error instance</span>
+        <span class="keyword">raise</span> ValueError(<span class="string">"Age profile parameter metrics cannot yield negative values."</span>)
+    <span class="keyword">elif</span> age &lt; <span class="number">18</span>:
+        <span class="keyword">print</span>(<span class="string">"[Status] Account created under junior sandbox constraints."</span>)
+    <span class="keyword">else</span>:
+        <span class="keyword">print</span>(<span class="string">"[Status] Account authorized for full infrastructure control."</span>)
+
+<span class="keyword">try</span>:
+    <span class="comment"># Testing custom validation execution framework</span>
+    <span class="keyword">print</span>(<span class="string">"[Validation] Submitting parameter metric: -5"</span>)
+    validate_user_age(-<span class="number">5</span>)
+<span class="keyword">except</span> ValueError <span class="keyword">as</span> structural_fault:
+    <span class="keyword">print</span>(<span class="string">f"[Caught] Explicit check failed successfully: {structural_fault}"</span>)
+
+<span class="comment"># Cleanup operations: Deleting the temporary log asset</span>
+<span class="keyword">if</span> os.path.exists(target_filename):
+    os.remove(target_filename)
+    <span class="keyword">print</span>(<span class="string">"\n[Cleanup] Execution temporary disk space sanitized."</span>)
+
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] File methods and exception handling matrices verified flawlessly."</span>)</pre>
+</div>
+{% endblock %}

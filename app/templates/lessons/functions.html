@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>14. Advanced Master Guide to Python Functions, Scope, and Decorators</h1>
+
+    <pre><span class="keyword">import</span> functools</pre>
+
+    <h2>1. Core Function Architecture & Arguments</h2>
+    <p>Functions eliminate repetition by creating reusable blocks of logic.</p>
+    <ul>
+        <li><strong>Parameter:</strong> The variable definition inside the function signature.</li>
+        <li><strong>Argument:</strong> The concrete value sent to the function during invocation.</li>
+    </ul>
+    <pre><span class="keyword">def</span> calculate_thermal_efficiency(fahrenheit: <span class="keyword">float</span>) -> <span class="keyword">float</span>:
+    <span class="string">"""Converts Fahrenheit inputs to Celsius returns."""</span>
+    <span class="keyword">return</span> (fahrenheit - <span class="number">32</span>) * <span class="number">5</span> / <span class="number">9</span>
+
+<span class="keyword">print</span>(<span class="string">f"77°F Efficiency: {</span>calculate_thermal_efficiency(<span class="number">77</span>)<span class="string">}"</span>)
+<span class="keyword">print</span>(<span class="string">f"95°F Efficiency: {</span>calculate_thermal_efficiency(<span class="number">95</span>)<span class="string">}"</span>)</pre>
+
+    <h2>2. Strict Position / Keyword Parameter Bounds</h2>
+    <p>You can force parameters to follow positional or keyword laws using <code>/</code> and <code>*</code>.</p>
+    <ul>
+        <li><strong>Before '/':</strong> Arguments MUST be strictly Positional Only.</li>
+        <li><strong>After '*':</strong> Arguments MUST be strictly Keyword Only.</li>
+    </ul>
+    <pre><span class="keyword">def</span> provision_cluster_node(node_id, /, host_ip, *, sec_group, active=<span class="keyword">True</span>):
+    <span class="string">"""
+    node_id   -> Positional-only (forced by /)
+    host_ip   -> Can be positional or keyword
+    sec_group -> Keyword-only (forced by *)
+    active    -> Keyword-only default value fallback
+    """</span>
+    <span class="keyword">return</span> <span class="string">f"Node {</span>node_id<span class="string">} at {</span>host_ip<span class="string">} running under group: {</span>sec_group<span class="string">}"</span>
+
+<span class="comment"># Correct Execution:</span>
+response = provision_cluster_node(<span class="string">"srv-01"</span>, <span class="string">"192.168.1.5"</span>, sec_group=<span class="string">"prod-firewall"</span>)
+<span class="keyword">print</span>(response)
+
+<span class="comment"># ❌ ILLEGAL SYNTAX INVOCATIONS (Will trigger runtime TypeErrors):
+# provision_cluster_node(node_id="srv-01", host_ip="192.168.1.5", sec_group="prod-fw") 
+# provision_cluster_node("srv-01", "192.168.1.5", "prod-firewall")</span></pre>
+
+    <h2>3. Dynamic Packing (*args & **kwargs)</h2>
+    <p>Used when the absolute amount of passing arguments cannot be forecasted beforehand.</p>
+    <ul>
+        <li><code>*args</code> packs loose positional arguments into an immutable <strong>Tuple</strong>.</li>
+        <li><code>**kwargs</code> packs loose keyword arguments into a mutable <strong>Dictionary</strong>.</li>
+    </ul>
+    <pre><span class="keyword">def</span> dispatch_telemetry_payload(system, *metrics, **metadata):
+    <span class="keyword">print</span>(<span class="string">f"\nSystem Target: {</span>system<span class="string">}"</span>)
+    <span class="keyword">print</span>(<span class="string">f"Metrics Tuple: {</span>metrics<span class="string">} (Type: {</span><span class="keyword">type</span>(metrics)<span class="string">})"</span>)
+    <span class="keyword">print</span>(<span class="string">f"Metadata Dict: {</span>metadata<span class="string">} (Type: {</span><span class="keyword">type</span>(metadata)<span class="string">})"</span>)
+
+dispatch_telemetry_payload(<span class="string">"Database_Cluster"</span>, <span class="number">94.2</span>, <span class="number">108.5</span>, environment=<span class="string">"Production"</span>, region=<span class="string">"EU-West"</span>)
+
+<span class="comment"># --- Unpacking Operations via * and ** ---</span>
+<span class="keyword">def</span> map_coordinates(x, y, z):
+    <span class="keyword">return</span> <span class="string">f"X:{</span>x<span class="string">}, Y:{</span>y<span class="string">}, Z:{</span>z<span class="string">}"</span>
+
+vector_list = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>]
+payload_dict = {<span class="string">"x"</span>: <span class="number">55</span>, <span class="string">"y"</span>: <span class="number">66</span>, <span class="string">"z"</span>: <span class="number">77</span>}
+
+<span class="keyword">print</span>(map_coordinates(*vector_list)) 
+<span class="keyword">print</span>(map_coordinates(**payload_dict))</pre>
+
+    <h2>4. Scope Boundaries & LEGB Execution Rule</h2>
+    <p>Python resolves scopes using the LEGB hierarchy: <strong>Local -> Enclosing -> Global -> Built-in</strong>.</p>
+    <ul>
+        <li><code>global</code>: Forces a local function variable to point directly to the module level.</li>
+        <li><code>nonlocal</code>: Forces a nested local variable to target its parent outer function scope.</li>
+    </ul>
+    <pre>system_token = <span class="string">"global_sys_01"</span> 
+
+<span class="keyword">def</span> initialize_auth_sequence():
+    system_token = <span class="string">"enclosing_auth_02"</span> 
+    
+    <span class="keyword">def</span> inner_security_override():
+        <span class="keyword">nonlocal</span> system_token
+        system_token = <span class="string">"mutated_enclosing"</span> 
+        
+        <span class="keyword">global</span> global_flag
+        global_flag = <span class="string">"injected_global"</span> 
+        
+    inner_security_override()
+    <span class="keyword">print</span>(<span class="string">f"Enclosing Verification: {</span>system_token<span class="string">}"</span>)
+
+initialize_auth_sequence()
+<span class="keyword">print</span>(<span class="string">f"Injected Scope Flag Check: {</span>global_flag<span class="string">}"</span>)</pre>
+
+    <h2>5. Lambda Expressions (Anonymous Inlines)</h2>
+    <p>Small, throwaway single-line expressions. Syntactically bounded to a single return line.<br>
+    Formula: <code>lambda parameters : expression</code></p>
+    <pre>compute_power = <span class="keyword">lambda</span> base, exponent: base ** exponent
+<span class="keyword">print</span>(<span class="string">f"Inline Lambda Result: {</span>compute_power(<span class="number">2</span>, <span class="number">3</span>)<span class="string">}"</span>)
+
+<span class="comment"># High performance combinations with map(), filter(), and sorted()</span>
+workers = [(<span class="string">"Dev_A"</span>, <span class="number">4</span>), (<span class="string">"Dev_B"</span>, <span class="number">2</span>), (<span class="string">"Dev_C"</span>, <span class="number">5</span>)]
+sorted_workers = <span class="keyword">sorted</span>(workers, key=<span class="keyword">lambda</span> worker: worker[<span class="number">1</span>]) 
+<span class="keyword">print</span>(<span class="string">f"Sorted via Lambda: {</span>sorted_workers<span class="string">}"</span>)</pre>
+
+    <h2>6. Function Decorators</h2>
+    <p>Decorators intercept, modify, or extend function behaviors cleanly without altering the underlying function's core source text block.</p>
+    <pre><span class="keyword">def</span> sanitize_logger(func):
+    <span class="string">"""Advanced decorator that monitors, log traces, and uppercase outputs safely."""</span>
+    <span class="keyword">@functools.wraps</span>(func) 
+    <span class="keyword">def</span> wrapper(*args, **kwargs):
+        <span class="keyword">print</span>(<span class="string">f"[LOG TRACE] Intercepting execution for: '{</span>func.__name__<span class="string">}'"</span>)
+        raw_output = func(*args, **kwargs)
+        <span class="keyword">return</span> <span class="keyword">str</span>(raw_output).upper()
+    <span class="keyword">return</span> wrapper
+
+<span class="keyword">@sanitize_logger</span>
+<span class="keyword">def</span> compile_report(author):
+    <span class="string">"""Generates server status signatures."""</span>
+    <span class="keyword">return</span> <span class="string">f"secure system manifest signed by {</span>author<span class="string">}"</span>
+
+<span class="keyword">print</span>(compile_report(<span class="string">"kubra_dev"</span>))
+<span class="keyword">print</span>(<span class="string">f"Metadata Integrity Verification Check: {</span>compile_report.__name__<span class="string">}"</span>)</pre>
+
+    <h2>7. Algorithmic Recursion Mechanics</h2>
+    <div class="important">
+        <strong>CRUCIAL REQUIREMENT:</strong> Recursion occurs when a function invokes itself directly. It MUST feature a strict <strong>Base Case</strong> to block stack overflow crashes.
+    </div>
+    <pre><span class="keyword">def</span> calculate_factorial(n: <span class="keyword">int</span>) -> <span class="keyword">int</span>:
+    <span class="comment"># 1. Base Case (Halting Anchor)</span>
+    <span class="keyword">if</span> n == <span class="number">0</span> <span class="keyword">or</span> n == <span class="number">1</span>:
+        <span class="keyword">return</span> <span class="number">1</span>
+    <span class="comment"># 2. Recursive Case</span>
+    <span class="keyword">return</span> n * calculate_factorial(n - <span class="number">1</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Factorial of 5: {</span>calculate_factorial(<span class="number">5</span>)<span class="string">}"</span>)</pre>
+</div>
+{% endblock %}

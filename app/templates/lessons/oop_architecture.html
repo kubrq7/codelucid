@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>01. Master Blueprint to Object-Oriented Programming (OOP) in Python</h1>
+
+    <h2>PART 1: Classes, Object Instantiation, and the Dunder Methods</h2>
+    <p>A <strong>Class</strong> acts as a structural template. An <strong>Object</strong> is a living copy of that template.</p>
+
+    <pre><span class="keyword">class</span> EmptyTemplate:
+    <span class="comment"># 'pass' prevents an empty block syntax indentation crash</span>
+    <span class="keyword">pass</span>
+
+
+<span class="keyword">class</span> Person:
+    <span class="comment"># Class Property: Shared globally across every instance generated</span>
+    species = <span class="string">"Human"</span>
+
+    <span class="comment"># The __init__ method is a special 'dunder' (double underscore) initializer.
+    # It executes automatically whenever a brand new instance is being built.
+    # 'self' represents the unique address pointer of the object currently being created.</span>
+    <span class="keyword">def</span> __init__(self, name: <span class="keyword">str</span>, age: <span class="keyword">int</span> = <span class="number">18</span>):
+        <span class="comment"># Instance Properties: Unique, separate values bound to this specific object</span>
+        self.name = name
+        self.age = age
+
+    <span class="comment"># Magic/Dunder method controlling how an object looks when converted into a string</span>
+    <span class="keyword">def</span> __str__(self):
+        <span class="keyword">return</span> <span class="string">f"Person (Name: {</span>self.name<span class="string">}, Age: {</span>self.age<span class="string">})"</span>
+
+    <span class="comment"># Instance Method: Custom behavior that reads or modifies internal state via 'self'</span>
+    <span class="keyword">def</span> celebrate_birthday(self):
+        self.age += <span class="number">1</span>
+        <span class="keyword">print</span>(<span class="string">f"Telemetry Event: {</span>self.name<span class="string">} just aged up to {</span>self.age<span class="string">}."</span>)
+
+
+<span class="comment"># --- Verification Pipeline ---</span>
+<span class="keyword">print</span>(<span class="string">"--- 1. Objects & In-Place Modification ---"</span>)
+p1 = Person(<span class="string">"Emil"</span>, <span class="number">35</span>)
+p2 = Person(<span class="string">"Tobias"</span>, <span class="number">24</span>)
+
+<span class="keyword">print</span>(p1)  <span class="comment"># Triggers __str__ automatically</span>
+<span class="keyword">print</span>(<span class="string">f"Direct property access: {</span>p1.name<span class="string">} belongs to species: {</span>p1.species<span class="string">}"</span>)
+
+<span class="comment"># Modifying instance properties directly on the fly</span>
+p2.age = <span class="number">25</span>
+p2.celebrate_birthday()
+
+<span class="comment"># Dynamically injecting specific unique tracking assets into singular instances only</span>
+p1.assigned_sector = <span class="string">"Main Lab"</span>
+<span class="keyword">print</span>(<span class="string">f"Instance unique attribute successfully mapped: {</span>p1.assigned_sector<span class="string">}"</span>)
+
+<span class="comment"># Cleanup operations: Purging attributes or whole objects from active tracking memory</span>
+<span class="keyword">del</span> p2.age  <span class="comment"># 'p2.age' is now deleted; accessing it would cause an AttributeError</span>
+<span class="keyword">del</span> p2      <span class="comment"># 'p2' object completely destroyed from runtime stack</span></pre>
+
+    <h2>PART 2: The Four Pillars - Inheritance & Polymorphism</h2>
+    <ul>
+        <li><strong>Inheritance:</strong> Passing parental methods down into specialized child structures.</li>
+        <li><strong>Polymorphism:</strong> Different objects executing identically named methods in their own way.</li>
+    </ul>
+
+    <pre><span class="keyword">class</span> Vehicle:
+    <span class="keyword">def</span> __init__(self, brand: <span class="keyword">str</span>, model: <span class="keyword">str</span>):
+        self.brand = brand
+        self.model = model
+
+    <span class="keyword">def</span> move(self):
+        <span class="keyword">print</span>(<span class="string">"System Alert: General generic vehicle propulsion activated."</span>)
+
+
+<span class="comment"># Child class inherits everything from parent Vehicle</span>
+<span class="keyword">class</span> Car(Vehicle):
+    <span class="comment"># If no __init__ is defined, it inherits the parent's constructor automatically.</span>
+    <span class="keyword">def</span> move(self):
+        <span class="comment"># Polymorphism via Method Overriding: Changing default parent logic</span>
+        <span class="keyword">print</span>(<span class="string">f"Drive! The {</span>self.brand<span class="string">} {</span>self.model<span class="string">} is racing down the highway."</span>)
+
+
+<span class="keyword">class</span> Boat(Vehicle):
+    <span class="keyword">def</span> move(self):
+        <span class="keyword">print</span>(<span class="string">f"Sail! The {</span>self.brand<span class="string">} {</span>self.model<span class="string">} is slicing through ocean waves."</span>)
+
+
+<span class="keyword">class</span> Plane(Vehicle):
+    <span class="keyword">def</span> __init__(self, brand: <span class="keyword">str</span>, model: <span class="keyword">str</span>, maximum_altitude: <span class="keyword">int</span>):
+        <span class="comment"># super() references the parent class and safely runs its initializer</span>
+        <span class="keyword">super</span>().__init__(brand, model)
+        self.maximum_altitude = maximum_altitude
+
+    <span class="keyword">def</span> move(self):
+        <span class="keyword">print</span>(<span class="string">f"Fly! The {</span>self.brand<span class="string">} {</span>self.model<span class="string">} climbed to {</span>self.maximum_altitude<span class="string">} feet."</span>)
+
+
+<span class="comment"># --- Verification Pipeline ---</span>
+<span class="keyword">print</span>(<span class="string">"\n--- 2. Inheritance & Polymorphic Dispatch ---"</span>)
+fleet = [
+    Car(<span class="string">"Ford"</span>, <span class="string">"Mustang"</span>),
+    Boat(<span class="string">"Ibiza"</span>, <span class="string">"Touring 20"</span>),
+    Plane(<span class="string">"Boeing"</span>, <span class="string">"747"</span>, <span class="number">35000</span>)
+]
+
+<span class="comment"># Polymorphism allows us to execute the same method across entirely different types seamlessly</span>
+<span class="keyword">for</span> vehicle <span class="keyword">in</span> fleet:
+    <span class="keyword">print</span>(<span class="string">f"Unit Metadata: {</span>vehicle.brand<span class="string">} {</span>vehicle.model<span class="string">}"</span>)
+    vehicle.move()  <span class="comment"># Each object responds uniquely using its own version of the method</span></pre>
+
+    <h2>PART 3: The Four Pillars - Encapsulation & Data Accessibility</h2>
+    <p>Encapsulation safeguards internal variables from rogue external modifications.</p>
+    <ul>
+        <li><code>_prefix</code> &rarr; Protected attribute (Convention only, please do not alter externally)</li>
+        <li><code>__prefix</code> &rarr; Private attribute (Triggers Name Mangling to strictly lock it out)</li>
+    </ul>
+
+    <pre><span class="keyword">class</span> SecurityVault:
+    <span class="keyword">def</span> __init__(self, owner: <span class="keyword">str</span>, initial_funds: <span class="keyword">float</span>):
+        self.owner = owner          <span class="comment"># Public</span>
+        self._clearance_level = <span class="number">2</span>   <span class="comment"># Protected</span>
+        self.__balance = initial_funds  <span class="comment"># Private (Mangled to _SecurityVault__balance)</span>
+
+    <span class="comment"># Getter Method: Controlled, read-only extraction interface</span>
+    <span class="keyword">def</span> get_balance(self) -> <span class="keyword">float</span>:
+        <span class="keyword">return</span> self.__balance
+
+    <span class="comment"># Setter Method: Sanitizes and filters values before modifying internal memory</span>
+    <span class="keyword">def</span> set_balance(self, new_amount: <span class="keyword">float</span>):
+        <span class="keyword">if</span> new_amount &gt;= <span class="number">0</span>:
+            self.__balance = new_amount
+            <span class="keyword">print</span>(<span class="string">f"Vault Notification: Ledger balance updated to {</span>self.__balance<span class="string">}."</span>)
+        <span class="keyword">else</span>:
+            <span class="keyword">print</span>(<span class="string">"[SECURITY DENIED] Negative cash allocation rejected."</span>)
+
+
+<span class="comment"># --- Verification Pipeline ---</span>
+<span class="keyword">print</span>(<span class="string">"\n--- 3. Data Protection & Encapsulation Rules ---"</span>)
+vault = SecurityVault(<span class="string">"Operator-01"</span>, <span class="number">50000.0</span>)
+
+<span class="comment"># print(vault.__balance) # CRASHES! AttributeError: 'SecurityVault' object has no attribute '__balance'</span>
+<span class="keyword">print</span>(<span class="string">f"Authorized extraction via Getter Interface: {</span>vault.get_balance()<span class="string">}"</span>)
+vault.set_balance(<span class="number">65000.0</span>)
+
+<span class="comment"># Demonstration of Name Mangling structural conversion mechanics</span>
+<span class="keyword">print</span>(<span class="string">f"Mangled backdoor override value: {</span>vault._SecurityVault__balance<span class="string">}"</span>)</pre>
+
+    <h2>PART 4: Inner (Nested) Classes</h2>
+    <p>An Inner Class is declared inside a parent Outer Class to model closely bound helper structures.</p>
+
+    <pre><span class="keyword">class</span> Computer:
+    <span class="keyword">def</span> __init__(self, cpu_model: <span class="keyword">str</span>, ram_capacity: <span class="keyword">int</span>):
+        <span class="comment"># Automatically instantiating internal sub-components</span>
+        self.cpu = self.CPU(cpu_model)
+        self.ram = self.RAM(ram_capacity)
+
+    <span class="keyword">def</span> display_system_profile(self):
+        <span class="keyword">print</span>(<span class="string">f"Computer Host Matrix:"</span>)
+        self.cpu.process()
+        self.ram.store()
+
+    <span class="comment"># Inner Class Alpha</span>
+    <span class="keyword">class</span> CPU:
+        <span class="keyword">def</span> __init__(self, model: <span class="keyword">str</span>):
+            self.model = model
+
+        <span class="keyword">def</span> process(self):
+            <span class="keyword">print</span>(<span class="string">f" -> CPU [{</span>self.model<span class="string">}] calculation cores active."</span>)
+
+    <span class="comment"># Inner Class Beta</span>
+    <span class="keyword">class</span> RAM:
+        <span class="keyword">def</span> __init__(self, capacity: <span class="keyword">int</span>):
+            self.capacity = capacity
+
+        <span class="keyword">def</span> store(self):
+            <span class="keyword">print</span>(<span class="string">f" -> RAM [{</span>self.capacity<span class="string">}GB] memory grids loaded."</span>)
+
+
+<span class="comment"># --- Verification Pipeline ---</span>
+<span class="keyword">print</span>(<span class="string">"\n--- 4. Nested Structural Architectures ---"</span>)
+workstation = Computer(<span class="string">"Intel i9"</span>, <span class="number">64</span>)
+workstation.display_system_profile()</pre>
+</div>
+{% endblock %}

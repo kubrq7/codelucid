@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+    {% block content %}
+<style>
+        body {
+            background-color: #0f111a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #161925;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid #1f2335;
+        }
+        h1 {
+            color: #b5c937;
+            border-bottom: 2px solid #1f2335;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4da6ff;
+            margin-top: 30px;
+            border-left: 4px solid #4da6ff;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #e2e8f0;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #0b0c13;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #b5c937;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #a9b1d6;
+        }
+        .comment { color: #565f89; font-style: italic; }
+        .keyword { color: #bb9af7; font-weight: bold; }
+        .string { color: #9ece6a; }
+        .number { color: #ff9e64; }
+        .important {
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid #ff4d4d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #ff6666;
+            margin: 20px 0;
+        }
+    </style>
+<div class="container">
+    <h1>02. Python DSA Unit - Chapter 2: Non-Linear Data Structures & Hashing</h1>
+    <p>A comprehensive academic guide exploring Hash Tables, Binary Trees, self-balancing AVL Trees, and Graph Network topologies.</p>
+
+    <h2>1. Hash Tables & Collision Resolution via Chaining</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Objective:</strong> To achieve optimal lookups, insertions, and deletions in $O(1)$ average time complexity.</li>
+        <li><strong>Hash Function:</strong> Maps an arbitrary key (e.g., "Bob") to a fixed index within the underlying array.</li>
+        <li><strong>Collision:</strong> Occurs when two distinct keys yield the exact same index (e.g., "Lisa" and "Stuart" mapping to index 3).</li>
+        <li><strong>Chaining Strategy:</strong> Resolves collisions by converting every index (bucket) into a separate linked sub-list. Colliding elements are simply appended to that sub-list chain.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"--- 1. Custom Hash Table via Collision Chaining Mechanism ---"</span>)
+
+<span class="keyword">class</span> <span class="text">HashTable</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self, size=<span class="number">10</span>):
+        self.size = size
+        <span class="comment"># Initializing a list of empty list buckets</span>
+        self.table = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(self.size)]
+
+    <span class="keyword">def</span> <span class="text">_hash_function</span>(self, key):
+        <span class="comment">"""Summates the Unicode code points of characters and applies modulo operations."""</span>
+        <span class="keyword">return</span> sum(ord(char) <span class="keyword">for</span> char <span class="keyword">in</span> key) % self.size
+
+    <span class="keyword">def</span> <span class="text">add</span>(self, key):
+        <span class="comment">"""Inserts a key into the corresponding bucket. Handles collisions seamlessly."""</span>
+        index = self._hash_function(key)
+        <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> self.table[index]:
+            self.table[index].append(key)  <span class="comment"># Appends to the chain if it doesn't exist</span>
+
+    <span class="keyword">def</span> <span class="text">contains</span>(self, key):
+        <span class="comment">"""Checks for the presence of a key within the localized bucket chain."""</span>
+        index = self._hash_function(key)
+        <span class="keyword">return</span> key <span class="keyword">in</span> self.table[index]
+
+<span class="comment"># Hash Table Demonstration</span>
+hash_map = HashTable()
+dataset = [<span class="string">'Bob'</span>, <span class="string">'Pete'</span>, <span class="string">'Jones'</span>, <span class="string">'Lisa'</span>, <span class="string">'Siri'</span>, <span class="string">'Stuart'</span>]
+<span class="keyword">for</span> name <span class="keyword">in</span> dataset:
+    hash_map.add(name)
+
+<span class="keyword">print</span>(<span class="string">f"Internal Hash Table State: {hash_map.table}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Is 'Pete' registered in Hash Table?: {hash_map.contains('Pete')}"</span>)</pre>
+
+    <h2>2. Binary Trees & Depth-First Search (DFS) Traversals</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Binary Tree:</strong> A non-linear hierarchical structure where each node has at most two children (designated as Left and Right nodes).</li>
+        <li><strong>DFS Traversals:</strong> Explores tree branches deeply down a vertical axis before shifting horizontally.
+            <ul>
+                <li><strong>Pre-Order ($\text{Root} \rightarrow \text{Left} \rightarrow \text{Right}$):</strong> Ideal for cloning or duplicating structural tree paths.</li>
+                <li><strong>In-Order ($\text{Left} \rightarrow \text{Root} \rightarrow \text{Right}$):</strong> Natively retrieves sorted values in non-decreasing order from a Binary Search Tree (BST).</li>
+                <li><strong>Post-Order ($\text{Left} \rightarrow \text{Right} \rightarrow \text{Root}$):</strong> Highly optimized for clearing or deleting subtrees and parsing mathematical postfix expressions.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 2. Hierarchical Binary Tree and DFS Recursive Traversals ---"</span>)
+
+<span class="keyword">class</span> <span class="text">TreeNode</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self, data):
+        self.data = data
+        self.left = <span class="keyword">None</span>
+        self.right = <span class="keyword">None</span>
+
+<span class="comment"># Recursive Traversal Algorithms</span>
+<span class="keyword">def</span> <span class="text">pre_order_traversal</span>(node):
+    <span class="keyword">if</span> node:
+        <span class="keyword">print</span>(node.data, end=<span class="string">", "</span>)
+        pre_order_traversal(node.left)
+        pre_order_traversal(node.right)
+
+<span class="keyword">def</span> <span class="text">in_order_traversal</span>(node):
+    <span class="keyword">if</span> node:
+        in_order_traversal(node.left)
+        <span class="keyword">print</span>(node.data, end=<span class="string">", "</span>)
+        in_order_traversal(node.right)
+
+<span class="keyword">def</span> <span class="text">post_order_traversal</span>(node):
+    <span class="keyword">if</span> node:
+        post_order_traversal(node.left)
+        post_order_traversal(node.right)
+        <span class="keyword">print</span>(node.data, end=<span class="string">", "</span>)
+
+<span class="comment"># Tree Construction (Root: R, Children: A and B)</span>
+tree_root = TreeNode(<span class="string">'R'</span>)
+tree_root.left = TreeNode(<span class="string">'A'</span>)
+tree_root.right = TreeNode(<span class="string">'B'</span>)
+tree_root.left.left = TreeNode(<span class="string">'C'</span>)
+tree_root.left.right = TreeNode(<span class="string">'D'</span>)
+
+<span class="keyword">print</span>(<span class="string">"DFS Pre-Order   (Root -> L -> R): "</span>, end=<span class="string">""</span>); pre_order_traversal(tree_root); <span class="keyword">print</span>()
+<span class="keyword">print</span>(<span class="string">"DFS In-Order    (L -> Root -> R): "</span>, end=<span class="string">""</span>); in_order_traversal(tree_root); <span class="keyword">print</span>()
+<span class="keyword">print</span>(<span class="string">"DFS Post-Order  (L -> R -> Root): "</span>, end=<span class="string">""</span>); post_order_traversal(tree_root); <span class="keyword">print</span>()</pre>
+
+    <h2>3. Self-Balancing AVL Trees</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Objective:</strong> Standard Binary Search Trees (BST) can degenerate into highly skewed linear chains costing $O(n)$ time operations. AVL trees actively enforce rigid height balance conditions to guarantee strict $O(\log n)$ efficiency bounds.</li>
+        <li><strong>Balance Factor ($\text{BF}$):</strong> The absolute calculated height difference between the left and right subtrees must strictly satisfy:
+            $$\text{BF} = \text{height}(\text{left}) - \text{height}(\text{right}) \in \{-1, 0, 1\}$$
+        </li>
+        <li><strong>Rotations:</strong> Triggered programmatically during insertion or deletion workflows to neutralize node imbalances ($\text{Left-Left (LL)}$, $\text{Right-Right (RR)}$, $\text{Left-Right (LR)}$, $\text{Right-Left (RL)}$ cases).</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 3. Self-Balancing AVL Tree Rotational Mechanics ---"</span>)
+
+<span class="keyword">class</span> <span class="text">AVLTreeNode</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self, data):
+        self.data = data
+        self.left = <span class="keyword">None</span>
+        self.right = <span class="keyword">None</span>
+        self.height = <span class="number">1</span>
+
+<span class="keyword">def</span> <span class="text">get_node_height</span>(node):
+    <span class="keyword">return</span> node.height <span class="keyword">if</span> node <span class="keyword">else</span> <span class="number">0</span>
+
+<span class="keyword">def</span> <span class="text">calculate_balance_factor</span>(node):
+    <span class="keyword">return</span> get_node_height(node.left) - get_node_height(node.right) <span class="keyword">if</span> node <span class="keyword">else</span> <span class="number">0</span>
+
+<span class="keyword">def</span> <span class="text">execute_right_rotation</span>(y):
+    <span class="keyword">print</span>(<span class="string">f"[ROTATION] Initiating Single Right Rotation on Node: {y.data}"</span>)
+    x = y.left
+    T2 = x.right
+    <span class="comment"># Re-linking nodes to restore balance</span>
+    x.right = y
+    y.left = T2
+    <span class="comment"># Recalculating heights post-rotation</span>
+    y.height = <span class="number">1</span> + max(get_node_height(y.left), get_node_height(y.right))
+    x.height = <span class="number">1</span> + max(get_node_height(x.left), get_node_height(x.right))
+    <span class="keyword">return</span> x
+
+<span class="keyword">def</span> <span class="text">execute_left_rotation</span>(x):
+    <span class="keyword">print</span>(<span class="string">f"[ROTATION] Initiating Single Left Rotation on Node: {x.data}"</span>)
+    y = x.right
+    T2 = y.left
+    <span class="comment"># Re-linking nodes to restore balance</span>
+    y.left = x
+    x.right = T2
+    <span class="comment"># Recalculating heights post-rotation</span>
+    x.height = <span class="number">1</span> + max(get_node_height(x.left), get_node_height(x.right))
+    y.height = <span class="number">1</span> + max(get_node_height(y.left), get_node_height(y.right))
+    <span class="keyword">return</span> y
+
+<span class="keyword">def</span> <span class="text">insert_into_avl</span>(node, data):
+    <span class="comment">"""Recursively inserts data and balances the tree on the way back up (Backtracking)."""</span>
+    <span class="keyword">if</span> <span class="keyword">not</span> node:
+        <span class="keyword">return</span> AVLTreeNode(data)
+    
+    <span class="keyword">if</span> data &lt; node.data:
+        node.left = insert_into_avl(node.left, data)
+    <span class="keyword">else</span>:
+        node.right = insert_into_avl(node.right, data)
+
+    <span class="comment"># Height and structural validation updates</span>
+    node.height = <span class="number">1</span> + max(get_node_height(node.left), get_node_height(node.right))
+    balance_factor = calculate_balance_factor(node)
+
+    <span class="comment"># Case 1: Left-Left (LL) Deviation -> Requires a Single Right Rotation</span>
+    <span class="comment">if</span> balance_factor &gt; <span class="number">1</span> <span class="keyword">and</span> data &lt; node.left.data:
+        <span class="keyword">return</span> execute_right_rotation(node)
+
+    <span class="comment"># Case 2: Right-Right (RR) Deviation -> Requires a Single Left Rotation</span>
+    <span class="comment">if</span> balance_factor &lt; -<span class="number">1</span> <span class="keyword">and</span> data &gt; node.right.data:
+        <span class="keyword">return</span> execute_left_rotation(node)
+
+    <span class="keyword">return</span> node
+
+<span class="comment"># AVL Stabilization Demo</span>
+avl_root = <span class="keyword">None</span>
+alphabetical_nodes = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>] <span class="comment"># Consecutive additions that enforce an RR rotation</span>
+<span class="keyword">for</span> char <span class="keyword">in</span> alphabetical_nodes:
+    avl_root = insert_into_avl(avl_root, char)</pre>
+
+    <h2>4. Graphs & Adjacency Matrix vs List Coupling</h2>
+    <p><strong>Academic Overview:</strong></p>
+    <ul>
+        <li><strong>Concept:</strong> A non-linear architectural grid composed of Vertices (nodes) intersected via tracking Edges (connections linking vertices).</li>
+        <li><strong>Classifications:</strong> Can be explicitly configured as Directed (one-way edge paths) or Undirected (bidirectional relationships).</li>
+        <li><strong>Representation:</strong> Most optimally modeled in Python via an <strong>Adjacency List</strong> mapped utilizing dictionaries. This design provides structural $O(V + E)$ space complexity efficiency compared to memory-heavy $O(V^2)$ sequential Adjacency Matrix configurations.</li>
+    </ul>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- 4. Graph Network Map Representation via Adjacency Lists ---"</span>)
+
+<span class="keyword">class</span> <span class="text">Graph</span>:
+    <span class="keyword">def</span> <span class="text">__init__</span>(self):
+        self.adjacency_list = {}  <span class="comment"># Using dictionary map to link nodes and list relationships</span>
+
+    <span class="keyword">def</span> <span class="text">add_vertex</span>(self, vertex):
+        <span class="comment">"""Registers a unique vertex point into the network system."""</span>
+        <span class="keyword">if</span> vertex <span class="keyword">not</span> <span class="keyword">in</span> self.adjacency_list:
+            self.adjacency_list[vertex] = []
+
+    <span class="keyword">def</span> <span class="text">add_edge</span>(self, vertex1, vertex2):
+        <span class="comment">"""Constructs a mutual, undirected edge bridge between two target vertices."""</span>
+        <span class="keyword">if</span> vertex1 <span class="keyword">in</span> self.adjacency_list <span class="keyword">and</span> vertex2 <span class="keyword">in</span> self.adjacency_list:
+            self.adjacency_list[vertex1].append(vertex2)
+            self.adjacency_list[vertex2].append(vertex1)  <span class="comment"># Ensures bidirectional coupling</span>
+
+<span class="comment"># Network Topology Simulation</span>
+social_network = Graph()
+users = [<span class="string">"Kubra"</span>, <span class="string">"Ahmet"</span>, <span class="string">"Mehmet"</span>]
+<span class="keyword">for</span> user <span class="keyword">in</span> users:
+    social_network.add_vertex(user)
+
+<span class="comment"># Linking network nodes</span>
+social_network.add_edge(<span class="string">"Kubra"</span>, <span class="string">"Ahmet"</span>)
+social_network.add_edge(<span class="string">"Ahmet"</span>, <span class="string">"Mehmet"</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Network Connection Mapping: {social_network.adjacency_list}"</span>)
+<span class="keyword">print</span>(<span class="string">"\n[SUCCESS] Non-Linear Data Structures script executed perfectly."</span>)</pre>
+</div>
+{% endblock %}

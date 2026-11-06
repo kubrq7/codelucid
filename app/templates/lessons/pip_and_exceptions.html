@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #0f111a;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background-color: #161925;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid #1f2335;
+    }
+    h1 {
+        color: #b5c937;
+        border-bottom: 2px solid #1f2335;
+        padding-bottom: 15px;
+        margin-top: 0;
+    }
+    h2 {
+        color: #4da6ff;
+        margin-top: 30px;
+        border-left: 4px solid #4da6ff;
+        padding-left: 10px;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    pre {
+        background-color: #0b0c13;
+        padding: 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid #b5c937;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        color: #a9b1d6;
+    }
+    .comment { color: #565f89; font-style: italic; }
+    .keyword { color: #bb9af7; font-weight: bold; }
+    .string { color: #9ece6a; }
+    .number { color: #ff9e64; }
+    .important {
+        background-color: rgba(255, 77, 77, 0.1);
+        border: 1px solid #ff4d4d;
+        padding: 15px;
+        border-radius: 6px;
+        color: #ff6666;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container">
+    <h1>19. Master Guide to PIP Package Manager and Robust Exception Handling</h1>
+
+    <h2>PART 1: The PIP Package Manager (Terminal Commands & Usage)</h2>
+    <p>PIP is the official package installer for Python, connecting to the PyPI registry. Below are the vital terminal CLI operations (Execute these in your terminal shell):</p>
+    <ul>
+        <li><strong>Check version:</strong> <code>pip --version</code></li>
+        <li><strong>Install package:</strong> <code>pip install camelcase</code></li>
+        <li><strong>Uninstall package:</strong> <code>pip uninstall camelcase</code></li>
+        <li><strong>List active environment packages:</strong> <code>pip list</code></li>
+    </ul>
+
+    <h3>Advanced Industry Practice: Dependency Management</h3>
+    <ul>
+        <li><strong>Generate list of dependencies:</strong> <code>pip freeze &gt; requirements.txt</code></li>
+        <li><strong>Install from requirements file:</strong> <code>pip install -r requirements.txt</code></li>
+    </ul>
+
+    <pre><span class="comment"># --- Consuming an Installed Package Example ---</span>
+<span class="keyword">try</span>:
+    <span class="keyword">import</span> camelcase
+    formatter = camelcase.CamelCase()
+    raw_payload = <span class="string">"production grade infrastructure"</span>
+    <span class="keyword">print</span>(<span class="string">f"CamelCase Engine Output: {</span>formatter.hump(raw_payload)<span class="string">}"</span>)
+<span class="keyword">except</span> <span class="keyword">ImportError</span>:
+    <span class="keyword">print</span>(<span class="string">"[SYSTEM NOTE] Package 'camelcase' is not installed in this environment."</span>)</pre>
+
+    <h2>PART 2: The Robust Exception Handling Engine (try-except-else-finally)</h2>
+    <p>Exception handling ensures your code can intercept operational errors gracefully instead of crashing the interpreter abruptly.</p>
+
+    <pre><span class="keyword">print</span>(<span class="string">"\n--- Structural Execution Flow Control Matrix ---"</span>)
+
+<span class="comment"># A) Handling Targeted Specific Exceptions vs Fallbacks</span>
+<span class="keyword">try</span>:
+    <span class="comment"># Triggering an intentional error (NameError) by referencing an undefined variable</span>
+    <span class="keyword">print</span>(undefined_workspace_variable)
+<span class="keyword">except</span> <span class="keyword">NameError</span> <span class="keyword">as</span> name_err:
+    <span class="keyword">print</span>(<span class="string">f"[INTERCEPTED] A strict Variable Lookup Error occurred: {</span>name_err<span class="string">}"</span>)
+<span class="keyword">except</span> <span class="keyword">ZeroDivisionError</span> <span class="keyword">as</span> div_err:
+    <span class="keyword">print</span>(<span class="string">f"[INTERCEPTED] Math boundary violation: {</span>div_err<span class="string">}"</span>)
+<span class="keyword">except</span> <span class="keyword">Exception</span> <span class="keyword">as</span> global_err:
+    <span class="keyword">print</span>(<span class="string">f"[FALLBACK] An unclassified high-level exception occurred: {</span>global_err<span class="string">}"</span>)</pre>
+
+    <pre><span class="comment"># B) Complete Architecture Sequence (try -> except -> else -> finally)</span>
+<span class="keyword">try</span>:
+    computed_vector = <span class="number">100</span> / <span class="number">4</span>
+    <span class="keyword">print</span>(<span class="string">f"Calculated Target Vector: {</span>computed_vector<span class="string">}"</span>)
+<span class="keyword">except</span> <span class="keyword">ZeroDivisionError</span>:
+    <span class="keyword">print</span>(<span class="string">"[ERROR] Mathematical division by zero aborted."</span>)
+<span class="keyword">not</span> <span class="keyword">else</span>:
+    <span class="comment"># Executes ONLY if the try block encounters absolutely zero exceptions</span>
+    <span class="keyword">print</span>(<span class="string">"[SUCCESS] No errors triggered. Executing post-computation sequence."</span>)
+<span class="keyword">finally</span>:
+    <span class="comment"># Executes ALWAYS, completely independent of previous success or crash states</span>
+    <span class="keyword">print</span>(<span class="string">"[CLEANUP] Flushing calculation pipelines. Sequence complete."</span>)</pre>
+
+    <pre><span class="comment"># C) Resource Safety (Optimized via Context Manager 'with')
+# FIXED: Replaced vulnerable manual open/close and nested try-finally with 'with open()'.
+# The context manager automatically handles closing the stream safely under all conditions.</span>
+<span class="keyword">try</span>:
+    <span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">"runtime_log.txt"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> file_stream:
+        file_stream.write(<span class="string">"Telemetry stream transmission checkpoint."</span>)
+        <span class="keyword">print</span>(<span class="string">"[IO SAFE] Data written successfully. File automatically locked and closed."</span>)
+<span class="keyword">except</span> <span class="keyword">IOError</span> <span class="keyword">as</span> io_err:
+    <span class="keyword">print</span>(<span class="string">f"[STREAM ERROR] Failed to execute disk I/O operations: {</span>io_err<span class="string">}"</span>)
+<span class="keyword">except</span> <span class="keyword">FileNotFoundError</span>:
+    <span class="keyword">print</span>(<span class="string">"[DISK ERROR] Targeted document path does not exist."</span>)</pre>
+
+    <h2>PART 3: Intentional Exception Propagation (raise Keyword)</h2>
+    <p>Programmers use the <code>raise</code> statement to manually enforce operational boundaries.</p>
+
+    <pre><span class="keyword">def</span> validate_system_threshold(metric_value: <span class="keyword">int</span>):
+    <span class="comment"># Validation Rule 1: Structural Boundary Range Verification</span>
+    <span class="keyword">if</span> metric_value &lt; <span class="number">0</span>:
+        <span class="keyword">raise</span> <span class="keyword">ValueError</span>(<span class="string">"Metric failure: Value cannot drop below zero boundaries."</span>)
+    
+    <span class="comment"># Validation Rule 2: Datatype Format Verification</span>
+    <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">isinstance</span>(metric_value, <span class="keyword">int</span>):
+        <span class="keyword">raise</span> <span class="keyword">TypeError</span>(<span class="string">"System allocation failure: Input parameters must be strictly integers."</span>)
+    
+    <span class="keyword">return</span> <span class="string">f"Metric checkpoint passed: {</span>metric_value<span class="string">}"</span>
+
+<span class="comment"># FIXED: Separated execution paths so that a raised exception doesn't prevent subsequent tests.</span>
+<span class="keyword">print</span>(<span class="string">"\n--- Running Isolated Validation Tests ---"</span>)
+
+<span class="comment"># Test Run A: Valid Input Evaluation</span>
+<span class="keyword">try</span>:
+    <span class="keyword">print</span>(validate_system_threshold(<span class="number">45</span>))   
+<span class="keyword">except</span> (<span class="keyword">ValueError</span>, <span class="keyword">TypeError</span>) <span class="keyword">as</span> boundary_exception:
+    <span class="keyword">print</span>(<span class="string">f"[TRAPPED TEST A] Caught unexpected exception: {</span>boundary_exception<span class="string">}"</span>)
+
+<span class="comment"># Test Run B: Boundary Violation Input Evaluation (Intentional Trigger)</span>
+<span class="keyword">try</span>:
+    <span class="keyword">print</span>(validate_system_threshold(-<span class="number">12</span>))  <span class="comment"># Throws ValueError cleanly</span>
+<span class="keyword">except</span> (<span class="keyword">ValueError</span>, <span class="keyword">TypeError</span>) <span class="keyword">as</span> boundary_exception:
+    <span class="keyword">print</span>(<span class="string">f"[TRAPPED TEST B] Custom validation block caught expected error: {</span>boundary_exception<span class="string">}"</span>)</pre>
+</div>
+{% endblock %}
