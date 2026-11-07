@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 ABOUT_ME = (
-    "I am Kübra Aktaş, 19 years old. My passion for software development, which began with a web design course at my vocational high school, pushed me to challenge my limits and build this visionary platform. When I stepped into the world of software, I wanted to dive deep, starting with foundational languages like Python. However, I found that the available resources were either overly complex, poorly organized, or limited to surface-level summaries. Defying the prejudice of those around me who said 'you cannot do it,' I decided to bring this comprehensive e-book and interactive learning ecosystem to life. My goal is to elevate every student starting from zero to a true level of engineering awareness. This project is my first signature in the technology world and the beginning of a much greater journey. As we build the future of technology together, I hope you will not withhold your support, and I wish for this guide to deeply inspire you."
+    "Hello, I am Kübra Aktaş, 19 years old. I am a developer focused on growing in software and building real projects. While preparing for the university entrance exam, I develop projects on the side and push myself one step further with each one. I am always open to learning, feedback, and collaborative work. Feel free to contact me with any questions, suggestions, or collaboration requests."
 )
 
 COMMUNITY_CHANNELS = [
