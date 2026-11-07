@@ -10,10 +10,13 @@ class Config:
     MAIL_SERVER = "smtp.gmail.com"
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get("MAIL_USERNAME", "codelucid.contact@gmail.com")
-    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD", "qollohubsmggsudp")
+    MAIL_USERNAME = os.environ.get('GMAIL_USER')
+    MAIL_PASSWORD = os.environ.get('GMAIL_PASS')
+
     MAIL_DEFAULT_SENDER = ("CodeLucid", "codelucid.contact@gmail.com")
 
 class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
+
+    
