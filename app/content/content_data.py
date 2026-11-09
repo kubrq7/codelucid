@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-ABOUT_ME = (
-    "Hello, I am Kübra Aktaş, 19 years old. I am a developer focused on growing in software and building real projects. While preparing for the university entrance exam, I develop projects on the side and push myself one step further with each one. I am always open to learning, feedback, and collaborative work. Feel free to contact me with any questions, suggestions, or collaboration requests."
-)
+
+ABOUT_ME_PARAGRAPHS = [
+    "Hello, I'm <strong>Kübra Aktaş</strong>, 19 years old. I'm a developer focused on growing in software and building real projects. While preparing for the university entrance exam, I develop projects on the side and push myself one step further with each one. I'm always open to learning, feedback, and collaborative work.",
+]
 
 COMMUNITY_CHANNELS = [
-    {"name": "Instagram", "icon": "IG", "handle": "@codelucid_", "note": "Aesthetic Dev Content & Behind the Scenes", "href": "https://www.instagram.com/codelucid_/"},
-    {"name": "TikTok", "icon": "TT", "handle": "@codelucid_", "note": "Quick Python Tips & Coding Snippets", "href": "https://www.tiktok.com/@codelucid_"},
-    {"name": "GitHub", "icon": "GH", "handle": "://github.com_", "note": "Production Source Code Repositories", "href": "https://github.com_"},
-    {"name": "LinkedIn", "icon": "IN", "handle": "Kubra Aktas", "note": "Aspiring Software Developer | Founder of codelucid_", "href": "https://www.linkedin.com/search/results/all/?keywords=Kubra%20Aktas"},
-    {"name": "E-Mail", "icon": "@", "handle": "codelucid.contact@gmail.com", "note": "Official Support & Business Inquiries", "href": "mailto:codelucid.contact@gmail.com"}
+    {"name": "Instagram", "icon": "📸", "handle": "@codelucid_", "href": "https://instagram.com/codelucid_"},
+    {"name": "TikTok", "icon": "🎵", "handle": "@codelucid_", "href": "https://tiktok.com/@codelucid_"},
+    {"name": "GitHub", "icon": "💻", "handle": "kubrq7/codelucid_", "href": "https://github.com/kubrq7/codelucid_"},
+    {"name": "LinkedIn", "icon": "💼", "handle": "Kübra Aktaş", "href": "https://linkedin.com/in/kubra-aktas"},
+    {"name": "E-Mail", "icon": "📧", "handle": "codelucid.contact@gmail.com", "href": "mailto:codelucid.contact@gmail.com"},
 ]
 
 ENGINEERING_MANIFESTO = (

@@ -1,25 +1,22 @@
+from app.content.content_data import ABOUT_ME_PARAGRAPHS, COMMUNITY_CHANNELS
 from flask import Blueprint, render_template, jsonify
-from flask_login import login_required
 from app.questions import QUIZ_DATA
 
 main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 @main_bp.route("/dashboard")
-@login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template(
+        'dashboard.html',
+        about_paragraphs=ABOUT_ME_PARAGRAPHS,
+        channels=COMMUNITY_CHANNELS,
+    )
 
 @main_bp.route("/get-quiz/<category>")
-@login_required
 def get_quiz(category):
     questions = QUIZ_DATA.get(category, [])
     return jsonify(questions if questions else {"error": "Soru bulunamadı"})
-
-
-
-
-
 
 
 @main_bp.route("/basic-info")
@@ -38,7 +35,7 @@ def veri_tipleri_dersi():
 def sayilar_ve_rastgele_dersi():
     return render_template("lessons/numbers_and_random.html")
 
-@main_bp.route("/lessons/unit-1/strings") # URL'yi de sadeleştirdik
+@main_bp.route("/lessons/unit-1/strings")
 def strings_dersi():
     return render_template("lessons/strings.html")
 

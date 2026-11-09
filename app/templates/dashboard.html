@@ -150,11 +150,6 @@
         <button class="nav-btn" onclick="show('quizzes', this)">Quiz Lab</button>
         <button class="nav-btn" onclick="show('learn', this)">Learn with Code</button>
         <button class="nav-btn" onclick="show('about', this)">About Me & Contact</button>
-        
-        <!-- Log out butonu en altta sabit, ortalanmış ve alt çizgili -->
-        <a href="{{ url_for('auth.logout') }}" style="color: #ff4d4d; font-family: inherit; font-size: 14px; font-weight: bold; text-decoration: underline; text-underline-offset: 4px; text-align: center; margin-top: auto; padding: 15px 0; width: 100%; display: block; box-sizing: border-box;">
-            Log out
-        </a>
     </aside>
     <main class="main-content">
         
@@ -380,36 +375,29 @@ print("Hello")</textarea>
         </div>
 
         <div id="about" class="section-container">
-            <h1 class="doc-title">About Me & Contact</h1>
-            
-            <div class="doc-card">
-                <h2 style="color: #A3C78B;">About the author</h2>
-                <div class="doc-text">
-                    I am <strong>Kübra Aktaş</strong>, a 19-year-old software developer and the founder of <em>codelucid_</em>. My journey began with web design classes in vocational high school.
-                </div>
-                <div class="doc-text">
-                    While trying to learn Python and other programming languages, I noticed that the available resources were either overly chaotic or too shallow. To put an end to this confusion, I decided to build an interactive e-learning ecosystem that takes absolute beginners directly to industry-level software engineering. 
-                </div>
-                <div class="doc-text">
-                    This is my very first project, and it marks the beginning of my journey. I truly appreciate your support, and I hope you enjoy the platform!
-                </div>
-            </div>
+    <h1 class="doc-title">About Me & Contact</h1>
 
-            <div class="doc-card">
-                <h2 style="color: #A3C78B;">Let's Connect</h2>
-                <div class="doc-text" style="margin-bottom: 20px;">
-                    For any suggestions, feedback, collaboration inquiries, or technical support, feel free to connect with me through my official channels:
-                </div>
-
-                <ul style="list-style: none; padding: 0; line-height: 2.2;">
-                    <li>📸 <strong>Instagram:</strong> <a href="https://instagram.com/codelucid_" style="color:#7C9060; text-decoration:none;">@codelucid_</a></li>
-                    <li>🎵 <strong>TikTok:</strong> <a href="https://tiktok.com/@codelucid_" style="color:#7C9060; text-decoration:none;">@codelucid_</a></li>
-                    <li>💻 <strong>GitHub:</strong> <a href="https://github.com/kubrq7/codelucid_" style="color:#7C9060; text-decoration:none;">kubrq7/codelucid_</a></li>
-                    <li>💼 <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/kubra-aktas" style="color:#7C9060; text-decoration:none;">Kübra Aktaş</a></li>
-                    <li>📧 <strong>E-Mail:</strong> <a href="mailto:codelucid.contact@gmail.com" style="color:#7C9060; text-decoration:none;">codelucid.contact@gmail.com</a></li>
-                </ul>
-            </div>
+    <div class="doc-card">
+        <h2 style="color: #A3C78B;">About the author</h2>
+        <div class="doc-text">
+            Hello, I'm Kübra Aktaş, 19 years old. I'm a developer focused on growing in software and building real projects. While preparing for the university entrance exam, I develop projects on the side and push myself one step further with each one. I'm always open to learning, feedback, and collaborative work.
         </div>
+    </div>
+
+    <div class="doc-card">
+        <h2 style="color: #A3C78B;">Let's Connect</h2>
+        <div class="doc-text" style="margin-bottom: 20px;">
+            For any suggestions, feedback, collaboration inquiries, or technical support, feel free to connect with me through my official channels:
+        </div>
+        <ul style="list-style: none; padding: 0; line-height: 2.2;">
+            <li>📸 <strong>Instagram:</strong> <a href="https://instagram.com/codelucid_" target="_blank" style="color:#7C9060; text-decoration:none;">@codelucid_</a></li>
+            <li>🎵 <strong>TikTok:</strong> <a href="https://tiktok.com/@codelucid_" target="_blank" style="color:#7C9060; text-decoration:none;">@codelucid_</a></li>
+            <li>💻 <strong>GitHub:</strong> <a href="https://github.com/kubrq7/codelucid_" target="_blank" style="color:#7C9060; text-decoration:none;">kubrq7/codelucid_</a></li>
+            <li>💼 <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/kubra-aktas" target="_blank" style="color:#7C9060; text-decoration:none;">Kübra Aktaş</a></li>
+            <li>📧 <strong>E-Mail:</strong> <a href="mailto:codelucid.contact@gmail.com" style="color:#7C9060; text-decoration:none;">codelucid.contact@gmail.com</a></li>
+        </ul>
+    </div>
+</div>
         
     </main>
 </div>
