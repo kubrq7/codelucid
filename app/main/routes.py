@@ -12,7 +12,6 @@ def dashboard():
         about_paragraphs=ABOUT_ME_PARAGRAPHS,
         channels=COMMUNITY_CHANNELS,
     )
-
 @main_bp.route("/get-quiz/<category>")
 def get_quiz(category):
     questions = QUIZ_DATA.get(category, [])
@@ -287,3 +286,12 @@ def quiz_oop():
 @main_bp.route('/quizzes/unit3/file-handling')
 def quiz_file_handling():
     return render_template('quizzes/unit3/01_file_handling.html')
+
+#GİZLİLİK POLİTİKASI İÇİN
+@main_bp.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+@main_bp.route("/terms")
+def terms():
+    return render_template("terms.html")

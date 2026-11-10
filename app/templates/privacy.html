@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body { font-family: 'Inter', sans-serif; background-color: #0D0F14; color: #E2E8F0; margin: 0; padding: 0; }
+    .policy-container { max-width: 800px; margin: 50px auto; padding: 0 20px; }
+    .doc-card { background: #161A22; border-radius: 12px; padding: 40px; border: 1px solid #2D3748; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .doc-title { color: #fff; font-size: 32px; margin-bottom: 30px; border-left: 4px solid #7C9060; padding-left: 15px; }
+    .doc-subtitle { color: #7C9060; font-size: 20px; margin-top: 30px; margin-bottom: 15px; font-weight: bold; }
+    .doc-text { color: #CBD5E0; font-size: 16px; line-height: 1.8; margin-bottom: 15px; }
+    .back-btn { display: inline-block; margin-bottom: 20px; color: #7C9060; text-decoration: none; font-weight: bold; transition: 0.3s; font-size: 16px; }
+    .back-btn:hover { color: #fff; }
+</style>
+
+<div class="policy-container">
+    <a href="/" class="back-btn">← Back to Home</a>
+    <div class="doc-card">
+        <h1 class="doc-title">Privacy Policy</h1>
+        
+        <div class="doc-text">Last updated: November 2026</div>
+        <div class="doc-text">
+            Welcome to <strong>CodeLucid</strong>. This Privacy Policy explains how we collect, use, and protect your information when you visit our website.
+        </div>
+        
+        <div class="doc-subtitle">1. Information We Collect</div>
+        <div class="doc-text">
+            We do not require you to create an account or provide personal information to access our educational content. However, if you contact us via email, we may receive your email address and any information you choose to share.
+        </div>
+
+        <div class="doc-subtitle">2. Cookies and Web Beacons</div>
+        <div class="doc-text">
+            Like many websites, CodeLucid uses "cookies" to store information about visitors' preferences and to record user-specific information on which pages the user accesses or visits. You can choose to disable cookies through your browser settings.
+        </div>
+
+        <div class="doc-subtitle">3. Google AdSense & Third-Party Advertising</div>
+        <div class="doc-text">
+            We may use third-party advertising companies (such as Google AdSense) to serve ads when you visit our website. These companies may use information (not including your name, address, email address, or telephone number) about your visits to this and other websites in order to provide advertisements about goods and services of interest to you. 
+            <br><br>
+            Google, as a third-party vendor, uses cookies to serve ads on our site. Google's use of the DART cookie enables it to serve ads to our users based on their visit to our site and other sites on the Internet. Users may opt out of the use of the DART cookie by visiting the Google ad and content network privacy policy.
+        </div>
+
+        <div class="doc-subtitle">4. Contact Us</div>
+        <div class="doc-text">
+            If you have any questions about this Privacy Policy, please contact us at <strong>codelucid.contact@gmail.com</strong>.
+        </div>
+    </div>
+</div>
+{% endblock %}

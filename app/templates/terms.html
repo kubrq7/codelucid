@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body { font-family: 'Inter', sans-serif; background-color: #0D0F14; color: #E2E8F0; margin: 0; padding: 0; }
+    .policy-container { max-width: 800px; margin: 50px auto; padding: 0 20px; }
+    .doc-card { background: #161A22; border-radius: 12px; padding: 40px; border: 1px solid #2D3748; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .doc-title { color: #fff; font-size: 32px; margin-bottom: 30px; border-left: 4px solid #7C9060; padding-left: 15px; }
+    .doc-subtitle { color: #7C9060; font-size: 20px; margin-top: 30px; margin-bottom: 15px; font-weight: bold; }
+    .doc-text { color: #CBD5E0; font-size: 16px; line-height: 1.8; margin-bottom: 15px; }
+    .back-btn { display: inline-block; margin-bottom: 20px; color: #7C9060; text-decoration: none; font-weight: bold; transition: 0.3s; font-size: 16px; }
+    .back-btn:hover { color: #fff; }
+</style>
+
+<div class="policy-container">
+    <a href="/" class="back-btn">← Back to Home</a>
+    <div class="doc-card">
+        <h1 class="doc-title">Terms of Service</h1>
+        
+        <div class="doc-text">Last updated: November 2026</div>
+        <div class="doc-text">
+            By accessing and using <strong>CodeLucid</strong>, you accept and agree to be bound by the terms and provisions of this agreement.
+        </div>
+
+        <div class="doc-subtitle">1. Intellectual Property Rights</div>
+        <div class="doc-text">
+            All content on this website, including but not limited to text, educational materials, quizzes, source code, and graphics, is the property of <strong>Kübra Aktaş</strong> and is protected by copyright laws. You may view and use the content for personal, non-commercial educational purposes only. You may not copy, reproduce, distribute, or sell any part of this website without explicit written permission.
+        </div>
+
+        <div class="doc-subtitle">2. Use of the Playground</div>
+        <div class="doc-text">
+            Our "Learn with Code" feature allows you to write and execute Python code. You agree not to use this feature to execute malicious code, attempt to breach security, or disrupt the service.
+        </div>
+
+        <div class="doc-subtitle">3. Disclaimer</div>
+        <div class="doc-text">
+            The materials on CodeLucid are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim all other warranties. We do not warrant that the website will be uninterrupted, error-free, or free of viruses.
+        </div>
+
+        <div class="doc-subtitle">4. Modifications</div>
+        <div class="doc-text">
+            CodeLucid may revise these Terms of Service at any time without notice. By using this website, you are agreeing to be bound by the then-current version of these Terms of Service.
+        </div>
+    </div>
+</div>
+{% endblock %}
