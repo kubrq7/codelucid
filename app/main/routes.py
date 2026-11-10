@@ -12,6 +12,14 @@ def dashboard():
         about_paragraphs=ABOUT_ME_PARAGRAPHS,
         channels=COMMUNITY_CHANNELS,
     )
+
+
+@main_bp.route("/ads.txt")
+def ads_txt():
+    return "google.com, pub-7091123904156687, DIRECT, f08c47fec0942fa0", 200, {'Content-Type': 'text/plain'}
+
+
+
 @main_bp.route("/get-quiz/<category>")
 def get_quiz(category):
     questions = QUIZ_DATA.get(category, [])
