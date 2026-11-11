@@ -1,26 +1,30 @@
 # 🚀 CodeLucid — Learn Python Like a Software Engineer
 
-**CodeLucid**, Python öğrenmek isteyenler için tasarlanmış interaktif bir e-öğrenme platformudur. Videolar izleyerek vakit kaybetmek yerine, doğrudan kod yazarak ve pratik yaparak öğrenmenizi sağlar.
+**CodeLucid**, It is an interactive e-learning platform designed for individuals looking to learn Python. Instead of wasting time watching videos, it enables you to learn by writing code directly and putting concepts into practice.
 
-## ✨ Özellikler
+## ✨ Features
 
-- 📚 **Kapsamlı Müfredat:** Python temellerinden veri yapılarına, algoritmalardan veritabanlarına kadar 40+ konu.
-- 🧠 **İnteraktif Quizler:** Her dersin sonunda bilginizi test edin.
-- 💻 **Kod Playground:** Tarayıcı üzerinden Python kodu yazın ve çalıştırın.
-- 📱 **Modern ve Duyarlı Tasarım:** Karanlık tema ve mobil uyumlu arayüz.
+- 📚 Comprehensive Curriculum: 40+ topics ranging from Python fundamentals to data structures, algorithms, and databases.
 
-## 🛠️ Kullanılan Teknolojiler
+- 🧠 Interactive Quizzes: Test your knowledge at the end of every lesson.
+
+- 💻 Code Playground: Write and execute Python code right in your browser.
+
+- 📱 Modern & Responsive Design: Dark theme with a fully mobile-optimized interface.
+
+
+## 🛠️ Tech Stack
 
 - **Backend:** Python, Flask
 - **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
-- **Şablon Motoru:** Jinja2
-- **Diğer:** Gunicorn (production için)
+- **Template Engine:** Jinja2
+- **Other:** Gunicorn (for production)
 
-## 🚀 Kurulum ve Çalıştırma
+## 🚀 Installation & Setup
 
-Projeyi yerel makinenizde çalıştırmak için:
+To run this project locally:
 
-1.  Depoyu klonlayın:
-    ```bash
+1.  Clone the repository:
+     ```bash
     git clone https://github.com/kubrq7/codelucid_.git
-    cd codelucid_
+    cd codelucid_                                     
